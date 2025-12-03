@@ -12,6 +12,7 @@ class RossFooterOptions {
         $this->options = get_option('ross_theme_footer_options');
         // Run a quick migration for legacy template keys before registering settings
         add_action('admin_init', array($this, 'migrate_legacy_template_keys'), 5);
+        add_action('admin_init', array($this, 'migrate_social_icons_enabled_flags'), 5); // NEW: Social icons V2 migration
         add_action('admin_init', array($this, 'ensure_default_template_options'), 6);
         add_action('admin_init', array($this, 'register_footer_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_footer_scripts'));
@@ -77,6 +78,71 @@ class RossFooterOptions {
             // Refresh local copy for current request
             $this->options = $opts;
         }
+    }
+
+    /**
+     * Migrate social icons to V2 format with enabled flags
+     * If a platform has a URL but no _enabled field, set it to enabled
+     * This runs once to handle upgrades from old social icons system
+     */
+    public function migrate_social_icons_enabled_flags() {
+        if (!is_admin()) return;
+        
+        // Check if migration already ran
+        $migration_flag = get_option('ross_social_icons_v2_migrated', false);
+        if ($migration_flag) return;
+        
+        $opts = get_option('ross_theme_footer_options', array());
+        if (empty($opts) || !is_array($opts)) {
+            $opts = array();
+        }
+        
+        $changed = false;
+        
+        // Ensure master toggle defaults to enabled
+        if (!isset($opts['enable_social_icons'])) {
+            $opts['enable_social_icons'] = 1;
+            $changed = true;
+        }
+        
+        // Core 4 platforms: If URL exists but no _enabled field, enable it
+        $core_platforms = array('facebook', 'instagram', 'twitter', 'linkedin');
+        foreach ($core_platforms as $platform) {
+            $url_key = $platform . '_url';
+            $enabled_key = $platform . '_enabled';
+            
+            // If platform has a URL but no enabled flag, enable it
+            if (!empty($opts[$url_key]) && !isset($opts[$enabled_key])) {
+                $opts[$enabled_key] = 1;
+                $changed = true;
+            }
+            // If no URL and no enabled flag, set to enabled by default (user can disable)
+            elseif (!isset($opts[$enabled_key])) {
+                $opts[$enabled_key] = 1;
+                $changed = true;
+            }
+        }
+        
+        // Custom platform defaults to disabled
+        if (!isset($opts['custom_social_enabled'])) {
+            $opts['custom_social_enabled'] = 0;
+            $changed = true;
+        }
+        
+        // Set display order if not exists
+        if (!isset($opts['social_display_order']) || !is_array($opts['social_display_order'])) {
+            $opts['social_display_order'] = array('facebook', 'instagram', 'twitter', 'linkedin', 'custom');
+            $changed = true;
+        }
+        
+        if ($changed) {
+            update_option('ross_theme_footer_options', $opts);
+            // Refresh local copy
+            $this->options = $opts;
+        }
+        
+        // Set migration flag so this only runs once
+        update_option('ross_social_icons_v2_migrated', true);
     }
 
     /** Ensure that default footer templates exist in stored options (for customization or persistence) */
@@ -173,8 +239,8 @@ class RossFooterOptions {
         if (!get_transient('ross_template_applied_notice')) return;
         delete_transient('ross_template_applied_notice');
         ?>
-        <div class="notice notice-success is-dismissible">
-            <p><strong>Footer template applied:</strong> The selected template was applied and your footer layout has been updated. Saving this page will not overwrite the applied template values.</p>
+        <div  class="notice notice-success is-dismissible">
+            <p ><strong>Footer template applied:</strong> The selected template was applied and your footer layout has been updated. Saving this page will not overwrite the applied template values.</p>
         </div>
         <?php
     }
@@ -264,6 +330,10 @@ class RossFooterOptions {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('ross_footer_enqueue_scripts: enqueueing footer scripts for hook=' . print_r($hook, true));
             }
+            
+            // Font Awesome for social icons display in admin
+            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
+            
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
             // Media uploader for background image field
@@ -279,10 +349,28 @@ class RossFooterOptions {
             // Admin UI styling for footer options
             wp_enqueue_style('ross-footer-admin-css', get_template_directory_uri() . '/assets/css/admin/footer-styling-admin.css', array(), '1.0.0');
             
+            // NEW: Tooltips and help system CSS
+            $tooltips_css = get_template_directory() . '/assets/css/admin/footer-admin-tooltips.css';
+            if (file_exists($tooltips_css)) {
+                wp_enqueue_style('ross-footer-tooltips', get_template_directory_uri() . '/assets/css/admin/footer-admin-tooltips.css', array(), filemtime($tooltips_css));
+            }
+            
             // NEW: Enqueue modern template selector CSS
             $template_ui_css = get_template_directory() . '/assets/css/admin/footer-template-ui.css';
             if (file_exists($template_ui_css)) {
                 wp_enqueue_style('ross-footer-template-ui', get_template_directory_uri() . '/assets/css/admin/footer-template-ui.css', array(), filemtime($template_ui_css));
+            }
+            
+            // NEW: Enqueue social icons UI CSS
+            $social_ui_css = get_template_directory() . '/assets/css/admin/social-icons-ui.css';
+            if (file_exists($social_ui_css)) {
+                wp_enqueue_style('ross-social-icons-ui', get_template_directory_uri() . '/assets/css/admin/social-icons-ui.css', array('wp-color-picker'), filemtime($social_ui_css));
+            }
+            
+            // NEW: Enqueue social icons manager JS
+            $social_ui_js = get_template_directory() . '/assets/js/admin/social-icons-manager.js';
+            if (file_exists($social_ui_js)) {
+                wp_enqueue_script('ross-social-icons-manager', get_template_directory_uri() . '/assets/js/admin/social-icons-manager.js', array('jquery', 'wp-color-picker'), filemtime($social_ui_js), true);
             }
             
             wp_localize_script('ross-footer-admin', 'rossFooterAdmin', array(
@@ -736,8 +824,14 @@ class RossFooterOptions {
             'ross-theme-footer-cta'
         );
         add_settings_section(
+            'ross_footer_cta_typography',
+            'Typography',
+            array($this, 'cta_typography_section_callback'),
+            'ross-theme-footer-cta'
+        );
+        add_settings_section(
             'ross_footer_cta_spacing',
-            'Spacing',
+            'Spacing & Dimensions',
             array($this, 'cta_spacing_section_callback'),
             'ross-theme-footer-cta'
         );
@@ -923,6 +1017,50 @@ class RossFooterOptions {
             'ross-theme-footer-cta',
             'ross_footer_cta_styling'
         );
+        // Typography
+        add_settings_field(
+            'cta_title_font_size',
+            'Title Font Size (px)',
+            array($this, 'cta_title_font_size_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        add_settings_field(
+            'cta_title_font_weight',
+            'Title Font Weight',
+            array($this, 'cta_title_font_weight_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        add_settings_field(
+            'cta_text_font_size',
+            'Text Font Size (px)',
+            array($this, 'cta_text_font_size_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        add_settings_field(
+            'cta_button_font_size',
+            'Button Font Size (px)',
+            array($this, 'cta_button_font_size_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        add_settings_field(
+            'cta_button_font_weight',
+            'Button Font Weight',
+            array($this, 'cta_button_font_weight_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        add_settings_field(
+            'cta_letter_spacing',
+            'Letter Spacing (px)',
+            array($this, 'cta_letter_spacing_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_typography'
+        );
+        
         // Spacing (padding)
         add_settings_field(
             'cta_padding_top',
@@ -957,6 +1095,82 @@ class RossFooterOptions {
             'cta_icon_color',
             'CTA Icon Color',
             array($this, 'cta_icon_color_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        
+        // Border controls
+        add_settings_field(
+            'cta_border_width',
+            'Border Width (px)',
+            array($this, 'cta_border_width_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_border_style',
+            'Border Style',
+            array($this, 'cta_border_style_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_border_color',
+            'Border Color',
+            array($this, 'cta_border_color_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_border_radius',
+            'Border Radius (px)',
+            array($this, 'cta_border_radius_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        
+        // Shadow controls
+        add_settings_field(
+            'cta_box_shadow',
+            'Enable Box Shadow',
+            array($this, 'cta_box_shadow_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_shadow_color',
+            'Shadow Color',
+            array($this, 'cta_shadow_color_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_shadow_blur',
+            'Shadow Blur (px)',
+            array($this, 'cta_shadow_blur_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        
+        // Button hover effects
+        add_settings_field(
+            'cta_button_hover_bg',
+            'Button Hover Background',
+            array($this, 'cta_button_hover_bg_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_button_hover_text',
+            'Button Hover Text Color',
+            array($this, 'cta_button_hover_text_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_styling'
+        );
+        add_settings_field(
+            'cta_button_border_radius',
+            'Button Border Radius (px)',
+            array($this, 'cta_button_border_radius_callback'),
             'ross-theme-footer-cta',
             'ross_footer_cta_styling'
         );
@@ -1014,7 +1228,23 @@ class RossFooterOptions {
             'ross_footer_cta_advanced'
         );
 
-        // Extra: Spacing - add margin controls (new)
+        // Container width
+        add_settings_field(
+            'cta_container_width',
+            'Container Width',
+            array($this, 'cta_container_width_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_spacing'
+        );
+        add_settings_field(
+            'cta_max_width',
+            'Max Width (px)',
+            array($this, 'cta_max_width_callback'),
+            'ross-theme-footer-cta',
+            'ross_footer_cta_spacing'
+        );
+        
+        // Margin controls
         add_settings_field('cta_margin_top','Margin Top (px)',array($this,'cta_margin_top_callback'),'ross-theme-footer-cta','ross_footer_cta_spacing');
         add_settings_field('cta_margin_right','Margin Right (px)',array($this,'cta_margin_right_callback'),'ross-theme-footer-cta','ross_footer_cta_spacing');
         add_settings_field('cta_margin_bottom','Margin Bottom (px)',array($this,'cta_margin_bottom_callback'),'ross-theme-footer-cta','ross_footer_cta_spacing');
@@ -1038,25 +1268,25 @@ class RossFooterOptions {
         );
         
         add_settings_field(
-            'facebook_url',
-            'Facebook URL',
-            array($this, 'facebook_url_callback'),
+            'social_icons_list',
+            'Social Media Links',
+            array($this, 'social_icons_list_callback'),
             'ross-theme-footer-social',
             'ross_footer_social_section'
         );
         
         add_settings_field(
-            'linkedin_url',
-            'LinkedIn URL',
-            array($this, 'linkedin_url_callback'),
+            'social_icon_style',
+            'Icon Style',
+            array($this, 'social_icon_style_callback'),
             'ross-theme-footer-social',
             'ross_footer_social_section'
         );
         
         add_settings_field(
-            'instagram_url',
-            'Instagram URL',
-            array($this, 'instagram_url_callback'),
+            'social_icon_size',
+            'Icon Size',
+            array($this, 'social_icon_size_callback'),
             'ross-theme-footer-social',
             'ross_footer_social_section'
         );
@@ -1065,6 +1295,14 @@ class RossFooterOptions {
             'social_icon_color',
             'Icon Color',
             array($this, 'social_icon_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_hover_color',
+            'Icon Hover Color',
+            array($this, 'social_icon_hover_color_callback'),
             'ross-theme-footer-social',
             'ross_footer_social_section'
         );
@@ -1223,10 +1461,13 @@ class RossFooterOptions {
         echo '<p>Visual styling for the CTA, including background and colors.</p>';
     }
     public function cta_spacing_section_callback() {
-        echo '<p>Spacing and margins for the CTA block.</p>';
+        echo '<p>💎 Control spacing, margins, padding, and container dimensions for the CTA block.</p>';
+    }
+    public function cta_typography_section_callback() {
+        echo '<p>✍️ Font sizes, weights, and letter spacing for CTA elements.</p>';
     }
     public function cta_animation_section_callback() {
-        echo '<p>Small animation options for the CTA entrance.</p>';
+        echo '<p>✨ Entrance animations for the CTA appearance.</p>';
     }
     public function cta_advanced_section_callback() {
         echo '<p>Advanced options: custom HTML/CSS/JS for the CTA area.</p>';
@@ -2311,15 +2552,348 @@ class RossFooterOptions {
         echo '<textarea name="ross_theme_footer_options[custom_cta_js]" rows="6" class="large-text" placeholder="Custom JS for the CTA (will be escaped)">' . esc_textarea($v) . '</textarea>';
     }
     
+    // Border controls
+    public function cta_border_width_callback() {
+        $v = isset($this->options['cta_border_width']) ? intval($this->options['cta_border_width']) : 0;
+        echo '<input type="number" name="ross_theme_footer_options[cta_border_width]" value="' . esc_attr($v) . '" class="small-text" min="0" max="20" /> px';
+        echo '<p class="description">Set to 0 for no border</p>';
+    }
+    
+    public function cta_border_style_callback() {
+        $v = isset($this->options['cta_border_style']) ? $this->options['cta_border_style'] : 'solid';
+        ?>
+        <select name="ross_theme_footer_options[cta_border_style]">
+            <option value="none" <?php selected($v,'none'); ?>>None</option>
+            <option value="solid" <?php selected($v,'solid'); ?>>Solid</option>
+            <option value="dashed" <?php selected($v,'dashed'); ?>>Dashed</option>
+            <option value="dotted" <?php selected($v,'dotted'); ?>>Dotted</option>
+            <option value="double" <?php selected($v,'double'); ?>>Double</option>
+        </select>
+        <?php
+    }
+    
+    public function cta_border_color_callback() {
+        $v = isset($this->options['cta_border_color']) ? $this->options['cta_border_color'] : '';
+        echo '<input type="text" name="ross_theme_footer_options[cta_border_color]" value="' . esc_attr($v) . '" class="color-picker" data-default-color="#dddddd" />';
+    }
+    
+    public function cta_border_radius_callback() {
+        $v = isset($this->options['cta_border_radius']) ? intval($this->options['cta_border_radius']) : 0;
+        echo '<input type="number" name="ross_theme_footer_options[cta_border_radius]" value="' . esc_attr($v) . '" class="small-text" min="0" max="100" /> px';
+        echo '<p class="description">Rounded corners (0 = sharp corners)</p>';
+    }
+    
+    // Shadow controls
+    public function cta_box_shadow_callback() {
+        $v = isset($this->options['cta_box_shadow']) ? $this->options['cta_box_shadow'] : 0;
+        echo '<label class="ross-toggle">';
+        echo '<input type="checkbox" name="ross_theme_footer_options[cta_box_shadow]" value="1" ' . checked(1, $v, false) . ' />';
+        echo '<span class="ross-toggle-slider"></span> Enable box shadow for depth';
+        echo '</label>';
+    }
+    
+    public function cta_shadow_color_callback() {
+        $v = isset($this->options['cta_shadow_color']) ? $this->options['cta_shadow_color'] : 'rgba(0,0,0,0.1)';
+        echo '<input type="text" name="ross_theme_footer_options[cta_shadow_color]" value="' . esc_attr($v) . '" class="regular-text" />';
+        echo '<p class="description">Use rgba() for transparency: rgba(0,0,0,0.1)</p>';
+    }
+    
+    public function cta_shadow_blur_callback() {
+        $v = isset($this->options['cta_shadow_blur']) ? intval($this->options['cta_shadow_blur']) : 10;
+        echo '<input type="number" name="ross_theme_footer_options[cta_shadow_blur]" value="' . esc_attr($v) . '" class="small-text" min="0" max="100" /> px';
+        echo '<p class="description">Higher value = more blur/spread</p>';
+    }
+    
+    // Button hover effects
+    public function cta_button_hover_bg_callback() {
+        $v = isset($this->options['cta_button_hover_bg']) ? $this->options['cta_button_hover_bg'] : '';
+        echo '<input type="text" name="ross_theme_footer_options[cta_button_hover_bg]" value="' . esc_attr($v) . '" class="color-picker" />';
+        echo '<p class="description">Leave empty to auto-darken</p>';
+    }
+    
+    public function cta_button_hover_text_callback() {
+        $v = isset($this->options['cta_button_hover_text']) ? $this->options['cta_button_hover_text'] : '';
+        echo '<input type="text" name="ross_theme_footer_options[cta_button_hover_text]" value="' . esc_attr($v) . '" class="color-picker" />';
+    }
+    
+    public function cta_button_border_radius_callback() {
+        $v = isset($this->options['cta_button_border_radius']) ? intval($this->options['cta_button_border_radius']) : 4;
+        echo '<input type="number" name="ross_theme_footer_options[cta_button_border_radius]" value="' . esc_attr($v) . '" class="small-text" min="0" max="50" /> px';
+        echo '<p class="description">0 = square, 50 = pill shape</p>';
+    }
+    
+    // Typography controls
+    public function cta_title_font_size_callback() {
+        $v = isset($this->options['cta_title_font_size']) ? intval($this->options['cta_title_font_size']) : 28;
+        echo '<input type="number" name="ross_theme_footer_options[cta_title_font_size]" value="' . esc_attr($v) . '" class="small-text" min="12" max="72" /> px';
+    }
+    
+    public function cta_title_font_weight_callback() {
+        $v = isset($this->options['cta_title_font_weight']) ? $this->options['cta_title_font_weight'] : '700';
+        ?>
+        <select name="ross_theme_footer_options[cta_title_font_weight]">
+            <option value="300" <?php selected($v,'300'); ?>>Light (300)</option>
+            <option value="400" <?php selected($v,'400'); ?>>Normal (400)</option>
+            <option value="500" <?php selected($v,'500'); ?>>Medium (500)</option>
+            <option value="600" <?php selected($v,'600'); ?>>Semi-Bold (600)</option>
+            <option value="700" <?php selected($v,'700'); ?>>Bold (700)</option>
+            <option value="800" <?php selected($v,'800'); ?>>Extra-Bold (800)</option>
+        </select>
+        <?php
+    }
+    
+    public function cta_text_font_size_callback() {
+        $v = isset($this->options['cta_text_font_size']) ? intval($this->options['cta_text_font_size']) : 16;
+        echo '<input type="number" name="ross_theme_footer_options[cta_text_font_size]" value="' . esc_attr($v) . '" class="small-text" min="10" max="32" /> px';
+    }
+    
+    public function cta_button_font_size_callback() {
+        $v = isset($this->options['cta_button_font_size']) ? intval($this->options['cta_button_font_size']) : 16;
+        echo '<input type="number" name="ross_theme_footer_options[cta_button_font_size]" value="' . esc_attr($v) . '" class="small-text" min="10" max="24" /> px';
+    }
+    
+    public function cta_button_font_weight_callback() {
+        $v = isset($this->options['cta_button_font_weight']) ? $this->options['cta_button_font_weight'] : '600';
+        ?>
+        <select name="ross_theme_footer_options[cta_button_font_weight]">
+            <option value="400" <?php selected($v,'400'); ?>>Normal (400)</option>
+            <option value="500" <?php selected($v,'500'); ?>>Medium (500)</option>
+            <option value="600" <?php selected($v,'600'); ?>>Semi-Bold (600)</option>
+            <option value="700" <?php selected($v,'700'); ?>>Bold (700)</option>
+        </select>
+        <?php
+    }
+    
+    public function cta_letter_spacing_callback() {
+        $v = isset($this->options['cta_letter_spacing']) ? floatval($this->options['cta_letter_spacing']) : 0;
+        echo '<input type="number" step="0.1" name="ross_theme_footer_options[cta_letter_spacing]" value="' . esc_attr($v) . '" class="small-text" min="-2" max="10" /> px';
+        echo '<p class="description">Adjust spacing between letters (0 = normal)</p>';
+    }
+    
+    // Container width controls
+    public function cta_container_width_callback() {
+        $v = isset($this->options['cta_container_width']) ? $this->options['cta_container_width'] : 'container';
+        ?>
+        <select name="ross_theme_footer_options[cta_container_width]">
+            <option value="container" <?php selected($v,'container'); ?>>Standard Container</option>
+            <option value="full" <?php selected($v,'full'); ?>>Full Width</option>
+            <option value="custom" <?php selected($v,'custom'); ?>>Custom Max Width</option>
+        </select>
+        <p class="description">Choose container size (use custom for specific pixel width)</p>
+        <?php
+    }
+    
+    public function cta_max_width_callback() {
+        $v = isset($this->options['cta_max_width']) ? intval($this->options['cta_max_width']) : 1200;
+        echo '<input type="number" name="ross_theme_footer_options[cta_max_width]" value="' . esc_attr($v) . '" class="small-text" min="300" max="2000" step="50" /> px';
+        echo '<p class="description">Only applies when container width is set to "Custom"</p>';
+    }
+    
     // Field Callbacks - Social Section
     public function enable_social_icons_callback() {
         $value = isset($this->options['enable_social_icons']) ? $this->options['enable_social_icons'] : 1;
         ?>
-        <input type="checkbox" name="ross_theme_footer_options[enable_social_icons]" value="1" <?php checked(1, $value); ?> />
-        <label for="enable_social_icons">Show social media icons</label>
+        <label>
+            <input type="checkbox" name="ross_theme_footer_options[enable_social_icons]" value="1" <?php checked(1, $value); ?> />
+            Show social media icons in footer
+        </label>
         <?php
     }
     
+    public function social_icons_list_callback() {
+        // Core 4 platforms
+        $core_platforms = array(
+            'facebook' => array('label' => 'Facebook', 'icon' => 'fab fa-facebook-f', 'color' => '#1877F2'),
+            'instagram' => array('label' => 'Instagram', 'icon' => 'fab fa-instagram', 'color' => '#E4405F'),
+            'twitter' => array('label' => 'Twitter / X', 'icon' => 'fab fa-x-twitter', 'color' => '#000000'),
+            'linkedin' => array('label' => 'LinkedIn', 'icon' => 'fab fa-linkedin-in', 'color' => '#0A66C2'),
+        );
+        
+        // Custom platform settings
+        $custom_enabled = isset($this->options['custom_social_enabled']) ? $this->options['custom_social_enabled'] : 0;
+        $custom_label = isset($this->options['custom_social_label']) ? $this->options['custom_social_label'] : '';
+        $custom_icon = isset($this->options['custom_social_icon']) ? $this->options['custom_social_icon'] : 'fas fa-link';
+        $custom_url = isset($this->options['custom_social_url']) ? $this->options['custom_social_url'] : '';
+        $custom_color = isset($this->options['custom_social_color']) ? $this->options['custom_social_color'] : '#666666';
+        
+        // Display order
+        $display_order = isset($this->options['social_display_order']) ? $this->options['social_display_order'] : array('facebook', 'instagram', 'twitter', 'linkedin', 'custom');
+        
+        ?>
+        <div class="ross-social-icons-manager-v2">
+            <div class="social-platforms-grid">
+                <?php foreach ($core_platforms as $platform_key => $platform_data): 
+                    $enabled = isset($this->options[$platform_key . '_enabled']) ? $this->options[$platform_key . '_enabled'] : 1;
+                    $url_value = isset($this->options[$platform_key . '_url']) ? $this->options[$platform_key . '_url'] : '';
+                ?>
+                    <div class="social-platform-card <?php echo $enabled ? 'is-enabled' : 'is-disabled'; ?>" data-platform="<?php echo esc_attr($platform_key); ?>">
+                        <div class="platform-card-header">
+                            <div class="platform-icon" style="background-color: <?php echo esc_attr($platform_data['color']); ?>;">
+                                <i class="<?php echo esc_attr($platform_data['icon']); ?>"></i>
+                            </div>
+                            <div class="platform-info">
+                                <h4><?php echo esc_html($platform_data['label']); ?></h4>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" 
+                                           name="ross_theme_footer_options[<?php echo esc_attr($platform_key); ?>_enabled]" 
+                                           value="1" 
+                                           <?php checked(1, $enabled); ?>
+                                           class="platform-toggle" />
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="platform-card-body">
+                            <input type="url" 
+                                   name="ross_theme_footer_options[<?php echo esc_attr($platform_key); ?>_url]" 
+                                   value="<?php echo esc_url($url_value); ?>" 
+                                   class="widefat platform-url-input" 
+                                   placeholder="https://<?php echo esc_attr($platform_key); ?>.com/yourprofile"
+                                   <?php disabled(0, $enabled); ?> />
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                
+                <!-- Custom Platform Card -->
+                <div class="social-platform-card social-platform-card--custom <?php echo $custom_enabled ? 'is-enabled' : 'is-disabled'; ?>" data-platform="custom">
+                    <div class="platform-card-header">
+                        <div class="platform-icon platform-icon--custom" style="background-color: <?php echo esc_attr($custom_color); ?>;">
+                            <i class="<?php echo esc_attr($custom_icon); ?>" id="custom-platform-icon-preview"></i>
+                        </div>
+                        <div class="platform-info">
+                            <h4>Custom Platform</h4>
+                            <label class="toggle-switch">
+                                <input type="checkbox" 
+                                       name="ross_theme_footer_options[custom_social_enabled]" 
+                                       value="1" 
+                                       <?php checked(1, $custom_enabled); ?>
+                                       class="platform-toggle" 
+                                       id="custom-platform-toggle" />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="platform-card-body">
+                        <div class="custom-platform-fields">
+                            <div class="field-row">
+                                <label>Platform Name</label>
+                                <input type="text" 
+                                       name="ross_theme_footer_options[custom_social_label]" 
+                                       value="<?php echo esc_attr($custom_label); ?>" 
+                                       class="widefat" 
+                                       placeholder="e.g., Discord, Behance, Medium"
+                                       <?php disabled(0, $custom_enabled); ?> />
+                            </div>
+                            <div class="field-row">
+                                <label>Icon</label>
+                                <div class="icon-picker-trigger" <?php disabled(0, $custom_enabled); ?>>
+                                    <input type="hidden" 
+                                           name="ross_theme_footer_options[custom_social_icon]" 
+                                           value="<?php echo esc_attr($custom_icon); ?>" 
+                                           id="custom-social-icon-input" />
+                                    <button type="button" class="button" id="open-icon-picker" <?php disabled(0, $custom_enabled); ?>>
+                                        <i class="<?php echo esc_attr($custom_icon); ?>"></i> Choose Icon
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="field-row">
+                                <label>URL</label>
+                                <input type="url" 
+                                       name="ross_theme_footer_options[custom_social_url]" 
+                                       value="<?php echo esc_url($custom_url); ?>" 
+                                       class="widefat" 
+                                       placeholder="https://example.com/yourprofile"
+                                       <?php disabled(0, $custom_enabled); ?> />
+                            </div>
+                            <div class="field-row">
+                                <label>Icon Color</label>
+                                <input type="text" 
+                                       name="ross_theme_footer_options[custom_social_color]" 
+                                       value="<?php echo esc_attr($custom_color); ?>" 
+                                       class="color-picker" 
+                                       data-default-color="#666666"
+                                       <?php disabled(0, $custom_enabled); ?> />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="social-display-order" style="margin-top: 20px;">
+                <label><strong>Display Order:</strong></label>
+                <p class="description">Drag platforms to reorder (coming soon) or use dropdown:</p>
+                <select name="ross_theme_footer_options[social_display_order][]" multiple size="5" class="widefat" style="max-width: 300px;">
+                    <?php 
+                    $all_platforms = array_merge(array_keys($core_platforms), array('custom'));
+                    foreach ($all_platforms as $platform): 
+                        $label = $platform === 'custom' ? 'Custom Platform' : ucfirst($platform);
+                    ?>
+                        <option value="<?php echo esc_attr($platform); ?>" selected><?php echo esc_html($label); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <p class="description" style="margin-top: 15px;">
+                <strong>Tip:</strong> Toggle platforms on/off using the switches. Only enabled platforms with URLs will display in the footer.
+            </p>
+        </div>
+        
+        <!-- Icon Picker Modal -->
+        <div id="ross-icon-picker-modal" class="ross-modal" style="display: none;">
+            <div class="ross-modal-content">
+                <div class="ross-modal-header">
+                    <h3>Choose Icon</h3>
+                    <button type="button" class="ross-modal-close">&times;</button>
+                </div>
+                <div class="ross-modal-body">
+                    <input type="text" id="icon-search" class="widefat" placeholder="Search icons..." style="margin-bottom: 15px;" />
+                    <div class="icon-picker-grid" id="icon-picker-grid">
+                        <!-- Icons will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    
+    public function social_icon_style_callback() {
+        $value = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        ?>
+        <select name="ross_theme_footer_options[social_icon_style]">
+            <option value="circle" <?php selected($value, 'circle'); ?>>Circle Background</option>
+            <option value="square" <?php selected($value, 'square'); ?>>Square Background</option>
+            <option value="rounded" <?php selected($value, 'rounded'); ?>>Rounded Square</option>
+            <option value="plain" <?php selected($value, 'plain'); ?>>Plain Icons (No Background)</option>
+        </select>
+        <p class="description">Choose the background style for social icons</p>
+        <?php
+    }
+    
+    public function social_icon_size_callback() {
+        $value = isset($this->options['social_icon_size']) ? $this->options['social_icon_size'] : '36';
+        ?>
+        <input type="number" name="ross_theme_footer_options[social_icon_size]" value="<?php echo esc_attr($value); ?>" min="20" max="80" step="2" class="small-text" /> px
+        <p class="description">Icon container size (default: 36px)</p>
+        <?php
+    }
+    
+    public function social_icon_color_callback() {
+        $value = isset($this->options['social_icon_color']) ? $this->options['social_icon_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Leave empty to use template default color</p>
+        <?php
+    }
+    
+    public function social_icon_hover_color_callback() {
+        $value = isset($this->options['social_icon_hover_color']) ? $this->options['social_icon_hover_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Leave empty to auto-generate hover effect</p>
+        <?php
+    }
+    
+    // Legacy callbacks for backward compatibility
     public function facebook_url_callback() {
         $value = isset($this->options['facebook_url']) ? $this->options['facebook_url'] : '';
         ?>
@@ -2338,13 +2912,6 @@ class RossFooterOptions {
         $value = isset($this->options['instagram_url']) ? $this->options['instagram_url'] : '';
         ?>
         <input type="url" name="ross_theme_footer_options[instagram_url]" value="<?php echo esc_url($value); ?>" class="regular-text" placeholder="https://instagram.com/yourprofile" />
-        <?php
-    }
-    
-    public function social_icon_color_callback() {
-        $value = isset($this->options['social_icon_color']) ? $this->options['social_icon_color'] : '#ffffff';
-        ?>
-        <input type="text" name="ross_theme_footer_options[social_icon_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
         <?php
     }
     
@@ -2619,12 +3186,58 @@ class RossFooterOptions {
         $sanitized['custom_cta_css'] = isset($input['custom_cta_css']) ? wp_strip_all_tags($input['custom_cta_css']) : '';
         $sanitized['custom_cta_js'] = isset($input['custom_cta_js']) ? wp_strip_all_tags($input['custom_cta_js']) : '';
         
+        // NEW CTA enhancements - Border, Shadow, Typography, Button Hover, Container
+        $sanitized['cta_border_width'] = isset($input['cta_border_width']) ? absint($input['cta_border_width']) : 0;
+        $allowed_border_styles = array('none','solid','dashed','dotted','double');
+        $sanitized['cta_border_style'] = isset($input['cta_border_style']) && in_array($input['cta_border_style'], $allowed_border_styles) ? sanitize_text_field($input['cta_border_style']) : 'solid';
+        $sanitized['cta_border_color'] = isset($input['cta_border_color']) ? sanitize_hex_color($input['cta_border_color']) : '';
+        $sanitized['cta_border_radius'] = isset($input['cta_border_radius']) ? absint($input['cta_border_radius']) : 0;
+        $sanitized['cta_box_shadow'] = isset($input['cta_box_shadow']) ? 1 : 0;
+        $sanitized['cta_shadow_color'] = isset($input['cta_shadow_color']) ? sanitize_text_field($input['cta_shadow_color']) : 'rgba(0,0,0,0.1)';
+        $sanitized['cta_shadow_blur'] = isset($input['cta_shadow_blur']) ? absint($input['cta_shadow_blur']) : 10;
+        $sanitized['cta_button_hover_bg'] = isset($input['cta_button_hover_bg']) ? sanitize_hex_color($input['cta_button_hover_bg']) : '';
+        $sanitized['cta_button_hover_text'] = isset($input['cta_button_hover_text']) ? sanitize_hex_color($input['cta_button_hover_text']) : '';
+        $sanitized['cta_button_border_radius'] = isset($input['cta_button_border_radius']) ? absint($input['cta_button_border_radius']) : 4;
+        $sanitized['cta_title_font_size'] = isset($input['cta_title_font_size']) ? absint($input['cta_title_font_size']) : 28;
+        $allowed_weights = array('300','400','500','600','700','800');
+        $sanitized['cta_title_font_weight'] = isset($input['cta_title_font_weight']) && in_array($input['cta_title_font_weight'], $allowed_weights) ? sanitize_text_field($input['cta_title_font_weight']) : '700';
+        $sanitized['cta_text_font_size'] = isset($input['cta_text_font_size']) ? absint($input['cta_text_font_size']) : 16;
+        $sanitized['cta_button_font_size'] = isset($input['cta_button_font_size']) ? absint($input['cta_button_font_size']) : 16;
+        $sanitized['cta_button_font_weight'] = isset($input['cta_button_font_weight']) && in_array($input['cta_button_font_weight'], $allowed_weights) ? sanitize_text_field($input['cta_button_font_weight']) : '600';
+        $sanitized['cta_letter_spacing'] = isset($input['cta_letter_spacing']) ? floatval($input['cta_letter_spacing']) : 0;
+        $allowed_container = array('container','full','custom');
+        $sanitized['cta_container_width'] = isset($input['cta_container_width']) && in_array($input['cta_container_width'], $allowed_container) ? sanitize_text_field($input['cta_container_width']) : 'container';
+        $sanitized['cta_max_width'] = isset($input['cta_max_width']) ? absint($input['cta_max_width']) : 1200;
+        
         // Social
         $sanitized['enable_social_icons'] = isset($input['enable_social_icons']) ? 1 : 0;
-        $sanitized['facebook_url'] = esc_url_raw($input['facebook_url']);
-        $sanitized['linkedin_url'] = esc_url_raw($input['linkedin_url']);
-        $sanitized['instagram_url'] = esc_url_raw($input['instagram_url']);
-        $sanitized['social_icon_color'] = sanitize_hex_color($input['social_icon_color']);
+        
+        // Core 4 platforms with enabled toggles
+        $core_platforms = array('facebook', 'instagram', 'twitter', 'linkedin');
+        foreach ($core_platforms as $platform) {
+            $sanitized[$platform . '_enabled'] = isset($input[$platform . '_enabled']) ? 1 : 0;
+            $sanitized[$platform . '_url'] = isset($input[$platform . '_url']) ? esc_url_raw($input[$platform . '_url']) : '';
+        }
+        
+        // Custom platform
+        $sanitized['custom_social_enabled'] = isset($input['custom_social_enabled']) ? 1 : 0;
+        $sanitized['custom_social_label'] = isset($input['custom_social_label']) ? sanitize_text_field($input['custom_social_label']) : '';
+        $sanitized['custom_social_icon'] = isset($input['custom_social_icon']) ? sanitize_text_field($input['custom_social_icon']) : 'fas fa-link';
+        $sanitized['custom_social_url'] = isset($input['custom_social_url']) ? esc_url_raw($input['custom_social_url']) : '';
+        $sanitized['custom_social_color'] = isset($input['custom_social_color']) ? sanitize_hex_color($input['custom_social_color']) : '#666666';
+        
+        // Display order
+        if (isset($input['social_display_order']) && is_array($input['social_display_order'])) {
+            $sanitized['social_display_order'] = array_map('sanitize_text_field', $input['social_display_order']);
+        } else {
+            $sanitized['social_display_order'] = array('facebook', 'instagram', 'twitter', 'linkedin', 'custom');
+        }
+        
+        // Social styling options
+        $sanitized['social_icon_style'] = isset($input['social_icon_style']) && in_array($input['social_icon_style'], array('circle','square','rounded','plain')) ? sanitize_text_field($input['social_icon_style']) : 'circle';
+        $sanitized['social_icon_size'] = isset($input['social_icon_size']) ? absint($input['social_icon_size']) : 36;
+        $sanitized['social_icon_color'] = isset($input['social_icon_color']) ? sanitize_hex_color($input['social_icon_color']) : '';
+        $sanitized['social_icon_hover_color'] = isset($input['social_icon_hover_color']) ? sanitize_hex_color($input['social_icon_hover_color']) : '';
         
         // Copyright
         $sanitized['enable_copyright'] = isset($input['enable_copyright']) ? 1 : 0;

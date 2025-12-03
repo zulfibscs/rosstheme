@@ -20,6 +20,11 @@
         // Fallback basic footer
         echo '<footer class="site-footer"><div class="container"><p>&copy; ' . date('Y') . ' ' . get_bloginfo('name') . '</p></div></footer>';
     }
+    
+    // Display copyright bar at the bottom
+    if (function_exists('ross_theme_display_footer_copyright')) {
+        ross_theme_display_footer_copyright();
+    }
     ?>
 
 </div><!-- #page -->

@@ -1,0 +1,173 @@
+/**
+ * Enhanced Social Icons Styling for Footer
+ */
+
+/* Social Icons Container */
+.ross-social-icons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Social Icon Base Styles */
+.ross-social-icons .social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.ross-social-icons .social-icon i {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Hover Effects */
+.ross-social-icons .social-icon:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Circle Style (Default) */
+.ross-social-icons .social-icon--circle {
+    border-radius: 50%;
+}
+
+/* Square Style */
+.ross-social-icons .social-icon--square {
+    border-radius: 0;
+}
+
+/* Rounded Style */
+.ross-social-icons .social-icon--rounded {
+    border-radius: 8px;
+}
+
+/* Plain Style (No Background) */
+.ross-social-icons .social-icon--plain {
+    background: transparent;
+}
+
+.ross-social-icons .social-icon--plain:hover {
+    background: transparent;
+    opacity: 0.7;
+    transform: scale(1.1);
+}
+
+/* Platform-specific hover colors (when not customized) */
+.ross-social-icons .social-icon[data-platform="facebook"]:hover {
+    background: #1877f2;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="twitter"]:hover {
+    background: #000;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="instagram"]:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="linkedin"]:hover {
+    background: #0077b5;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="youtube"]:hover {
+    background: #ff0000;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="pinterest"]:hover {
+    background: #e60023;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="tiktok"]:hover {
+    background: #000;
+    color: #69c9d0;
+}
+
+.ross-social-icons .social-icon[data-platform="github"]:hover {
+    background: #333;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="whatsapp"]:hover {
+    background: #25d366;
+    color: #fff;
+}
+
+.ross-social-icons .social-icon[data-platform="telegram"]:hover {
+    background: #0088cc;
+    color: #fff;
+}
+
+/* Custom Color Override */
+.ross-social-icons .social-icon[style*="--social-color"] {
+    color: var(--social-color);
+}
+
+.ross-social-icons .social-icon[style*="--social-size"] {
+    width: var(--social-size);
+    height: var(--social-size);
+}
+
+.ross-social-icons .social-icon[style*="--social-hover"]:hover {
+    color: var(--social-hover);
+}
+
+/* Footer Copyright Integration */
+.footer-copyright {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem 0;
+}
+
+.footer-copyright .copyright-text {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-copyright .ross-social-icons {
+    flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-copyright {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ross-social-icons {
+        justify-content: center;
+    }
+}
+
+/* Dark Background Adjustment */
+.site-footer[style*="background: #0"] .ross-social-icons .social-icon,
+.site-footer[style*="background:#0"] .ross-social-icons .social-icon {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Light Background Adjustment */
+.site-footer[style*="background: #f"] .ross-social-icons .social-icon,
+.site-footer[style*="background:#f"] .ross-social-icons .social-icon {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+}

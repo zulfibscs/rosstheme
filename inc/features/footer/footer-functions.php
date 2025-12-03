@@ -10,22 +10,21 @@ function ross_theme_get_footer_layout() {
 }
 
 function ross_theme_display_footer() {
-    $layout = ross_theme_get_footer_layout();
+    $footer_options = get_option('ross_theme_footer_options', array());
     
-    switch($layout) {
-        case 'minimal':
-            get_template_part('template-parts/footer/footer-minimal');
-            break;
-        case 'cta':
-            get_template_part('template-parts/footer/footer-cta');
-            break;
-        case 'four-column':
-            // Use the default footer template which supports dynamic columns
-            get_template_part('template-parts/footer/footer-default');
-            break;
-        default:
-            get_template_part('template-parts/footer/footer-default');
-            break;
+    // Get selected template
+    $template_id = $footer_options['footer_template'] ?? 'creative-agency';
+    
+    // Check if template part exists
+    $template_part = 'template-parts/footer/footer-' . $template_id;
+    $template_file = locate_template($template_part . '.php');
+    
+    if ($template_file) {
+        // Use specific template
+        get_template_part('template-parts/footer/footer', $template_id);
+    } else {
+        // Fallback to default
+        get_template_part('template-parts/footer/footer-default');
     }
 }
 
@@ -81,6 +80,17 @@ function ross_theme_should_show_footer_cta() {
     }
 
     return $enabled;
+}
+
+/**
+ * Alias for rosstheme_render_footer_social() for use in footer templates
+ */
+if ( ! function_exists( 'ross_footer_social_icons' ) ) {
+    function ross_footer_social_icons() {
+        if ( function_exists( 'rosstheme_render_footer_social' ) ) {
+            rosstheme_render_footer_social();
+        }
+    }
 }
 
 function ross_theme_should_show_social_icons() {
@@ -245,4 +255,11 @@ function ross_theme_display_footer_cta() {
     }
     // Use get_template_part so developers can override markup in child themes
     get_template_part('template-parts/footer/footer-cta');
+}
+
+/**
+ * Display the footer copyright bar
+ */
+function ross_theme_display_footer_copyright() {
+    get_template_part('template-parts/footer/footer-copyright');
 }

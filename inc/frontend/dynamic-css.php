@@ -338,6 +338,67 @@ function ross_theme_dynamic_css() {
         $align = isset($footer_options['cta_layout_align']) ? $footer_options['cta_layout_align'] : 'center';
         echo '.footer-cta .footer-cta-inner { flex-direction: ' . esc_attr($dir) . ' !important; flex-wrap: ' . esc_attr($wrap) . ' !important; justify-content:' . esc_attr($justify) . ' !important; align-items:' . esc_attr($align) . ' !important; }';
 
+        // NEW CTA Enhancements - Border, Shadow, Typography, Button Hover, Container Width
+        if (isset($footer_options['cta_border_width']) && intval($footer_options['cta_border_width']) > 0) {
+            $border_width = intval($footer_options['cta_border_width']);
+            $border_style = isset($footer_options['cta_border_style']) ? esc_attr($footer_options['cta_border_style']) : 'solid';
+            $border_color = isset($footer_options['cta_border_color']) ? esc_attr($footer_options['cta_border_color']) : '#cccccc';
+            $border_radius = isset($footer_options['cta_border_radius']) ? intval($footer_options['cta_border_radius']) : 0;
+            echo '.footer-cta { border: ' . $border_width . 'px ' . $border_style . ' ' . $border_color . ' !important; border-radius: ' . $border_radius . 'px !important; }';
+        }
+        if (isset($footer_options['cta_box_shadow']) && $footer_options['cta_box_shadow']) {
+            $shadow_color = isset($footer_options['cta_shadow_color']) ? esc_attr($footer_options['cta_shadow_color']) : 'rgba(0,0,0,0.1)';
+            $shadow_blur = isset($footer_options['cta_shadow_blur']) ? intval($footer_options['cta_shadow_blur']) : 10;
+            echo '.footer-cta { box-shadow: 0 4px ' . $shadow_blur . 'px ' . $shadow_color . ' !important; }';
+        }
+        if (isset($footer_options['cta_title_font_size'])) {
+            $title_font_size = intval($footer_options['cta_title_font_size']);
+            echo '.footer-cta .footer-cta-title, .footer-cta h2 { font-size: ' . $title_font_size . 'px !important; }';
+        }
+        if (isset($footer_options['cta_title_font_weight'])) {
+            $title_font_weight = esc_attr($footer_options['cta_title_font_weight']);
+            echo '.footer-cta .footer-cta-title, .footer-cta h2 { font-weight: ' . $title_font_weight . ' !important; }';
+        }
+        if (isset($footer_options['cta_text_font_size'])) {
+            $text_font_size = intval($footer_options['cta_text_font_size']);
+            echo '.footer-cta .footer-cta-text { font-size: ' . $text_font_size . 'px !important; }';
+        }
+        if (isset($footer_options['cta_button_font_size'])) {
+            $button_font_size = intval($footer_options['cta_button_font_size']);
+            echo '.footer-cta .btn { font-size: ' . $button_font_size . 'px !important; }';
+        }
+        if (isset($footer_options['cta_button_font_weight'])) {
+            $button_font_weight = esc_attr($footer_options['cta_button_font_weight']);
+            echo '.footer-cta .btn { font-weight: ' . $button_font_weight . ' !important; }';
+        }
+        if (isset($footer_options['cta_letter_spacing'])) {
+            $letter_spacing = floatval($footer_options['cta_letter_spacing']);
+            echo '.footer-cta .footer-cta-title, .footer-cta h2 { letter-spacing: ' . $letter_spacing . 'px !important; }';
+        }
+        if (isset($footer_options['cta_button_hover_bg']) || isset($footer_options['cta_button_hover_text'])) {
+            $hover_bg = isset($footer_options['cta_button_hover_bg']) ? esc_attr($footer_options['cta_button_hover_bg']) : '';
+            $hover_text = isset($footer_options['cta_button_hover_text']) ? esc_attr($footer_options['cta_button_hover_text']) : '';
+            if (!empty($hover_bg)) {
+                echo '.footer-cta .btn:hover { background: ' . $hover_bg . ' !important; }';
+            }
+            if (!empty($hover_text)) {
+                echo '.footer-cta .btn:hover { color: ' . $hover_text . ' !important; }';
+            }
+        }
+        if (isset($footer_options['cta_button_border_radius'])) {
+            $button_radius = intval($footer_options['cta_button_border_radius']);
+            echo '.footer-cta .btn { border-radius: ' . $button_radius . 'px !important; }';
+        }
+        if (isset($footer_options['cta_container_width'])) {
+            $container_width = esc_attr($footer_options['cta_container_width']);
+            if ($container_width === 'full') {
+                echo '.footer-cta .container { max-width: 100% !important; width: 100% !important; }';
+            } elseif ($container_width === 'custom' && isset($footer_options['cta_max_width'])) {
+                $max_width = intval($footer_options['cta_max_width']);
+                echo '.footer-cta .container { max-width: ' . $max_width . 'px !important; }';
+            }
+        }
+
             // small animations
             if (isset($footer_options['cta_animation']) && $footer_options['cta_animation'] !== 'none') {
             $anim = $footer_options['cta_animation'];
@@ -420,6 +481,38 @@ function ross_theme_dynamic_css() {
     }
     if (!empty($copyright_letter_spacing) || $copyright_letter_spacing === 0) {
         echo '.footer-copyright .copyright-text { letter-spacing: ' . floatval($copyright_letter_spacing) . 'px !important; }';
+    }
+
+    // Social Icons Styling
+    $social_icon_style = isset($footer_options['social_icon_style']) ? $footer_options['social_icon_style'] : 'circle';
+    $social_icon_size = isset($footer_options['social_icon_size']) ? intval($footer_options['social_icon_size']) : 36;
+    $social_icon_color = isset($footer_options['social_icon_color']) ? $footer_options['social_icon_color'] : '';
+    $social_hover_color = isset($footer_options['social_icon_hover_color']) ? $footer_options['social_icon_hover_color'] : '';
+    
+    if (!empty($social_icon_size)) {
+        echo '.ross-social-icons .social-icon { width: ' . esc_attr($social_icon_size) . 'px !important; height: ' . esc_attr($social_icon_size) . 'px !important; }';
+    }
+    
+    if ($social_icon_style === 'circle') {
+        echo '.ross-social-icons .social-icon { border-radius: 50% !important; }';
+    } elseif ($social_icon_style === 'square') {
+        echo '.ross-social-icons .social-icon { border-radius: 0 !important; }';
+    } elseif ($social_icon_style === 'rounded') {
+        echo '.ross-social-icons .social-icon { border-radius: 8px !important; }';
+    } elseif ($social_icon_style === 'plain') {
+        echo '.ross-social-icons .social-icon { background: transparent !important; }';
+    }
+    
+    if (!empty($social_icon_color)) {
+        echo '.ross-social-icons .social-icon { color: ' . esc_attr($social_icon_color) . ' !important; }';
+        if ($social_icon_style !== 'plain') {
+            echo '.ross-social-icons .social-icon { background: rgba(255,255,255,0.1) !important; }';
+        }
+    }
+    
+    if (!empty($social_hover_color)) {
+        echo '.ross-social-icons .social-icon:hover { color: ' . esc_attr($social_hover_color) . ' !important; }';
+        echo '.ross-social-icons .social-icon:hover { background: rgba(255,255,255,0.2) !important; }';
     }
 
     // Custom footer CSS if provided
