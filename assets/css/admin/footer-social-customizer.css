@@ -1,0 +1,24 @@
+/* Basic styles for the footer social customizer repeater (admin) */
+.rosstheme-repeater-wrap { margin-top: .5rem; }
+.rosstheme-repeater-list { border: 1px solid #e5e5e5; padding: .5rem; background: #fff; min-height: 40px; }
+.rosstheme-repeater-item { padding: .5rem; border-bottom: 1px solid #f1f1f1; display:flex; align-items:center; justify-content:space-between; }
+.rosstheme-repeater-item:last-child { border-bottom: none; }
+.rosstheme-repeater-item-main { flex: 1 1 auto; margin-right: .5rem; }
+.rosstheme-repeater-item-actions { flex: 0 0 auto; }
+.rosstheme-repeater-item-actions .button { margin-left: .25rem; }
+.rosstheme-drag-handle { cursor: move; display:inline-block; padding:0 .5rem; margin-right:.5rem; color:#666; }
+.rosstheme-repeater-item:focus { outline: 2px solid #2b7cff; outline-offset: 2px; }
+.rosstheme-drag-handle:focus { outline: 2px dashed #2b7cff; }
+.rosstheme-repeater-item-actions .button { margin-left: 0.25rem; }
+.rosstheme-repeater-up, .rosstheme-repeater-down { width: 32px; padding: 0 4px; }
+.rosstheme-list-preview { display:inline-block; width:36px; height:36px; margin-right:.5rem; vertical-align:middle; }
+.rosstheme-list-preview img { max-width:100%; max-height:100%; display:block; }
+.rosstheme-list-preview .rosstheme-icon { display:block; width:100%; height:100%; }
+.rosstheme-list-preview-empty { background: rgba(0,0,0,0.05); border-radius:4px; }
+.rosstheme-repeater-modal-inner { display:flex; gap:1rem; }
+.rosstheme-modal-left { flex:1 1 60%; }
+.rosstheme-modal-right { flex:0 0 160px; display:flex; align-items:center; justify-content:center; }
+.rosstheme-preview { width:140px; height:140px; border:1px solid #eee; display:flex; align-items:center; justify-content:center; background:#fafafa; }
+.rosstheme-preview img { max-width:100%; max-height:100%; }
+.rosstheme-preview .rosstheme-preview-icon { font-size:48px; display:inline-block; }
+.rosstheme-modal-actions { margin-top:1rem; }

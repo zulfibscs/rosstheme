@@ -1,0 +1,196 @@
+/**
+ * Footer Template Content Styling
+ * Styles for template-based footer layouts
+ */
+
+.footer-template-content {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+}
+
+/* Grid layouts based on column count */
+.footer-grid-1 {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.footer-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.footer-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Column styling */
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-column-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: inherit;
+}
+
+.footer-column-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-column-links li {
+    margin: 0;
+    padding: 0;
+}
+
+.footer-column-links a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+    display: inline-block;
+}
+
+.footer-column-links a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Custom HTML content */
+.footer-column-html {
+    line-height: 1.6;
+}
+
+.footer-column-html p:first-child {
+    margin-top: 0;
+}
+
+.footer-column-html p:last-child {
+    margin-bottom: 0;
+}
+
+/* Social icons in template content */
+.footer-column-social {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.footer-column-social .social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.footer-column-social .social-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.footer-column-social .social-icon i {
+    font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .footer-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-grid-2,
+    .footer-grid-3,
+    .footer-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-template-content {
+        gap: 2.5rem;
+    }
+    
+    .footer-column-title {
+        font-size: 1.25rem;
+    }
+}
+
+/* Template-specific overrides */
+.footer-template-wrapper {
+    /* Container for template-based footer content */
+    position: relative;
+}
+
+/* Integration with existing footer structure */
+.site-footer .footer-template-content {
+    color: inherit;
+}
+
+.site-footer .footer-template-content a {
+    color: inherit;
+}
+
+/* Newsletter/form styling within template content */
+.footer-column-html form {
+    margin-top: 1rem;
+}
+
+.footer-column-html input[type="email"],
+.footer-column-html input[type="text"] {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: inherit;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+
+.footer-column-html input[type="email"]:focus,
+.footer-column-html input[type="text"]:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-column-html button[type="submit"],
+.footer-column-html input[type="submit"] {
+    padding: 0.625rem 1.5rem;
+    background: currentColor;
+    color: var(--footer-bg, #fff);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+}
+
+.footer-column-html button[type="submit"]:hover,
+.footer-column-html input[type="submit"]:hover {
+    opacity: 0.9;
+}
