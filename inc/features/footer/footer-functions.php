@@ -82,17 +82,6 @@ function ross_theme_should_show_footer_cta() {
     return $enabled;
 }
 
-/**
- * Alias for rosstheme_render_footer_social() for use in footer templates
- */
-if ( ! function_exists( 'ross_footer_social_icons' ) ) {
-    function ross_footer_social_icons() {
-        if ( function_exists( 'rosstheme_render_footer_social' ) ) {
-            rosstheme_render_footer_social();
-        }
-    }
-}
-
 function ross_theme_should_show_social_icons() {
     // Prefer Customizer theme_mod if present
     $theme_mod = get_theme_mod( 'footer_social_enable', null );

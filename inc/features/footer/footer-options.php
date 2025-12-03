@@ -383,6 +383,68 @@ class RossFooterOptions {
             ));
             // enqueue preview CSS
             wp_enqueue_style('ross-footer-preview-css', get_template_directory_uri() . '/assets/css/admin/footer-preview.css', array(), '1.0.0');
+            
+            // Add inline script for conditional field display
+            wp_add_inline_script('ross-footer-admin', "
+                jQuery(document).ready(function($) {
+                    // Conditional display for copyright fields
+                    function toggleCopyrightFields() {
+                        var isEnabled = $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').is(':checked');
+                        var copyrightFields = [
+                            'copyright_text', 'copyright_alignment', 'copyright_bg_color', 
+                            'copyright_text_color', 'copyright_font_size', 'copyright_font_weight',
+                            'copyright_letter_spacing', 'copyright_padding_top', 'copyright_padding_bottom',
+                            'copyright_border_top', 'copyright_border_color', 'copyright_border_width',
+                            'copyright_link_color', 'copyright_link_hover_color'
+                        ];
+                        
+                        // Toggle individual copyright fields
+                        copyrightFields.forEach(function(field) {
+                            var row = $('input[name=\"ross_theme_footer_options[' + field + ']\"], textarea[name=\"ross_theme_footer_options[' + field + ']\"], select[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
+                            if (isEnabled) {
+                                row.show();
+                            } else {
+                                row.hide();
+                            }
+                        });
+                        
+                        // Toggle entire Advanced section (collapsible box + all fields)
+                        var advancedSection = $('.ross-collapsible-section');
+                        var advancedFields = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"], textarea[name=\"ross_theme_footer_options[custom_footer_html]\"], textarea[name=\"ross_theme_footer_options[custom_footer_css]\"], textarea[name=\"ross_theme_footer_options[custom_footer_js]\"]').closest('tr');
+                        
+                        if (isEnabled) {
+                            advancedSection.show();
+                            advancedFields.show();
+                        } else {
+                            advancedSection.hide();
+                            advancedFields.hide();
+                        }
+                    }
+                    
+                    // Conditional display for custom footer fields (within Advanced section)
+                    function toggleCustomFooterFields() {
+                        var isEnabled = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').is(':checked');
+                        var customFields = ['custom_footer_html', 'custom_footer_css', 'custom_footer_js'];
+                        
+                        customFields.forEach(function(field) {
+                            var row = $('textarea[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
+                            if (isEnabled) {
+                                row.show();
+                            } else {
+                                row.hide();
+                            }
+                        });
+                    }
+                    
+                    // Initialize on page load
+                    toggleCopyrightFields();
+                    toggleCustomFooterFields();
+                    
+                    // Toggle on change
+                    $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').on('change', toggleCopyrightFields);
+                    $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').on('change', toggleCustomFooterFields);
+                });
+            ");
         }
     }
     
@@ -1402,6 +1464,55 @@ class RossFooterOptions {
             'ross-theme-footer-copyright',
             'ross_footer_copyright_styling'
         );
+        add_settings_field(
+            'copyright_padding_top',
+            'Padding Top (px)',
+            array($this, 'copyright_padding_top_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_padding_bottom',
+            'Padding Bottom (px)',
+            array($this, 'copyright_padding_bottom_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_border_top',
+            'Top Border',
+            array($this, 'copyright_border_top_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_border_color',
+            'Border Color',
+            array($this, 'copyright_border_color_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_border_width',
+            'Border Width (px)',
+            array($this, 'copyright_border_width_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_link_color',
+            'Link Color',
+            array($this, 'copyright_link_color_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
+        add_settings_field(
+            'copyright_link_hover_color',
+            'Link Hover Color',
+            array($this, 'copyright_link_hover_color_callback'),
+            'ross-theme-footer-copyright',
+            'ross_footer_copyright_styling'
+        );
 
         // Custom footer area inside copyright/tab so it's easy to find
         // Advanced / Custom
@@ -1478,7 +1589,7 @@ class RossFooterOptions {
     }
     
     public function copyright_section_callback() {
-        echo '<p>Customize the copyright bar at the bottom.</p>';
+        // No description needed
     }
 
     public function template_diagnostics_callback() {
@@ -1595,14 +1706,16 @@ class RossFooterOptions {
     public function use_template_content_callback() {
         $checked = isset($this->options['use_template_content']) ? intval($this->options['use_template_content']) : 0;
         ?>
-        <label>
-            <input type="checkbox" name="ross_theme_footer_options[use_template_content]" value="1" <?php checked($checked, 1); ?> />
-            Display template content on frontend
-        </label>
-        <p class="description">
-            When enabled, your footer will show the content from the selected template above (columns, links, text).<br>
-            When disabled, your footer will display WordPress widget areas (configured in Appearance → Widgets).
-        </p>
+        <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #2271b1; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                <input type="checkbox" name="ross_theme_footer_options[use_template_content]" value="1" <?php checked($checked, 1); ?> />
+                <span>Use Template Content</span>
+            </label>
+            <p class="description" style="margin: 10px 0 0 0; padding-left: 30px;">
+                <strong>✓ Checked:</strong> Footer displays the selected template design above<br>
+                <strong>✗ Unchecked:</strong> Footer displays WordPress widget areas (Appearance → Widgets)
+            </p>
+        </div>
         <?php
     }
 
@@ -2919,16 +3032,26 @@ class RossFooterOptions {
     public function enable_copyright_callback() {
         $value = isset($this->options['enable_copyright']) ? $this->options['enable_copyright'] : 1;
         ?>
-        <input type="checkbox" name="ross_theme_footer_options[enable_copyright]" value="1" <?php checked(1, $value); ?> />
-        <label for="enable_copyright">Show copyright bar</label>
+        <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #2271b1; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
+                <input type="checkbox" name="ross_theme_footer_options[enable_copyright]" value="1" <?php checked(1, $value); ?> />
+                <span>Show Copyright Bar</span>
+            </label>
+            <p class="description" style="margin: 10px 0 0 30px;">
+                Display the copyright information at the bottom of your footer.
+            </p>
+        </div>
         <?php
     }
     
     public function copyright_text_callback() {
-        $value = isset($this->options['copyright_text']) ? $this->options['copyright_text'] : '© ' . date('Y') . ' ROSS MCKINLEY ACCOUNTANTS LTD. All Rights Reserved.';
+        $value = isset($this->options['copyright_text']) ? $this->options['copyright_text'] : '© ' . date('Y') . ' ' . get_bloginfo('name') . '. All Rights Reserved.';
         ?>
-        <textarea name="ross_theme_footer_options[copyright_text]" rows="3" class="large-text"><?php echo esc_textarea($value); ?></textarea>
-        <p class="description">Use {year} and {site_name} placeholders to keep the text dynamic. Links are allowed (<a> tags).</p>
+        <textarea name="ross_theme_footer_options[copyright_text]" rows="3" class="large-text" style="font-family: monospace;"><?php echo esc_textarea($value); ?></textarea>
+        <p class="description">
+            Use <code>{year}</code> and <code>{site_name}</code> as placeholders. 
+            For links: <code>&lt;a href="/privacy"&gt;Privacy Policy&lt;/a&gt;</code>
+        </p>
         <?php
     }
     
@@ -2960,7 +3083,11 @@ class RossFooterOptions {
     // New: Font size callback
     public function copyright_font_size_callback() {
         $v = isset($this->options['copyright_font_size']) ? intval($this->options['copyright_font_size']) : 14;
-        echo '<input type="number" name="ross_theme_footer_options[copyright_font_size]" value="' . esc_attr($v) . '" class="small-text" /> px';
+        ?>
+        <input type="range" name="ross_theme_footer_options[copyright_font_size]" min="10" max="24" value="<?php echo esc_attr($v); ?>" class="ross-range-slider" data-target="copyright-font-size-value" style="width: 200px;" />
+        <span id="copyright-font-size-value" class="ross-range-value"><?php echo esc_html($v); ?>px</span>
+        <p class="description">Adjust the font size of copyright text.</p>
+        <?php
     }
 
     // New: Font weight callback
@@ -2979,6 +3106,79 @@ class RossFooterOptions {
     public function copyright_letter_spacing_callback() {
         $v = isset($this->options['copyright_letter_spacing']) ? floatval($this->options['copyright_letter_spacing']) : 0;
         echo '<input type="number" step="0.1" name="ross_theme_footer_options[copyright_letter_spacing]" value="' . esc_attr($v) . '" class="small-text" /> px';
+        echo '<p class="description">Spacing between letters. Positive values spread out text, negative brings it closer.</p>';
+    }
+
+    // New: Padding Top
+    public function copyright_padding_top_callback() {
+        $v = isset($this->options['copyright_padding_top']) ? intval($this->options['copyright_padding_top']) : 20;
+        ?>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <input type="range" name="ross_theme_footer_options[copyright_padding_top]" min="0" max="100" value="<?php echo esc_attr($v); ?>" class="ross-range-slider" data-target="copyright-padding-top-value" style="width: 250px;" oninput="document.getElementById('copyright-padding-top-value').textContent = this.value + 'px'" />
+            <span id="copyright-padding-top-value" class="ross-range-value" style="min-width: 50px; font-weight: 600; color: #2271b1;"><?php echo esc_html($v); ?>px</span>
+        </div>
+        <p class="description">Space above the copyright text (controls top height).</p>
+        <?php
+    }
+
+    // New: Padding Bottom
+    public function copyright_padding_bottom_callback() {
+        $v = isset($this->options['copyright_padding_bottom']) ? intval($this->options['copyright_padding_bottom']) : 20;
+        ?>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <input type="range" name="ross_theme_footer_options[copyright_padding_bottom]" min="0" max="100" value="<?php echo esc_attr($v); ?>" class="ross-range-slider" data-target="copyright-padding-bottom-value" style="width: 250px;" oninput="document.getElementById('copyright-padding-bottom-value').textContent = this.value + 'px'" />
+            <span id="copyright-padding-bottom-value" class="ross-range-value" style="min-width: 50px; font-weight: 600; color: #2271b1;"><?php echo esc_html($v); ?>px</span>
+        </div>
+        <p class="description">Space below the copyright text (controls bottom height).</p>
+        <?php
+    }
+
+    // New: Border Top Enable
+    public function copyright_border_top_callback() {
+        $v = isset($this->options['copyright_border_top']) ? $this->options['copyright_border_top'] : 0;
+        ?>
+        <label>
+            <input type="checkbox" name="ross_theme_footer_options[copyright_border_top]" value="1" <?php checked(1, $v); ?> />
+            Enable top border line
+        </label>
+        <p class="description">Adds a decorative border line above the copyright bar.</p>
+        <?php
+    }
+
+    // New: Border Color
+    public function copyright_border_color_callback() {
+        $v = isset($this->options['copyright_border_color']) ? $this->options['copyright_border_color'] : '#333333';
+        ?>
+        <input type="text" name="ross_theme_footer_options[copyright_border_color]" value="<?php echo esc_attr($v); ?>" class="color-picker" data-default-color="#333333" />
+        <p class="description">Color of the top border (only visible when border is enabled).</p>
+        <?php
+    }
+
+    // New: Border Width
+    public function copyright_border_width_callback() {
+        $v = isset($this->options['copyright_border_width']) ? intval($this->options['copyright_border_width']) : 1;
+        ?>
+        <input type="number" name="ross_theme_footer_options[copyright_border_width]" value="<?php echo esc_attr($v); ?>" class="small-text" min="1" max="10" /> px
+        <p class="description">Thickness of the top border line.</p>
+        <?php
+    }
+
+    // New: Link Color
+    public function copyright_link_color_callback() {
+        $v = isset($this->options['copyright_link_color']) ? $this->options['copyright_link_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_footer_options[copyright_link_color]" value="<?php echo esc_attr($v); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Color for links in the copyright text. Leave empty to use text color.</p>
+        <?php
+    }
+
+    // New: Link Hover Color
+    public function copyright_link_hover_color_callback() {
+        $v = isset($this->options['copyright_link_hover_color']) ? $this->options['copyright_link_hover_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_footer_options[copyright_link_hover_color]" value="<?php echo esc_attr($v); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Color for links on hover. Leave empty to use default hover effect.</p>
+        <?php
     }
 
     // New: Custom Footer CSS
@@ -2995,16 +3195,53 @@ class RossFooterOptions {
 
     // Section callbacks for the new sections
     public function copyright_visibility_section_callback() {
-        echo '<p>Show or hide the copyright and control its alignment.</p>';
+        echo '<div style="background: #f0f8ff; padding: 12px; border-left: 4px solid #2271b1; margin-bottom: 15px;">';
+        echo '<strong>⚙️ Visibility Controls</strong>';
+        echo '<p style="margin: 8px 0 0 0;">Show or hide the copyright bar and control text alignment.</p>';
+        echo '</div>';
     }
     public function copyright_content_section_callback() {
-        echo '<p>Customize the copyright text and use placeholders {year} and {site_name}.</p>';
+        echo '<div style="background: #fff9e6; padding: 12px; border-left: 4px solid #f59e0b; margin-bottom: 15px;">';
+        echo '<strong>📝 Content Settings</strong>';
+        echo '<p style="margin: 8px 0 0 0;">Customize the copyright text. Use <code>{year}</code> for auto-updating year and <code>{site_name}</code> for site name. HTML links are supported.</p>';
+        echo '</div>';
     }
     public function copyright_styling_section_callback() {
-        echo '<p>Styling options for the copyright bar: colors, font and spacing.</p>';
+        echo '<div style="background: #f3e8ff; padding: 12px; border-left: 4px solid #9333ea; margin-bottom: 15px;">';
+        echo '<strong>🎨 Styling Options</strong>';
+        echo '<p style="margin: 8px 0 0 0;">Complete visual control: colors, typography, spacing, borders and link colors.</p>';
+        echo '</div>';
     }
     public function copyright_advanced_section_callback() {
-        echo '<p>Advanced options for the copyright area including custom HTML/CSS/JS.</p>';
+        ?>
+        <div class="ross-collapsible-section" style="background: #fee2e2; border-left: 4px solid #dc2626; margin-bottom: 15px;">
+            <div class="ross-collapsible-header" onclick="rossToggleCollapsible(this)" style="padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <strong>⚡ Advanced Options</strong>
+                    <p style="margin: 8px 0 0 0; font-weight: normal; color: #666;">For developers: custom HTML, CSS, and JavaScript</p>
+                </div>
+                <span class="dashicons dashicons-arrow-down-alt2" style="transition: transform 0.3s;"></span>
+            </div>
+            <div class="ross-collapsible-content" style="display: none; padding: 12px; background: #fff; border-top: 1px solid #dc2626;">
+                <p style="margin: 0 0 10px 0; color: #666; font-size: 13px;">
+                    <strong>⚠️ Warning:</strong> These are advanced settings for developers. Improper code may break your site. Use with caution.
+                </p>
+            </div>
+        </div>
+        <script>
+        function rossToggleCollapsible(header) {
+            var content = header.nextElementSibling;
+            var arrow = header.querySelector('.dashicons');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+        </script>
+        <?php
     }
     
     // Sanitization
@@ -3250,6 +3487,13 @@ class RossFooterOptions {
         $allowed_weights = array('light','normal','bold');
         $sanitized['copyright_font_weight'] = isset($input['copyright_font_weight']) && in_array($input['copyright_font_weight'], $allowed_weights) ? sanitize_text_field($input['copyright_font_weight']) : 'normal';
         $sanitized['copyright_letter_spacing'] = isset($input['copyright_letter_spacing']) ? floatval($input['copyright_letter_spacing']) : 0;
+        $sanitized['copyright_padding_top'] = isset($input['copyright_padding_top']) ? absint($input['copyright_padding_top']) : 20;
+        $sanitized['copyright_padding_bottom'] = isset($input['copyright_padding_bottom']) ? absint($input['copyright_padding_bottom']) : 20;
+        $sanitized['copyright_border_top'] = isset($input['copyright_border_top']) ? 1 : 0;
+        $sanitized['copyright_border_color'] = isset($input['copyright_border_color']) ? sanitize_hex_color($input['copyright_border_color']) : '#333333';
+        $sanitized['copyright_border_width'] = isset($input['copyright_border_width']) ? absint($input['copyright_border_width']) : 1;
+        $sanitized['copyright_link_color'] = isset($input['copyright_link_color']) ? sanitize_hex_color($input['copyright_link_color']) : '';
+        $sanitized['copyright_link_hover_color'] = isset($input['copyright_link_hover_color']) ? sanitize_hex_color($input['copyright_link_hover_color']) : '';
         // Advanced: custom CSS / JS
         $sanitized['custom_footer_css'] = isset($input['custom_footer_css']) ? wp_strip_all_tags($input['custom_footer_css']) : '';
         $sanitized['custom_footer_js'] = isset($input['custom_footer_js']) ? wp_strip_all_tags($input['custom_footer_js']) : '';

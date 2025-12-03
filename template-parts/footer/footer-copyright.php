@@ -1,36 +1,48 @@
 <?php
 /**
  * Footer Copyright Bar
- * Displays copyright text and optional links
+ * Displays copyright text with full styling control
+ * Also handles custom footer HTML/CSS/JS output
  */
 
 $footer_options = get_option('ross_theme_footer_options', array());
+$show_copyright = isset($footer_options['enable_copyright']) ? (bool) $footer_options['enable_copyright'] : true;
+$show_custom_footer = !empty($footer_options['enable_custom_footer']);
 
-// Check if copyright should be displayed
-if (!ross_theme_should_show_copyright()) {
+// If neither copyright nor custom footer is enabled, don't render anything
+if (!$show_copyright && !$show_custom_footer) {
     return;
 }
 
-$copyright_text = $footer_options['copyright_text'] ?? '&copy; ' . date('Y') . ' ' . get_bloginfo('name') . '. All rights reserved.';
-$copyright_bg = $footer_options['copyright_bg'] ?? '#000000';
+// Get copyright settings
+$copyright_text = ross_theme_get_copyright_text();
+$copyright_bg = $footer_options['copyright_bg'] ?? $footer_options['copyright_bg_color'] ?? '#000000';
 $copyright_text_color = $footer_options['copyright_text_color'] ?? '#ffffff';
 $copyright_alignment = $footer_options['copyright_alignment'] ?? 'center';
-?>
+$container_width = $footer_options['footer_width'] ?? 'boxed';
 
+// Render copyright bar if enabled
+if ($show_copyright) {
+?>
 <div class="footer-copyright" style="background-color: <?php echo esc_attr($copyright_bg); ?>; color: <?php echo esc_attr($copyright_text_color); ?>; text-align: <?php echo esc_attr($copyright_alignment); ?>;">
-    <div class="<?php echo esc_attr($footer_options['footer_width'] === 'full' ? 'container-fluid' : 'container'); ?>">
+    <div class="<?php echo esc_attr($container_width === 'full' ? 'container-fluid' : 'container'); ?>">
         <div class="copyright-content">
             <?php echo wp_kses_post($copyright_text); ?>
         </div>
+        
+        <?php 
+        // Render custom footer HTML inside copyright container
+        if ($show_custom_footer && !empty($footer_options['custom_footer_html'])) {
+            echo '<div class="site-footer-custom">' . wp_kses_post($footer_options['custom_footer_html']) . '</div>';
+        }
+        ?>
     </div>
 </div>
+<?php
+}
 
-<style>
-.footer-copyright {
-    padding: 20px 0;
-    font-size: 0.9rem;
+// Output custom footer JavaScript if enabled
+if ($show_custom_footer && !empty($footer_options['custom_footer_js'])) {
+    echo '<script>' . $footer_options['custom_footer_js'] . '</script>';
 }
-.footer-copyright .copyright-content {
-    opacity: 0.85;
-}
-</style>
+?>

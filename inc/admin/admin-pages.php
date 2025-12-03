@@ -393,22 +393,12 @@ function ross_theme_footer_page() {
             <form method="post" action="options.php" class="ross-form-tabbed ross-settings-form">
                 <?php settings_fields('ross_theme_footer_group'); ?>
 
-                <div class="ross-tab-content active" id="tab-layout">
-                    <div class="ross-section-header">
-                        <div class="ross-section-title">
-                            <h2>🏗️ Footer Layout & Template</h2>
-                            <p class="ross-section-desc">Choose your footer template and configure layout options</p>
-                        </div>
-                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('layout')">
-                            <span class="dashicons dashicons-image-rotate"></span> Reset Section
-                        </button>
-                    </div>
-                    <div class="ross-single-column">
-                        <?php do_settings_sections('ross-theme-footer-layout'); ?>
-                    </div>
+            <div class="ross-tab-content active" id="tab-layout">
+                
+                <div class="ross-single-column">
+                    <?php do_settings_sections('ross-theme-footer-layout'); ?>
                 </div>
-
-                <div class="ross-tab-content" id="tab-styling">
+            </div>                <div class="ross-tab-content" id="tab-styling">
                     <div class="ross-section-header">
                         <div class="ross-section-title">
                             <h2>🎨 Footer Styling</h2>
@@ -576,15 +566,7 @@ function ross_theme_footer_page() {
                 </div>
 
                 <div class="ross-tab-content" id="tab-copyright">
-                    <div class="ross-section-header">
-                        <div class="ross-section-title">
-                            <h2>© Copyright Information</h2>
-                            <p class="ross-section-desc">Add copyright notice and legal information</p>
-                        </div>
-                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('copyright')">
-                            <span class="dashicons dashicons-image-rotate"></span> Reset Section
-                        </button>
-                    </div>
+                    
                     <div class="ross-split-layout">
                         <div class="ross-settings-column">
                             <?php do_settings_sections('ross-theme-footer-copyright'); ?>

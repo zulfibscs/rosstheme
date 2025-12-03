@@ -102,10 +102,22 @@ if ( ! function_exists( 'rosstheme_render_footer_social' ) ) {
                     data-platform="<?php echo esc_attr( $link['platform'] ); ?>"
                     <?php if ( ! empty( $inline_style ) ): ?>style="<?php echo $inline_style; ?>"<?php endif; ?>
                 >
-                    <i class="<?php echo esc_attr( $link['icon'] ); ?>"></i>
-                </a>
-            <?php endforeach; ?>
-        </div>
-        <?php
+                <i class="<?php echo esc_attr( $link['icon'] ); ?>"></i>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <?php
+    }
+}
+
+/**
+ * Alias function for backward compatibility
+ * Renders footer social media icons
+ * 
+ * @since 1.0.0
+ */
+if (!function_exists('ross_footer_social_icons')) {
+    function ross_footer_social_icons() {
+        rosstheme_render_footer_social();
     }
 }

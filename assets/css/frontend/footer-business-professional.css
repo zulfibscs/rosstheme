@@ -1,0 +1,203 @@
+/**
+ * Footer Business Professional Template Styles
+ * Dynamic template with CTA, columns, social icons, and copyright
+ */
+
+/* ====================================
+   FOOTER MAIN STRUCTURE
+   ==================================== */
+.footer-business-professional {
+    padding: 60px 0 30px;
+}
+
+.footer-business-professional .footer-main {
+    width: 100%;
+}
+
+/* ====================================
+   COLUMN GRID LAYOUTS
+   ==================================== */
+.footer-business-professional .footer-columns {
+    display: grid;
+    gap: 30px;
+    margin-bottom: 0;
+}
+
+.footer-business-professional .footer-columns-1 { 
+    grid-template-columns: 1fr; 
+}
+
+.footer-business-professional .footer-columns-2 { 
+    grid-template-columns: repeat(2, 1fr); 
+}
+
+.footer-business-professional .footer-columns-3 { 
+    grid-template-columns: repeat(3, 1fr); 
+}
+
+.footer-business-professional .footer-columns-4 { 
+    grid-template-columns: repeat(4, 1fr); 
+}
+
+/* ====================================
+   COLUMN STYLING
+   ==================================== */
+.footer-business-professional .footer-column {
+    min-width: 0; /* Prevent grid overflow */
+}
+
+.footer-business-professional .footer-column-title,
+.footer-business-professional .widget-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1.25rem;
+    color: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.footer-business-professional .footer-column-content {
+    line-height: 1.6;
+    opacity: 0.85;
+}
+
+/* ====================================
+   COLUMN LISTS & LINKS
+   ==================================== */
+.footer-business-professional .footer-column-list,
+.footer-business-professional .widget ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-business-professional .footer-column-list li,
+.footer-business-professional .widget ul li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-business-professional .footer-column-list a,
+.footer-business-professional .widget a {
+    color: inherit;
+    opacity: 0.8;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.footer-business-professional .footer-column-list a:hover,
+.footer-business-professional .widget a:hover {
+    opacity: 1;
+    transform: translateX(5px);
+    color: var(--footer-accent-color, #3498db);
+}
+
+/* ====================================
+   SOCIAL ICONS IN COLUMN
+   ==================================== */
+.footer-business-professional .footer-column-social,
+.footer-business-professional .footer-widget-social {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-business-professional .footer-column-social .footer-social,
+.footer-business-professional .footer-widget-social .footer-social {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.footer-business-professional .footer-column-social .footer-social a,
+.footer-business-professional .footer-widget-social .footer-social a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: inherit;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: none;
+}
+
+.footer-business-professional .footer-column-social .footer-social a:hover,
+.footer-business-professional .footer-widget-social .footer-social a:hover {
+    background: var(--footer-accent-color, #3498db);
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+/* ====================================
+   WIDGET AREA STYLING
+   ==================================== */
+.footer-business-professional .footer-widget-area .widget {
+    margin-bottom: 0;
+}
+
+.footer-business-professional .footer-widget-area .widget:last-child {
+    margin-bottom: 0;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+@media (max-width: 992px) {
+    .footer-business-professional .footer-columns-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-business-professional .footer-columns-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-business-professional {
+        padding: 40px 0 20px;
+    }
+    
+    .footer-business-professional .footer-columns-2,
+    .footer-business-professional .footer-columns-3,
+    .footer-business-professional .footer-columns-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-business-professional .footer-columns {
+        gap: 25px;
+    }
+}
+
+/* ====================================
+   DARK THEME OPTIMIZATION
+   ==================================== */
+.footer-business-professional.footer-dark .footer-column-social,
+.footer-business-professional.footer-dark .footer-widget-social {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ====================================
+   LIGHT THEME OPTIMIZATION
+   ==================================== */
+.footer-business-professional.footer-light .footer-column-social,
+.footer-business-professional.footer-light .footer-widget-social {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.footer-business-professional.footer-light .footer-column-social .footer-social a,
+.footer-business-professional.footer-light .footer-widget-social .footer-social a {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ====================================
+   CUSTOM ACCENT COLOR SUPPORT
+   ==================================== */
+.footer-business-professional {
+    --footer-accent-color: #3498db;
+}
+
+/* This will be overridden by inline styles from dynamic CSS */

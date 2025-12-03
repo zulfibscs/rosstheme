@@ -221,6 +221,11 @@ function ross_theme_dynamic_css() {
             echo '.site-footer a { color: ' . esc_attr($accent) . ' !important; }';
         }
 
+        // Set CSS variable for accent color (used by templates for hover effects)
+        if (!empty($accent)) {
+            echo '.site-footer, .footer-business-professional { --footer-accent-color: ' . esc_attr($accent) . ' !important; }';
+        }
+
         if (!empty($social)) {
             echo '.site-footer .social-icon { color: ' . esc_attr($social) . ' !important; }';
         }
@@ -465,22 +470,42 @@ function ross_theme_dynamic_css() {
     $copyright_bg = isset($footer_options['copyright_bg_color']) ? sanitize_hex_color($footer_options['copyright_bg_color']) : '';
     $copyright_text_color = isset($footer_options['copyright_text_color']) ? sanitize_hex_color($footer_options['copyright_text_color']) : '';
     $copyright_alignment = isset($footer_options['copyright_alignment']) ? esc_attr($footer_options['copyright_alignment']) : 'center';
+    $copyright_padding_top = isset($footer_options['copyright_padding_top']) ? intval($footer_options['copyright_padding_top']) : 20;
+    $copyright_padding_bottom = isset($footer_options['copyright_padding_bottom']) ? intval($footer_options['copyright_padding_bottom']) : 20;
+    $copyright_border_top = isset($footer_options['copyright_border_top']) ? (bool)$footer_options['copyright_border_top'] : false;
+    $copyright_border_color = isset($footer_options['copyright_border_color']) ? sanitize_hex_color($footer_options['copyright_border_color']) : '#333333';
+    $copyright_border_width = isset($footer_options['copyright_border_width']) ? intval($footer_options['copyright_border_width']) : 1;
+    $copyright_link_color = isset($footer_options['copyright_link_color']) ? sanitize_hex_color($footer_options['copyright_link_color']) : '';
+    $copyright_link_hover_color = isset($footer_options['copyright_link_hover_color']) ? sanitize_hex_color($footer_options['copyright_link_hover_color']) : '';
+    
     if (!empty($copyright_bg)) {
         echo '.footer-copyright { background-color: ' . esc_attr($copyright_bg) . ' !important; }';
     }
     if (!empty($copyright_text_color)) {
-        echo '.footer-copyright, .footer-copyright .copyright-text { color: ' . esc_attr($copyright_text_color) . ' !important; }';
+        echo '.footer-copyright, .footer-copyright .copyright-content { color: ' . esc_attr($copyright_text_color) . ' !important; }';
     }
     if (!empty($copyright_font_size)) {
-        echo '.footer-copyright .copyright-text { font-size: ' . intval($copyright_font_size) . 'px !important; }';
+        echo '.footer-copyright .copyright-content { font-size: ' . intval($copyright_font_size) . 'px !important; }';
     }
     if (!empty($copyright_font_weight)) {
         $map = array('light' => '300', 'normal' => '400', 'bold' => '700');
         $fw = isset($map[$copyright_font_weight]) ? $map[$copyright_font_weight] : '400';
-        echo '.footer-copyright .copyright-text { font-weight: ' . esc_attr($fw) . ' !important; }';
+        echo '.footer-copyright .copyright-content { font-weight: ' . esc_attr($fw) . ' !important; }';
     }
-    if (!empty($copyright_letter_spacing) || $copyright_letter_spacing === 0) {
-        echo '.footer-copyright .copyright-text { letter-spacing: ' . floatval($copyright_letter_spacing) . 'px !important; }';
+    if ($copyright_letter_spacing !== '' && $copyright_letter_spacing !== null) {
+        echo '.footer-copyright .copyright-content { letter-spacing: ' . floatval($copyright_letter_spacing) . 'px !important; }';
+    }
+    if ($copyright_padding_top >= 0 || $copyright_padding_bottom >= 0) {
+        echo '.footer-copyright { padding-top: ' . intval($copyright_padding_top) . 'px !important; padding-bottom: ' . intval($copyright_padding_bottom) . 'px !important; }';
+    }
+    if ($copyright_border_top && !empty($copyright_border_color) && $copyright_border_width > 0) {
+        echo '.footer-copyright { border-top: ' . intval($copyright_border_width) . 'px solid ' . esc_attr($copyright_border_color) . ' !important; }';
+    }
+    if (!empty($copyright_link_color)) {
+        echo '.footer-copyright a { color: ' . esc_attr($copyright_link_color) . ' !important; }';
+    }
+    if (!empty($copyright_link_hover_color)) {
+        echo '.footer-copyright a:hover { color: ' . esc_attr($copyright_link_hover_color) . ' !important; }';
     }
 
     // Social Icons Styling
