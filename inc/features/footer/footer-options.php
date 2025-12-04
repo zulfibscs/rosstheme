@@ -395,10 +395,10 @@ class RossFooterOptions {
                             'copyright_text_color', 'copyright_font_size', 'copyright_font_weight',
                             'copyright_letter_spacing', 'copyright_padding_top', 'copyright_padding_bottom',
                             'copyright_border_top', 'copyright_border_color', 'copyright_border_width',
-                            'copyright_link_color', 'copyright_link_hover_color'
+                            'copyright_link_color', 'copyright_link_hover_color',
+                            'enable_custom_footer', 'custom_footer_html', 'custom_footer_css', 'custom_footer_js'
                         ];
                         
-                        // Toggle individual copyright fields
                         copyrightFields.forEach(function(field) {
                             var row = $('input[name=\"ross_theme_footer_options[' + field + ']\"], textarea[name=\"ross_theme_footer_options[' + field + ']\"], select[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
                             if (isEnabled) {
@@ -407,21 +407,9 @@ class RossFooterOptions {
                                 row.hide();
                             }
                         });
-                        
-                        // Toggle entire Advanced section (collapsible box + all fields)
-                        var advancedSection = $('.ross-collapsible-section');
-                        var advancedFields = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"], textarea[name=\"ross_theme_footer_options[custom_footer_html]\"], textarea[name=\"ross_theme_footer_options[custom_footer_css]\"], textarea[name=\"ross_theme_footer_options[custom_footer_js]\"]').closest('tr');
-                        
-                        if (isEnabled) {
-                            advancedSection.show();
-                            advancedFields.show();
-                        } else {
-                            advancedSection.hide();
-                            advancedFields.hide();
-                        }
                     }
                     
-                    // Conditional display for custom footer fields (within Advanced section)
+                    // Conditional display for custom footer fields
                     function toggleCustomFooterFields() {
                         var isEnabled = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').is(':checked');
                         var customFields = ['custom_footer_html', 'custom_footer_css', 'custom_footer_js'];
@@ -813,45 +801,42 @@ class RossFooterOptions {
     private function add_layout_section() {
         add_settings_section(
             'ross_footer_layout_section',
-            '🧱 Footer Layout',
+            '🎨 Choose Footer Design',
             array($this, 'layout_section_callback'),
             'ross-theme-footer-layout'
         );
         
-        // Footer Style option removed: layout selection handled by theme templates.
-
-        
         add_settings_field(
             'footer_template',
-            'Footer Template',
+            'Select Template',
             array($this, 'footer_template_callback'),
             'ross-theme-footer-layout',
             'ross_footer_layout_section'
         );
         
         add_settings_field(
-            'use_template_content',
-            'Use Template Content',
-            array($this, 'use_template_content_callback'),
+            'footer_columns',
+            'Number of Columns',
+            array($this, 'footer_columns_callback'),
             'ross-theme-footer-layout',
             'ross_footer_layout_section'
         );
         
         add_settings_field(
-            'footer_columns',
-            'Footer Columns',
-            array($this, 'footer_columns_callback'),
-            'ross-theme-footer-layout',
-            'ross_footer_layout_section'
-        );        add_settings_field(
             'footer_width',
-            'Footer Width',
+            'Container Width',
             array($this, 'footer_width_callback'),
             'ross-theme-footer-layout',
             'ross_footer_layout_section'
         );
         
-        
+        add_settings_field(
+            'use_template_content',
+            'Widget Areas',
+            array($this, 'use_template_content_callback'),
+            'ross-theme-footer-layout',
+            'ross_footer_layout_section'
+        );
     }
     
     private function add_widgets_section() {
@@ -1548,7 +1533,7 @@ class RossFooterOptions {
     
     // Section Callbacks
     public function layout_section_callback() {
-        echo '<p>Control the overall structure and layout of your footer.</p>';
+        echo '<p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">Select a pre-designed footer template and customize it to match your brand. Changes apply instantly.</p>';
     }
     
     public function widgets_section_callback() {
@@ -1630,6 +1615,12 @@ class RossFooterOptions {
         $first_key = isset($template_keys[0]) ? $template_keys[0] : 'business-professional';
         $value = isset($this->options['footer_template']) && isset($templates[$this->options['footer_template']]) ? $this->options['footer_template'] : $first_key;
         ?>
+        <div style="background: #f0f6fc; border: 1px solid #0969da; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+            <p style="margin: 0; color: #0969da; font-size: 14px;">
+                <strong>📋 How it works:</strong> Choose a footer design below → Click Apply → Your footer updates instantly. A backup is automatically created.
+            </p>
+        </div>
+
         <div class="ross-footer-templates">
             <?php
             foreach ($templates as $id => $tpl) {
@@ -1658,11 +1649,16 @@ class RossFooterOptions {
             ?>
         </div>
 
-        <div class="ross-template-actions">
-            <button type="button" class="button" id="ross-preview-template">👁️ Preview Selected Template</button>
-            <button type="button" class="button button-primary" id="ross-apply-template">✅ Apply Template</button>
-            <button type="button" class="button" id="ross-sync-templates">🔄 Sync Templates</button>
-            <span class="description">Preview first, then click Apply to update your footer with the selected template.</span>
+        <div class="ross-template-actions" style="margin-top: 20px; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px;">
+            <button type="button" class="button button-large" id="ross-preview-template" style="margin-right: 10px;">
+                <span class="dashicons dashicons-visibility" style="vertical-align: middle;"></span> Preview
+            </button>
+            <button type="button" class="button button-primary button-large" id="ross-apply-template">
+                <span class="dashicons dashicons-saved" style="vertical-align: middle;"></span> Apply Template
+            </button>
+            <p class="description" style="margin: 10px 0 0 0; color: #666;">
+                Click Preview to see how the template looks, then Apply to use it on your site.
+            </p>
         </div>
 
         <div id="ross-template-preview" style="display:none;"></div>
@@ -1675,14 +1671,21 @@ class RossFooterOptions {
             }
             ?>
         </div>
-        
-        <!-- Sync modal container -->
-        <div id="ross-sync-modal" style="display:none;"></div>
 
-        <div id="ross-footer-backups" style="margin-top:1rem;">
-            <h4>Recent Footer Backups</h4>
-            <?php echo $this->render_backups_list_html(); ?>
-        </div>
+        <?php 
+        $backups = $this->get_backups();
+        if (!empty($backups)):
+        ?>
+        <details style="margin-top: 25px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 6px;">
+            <summary style="cursor: pointer; font-weight: 600; color: #2271b1; padding: 5px 0;">
+                <span class="dashicons dashicons-backup" style="vertical-align: middle;"></span> 
+                Recent Backups (<?php echo count($backups); ?>)
+            </summary>
+            <div id="ross-footer-backups" style="margin-top: 15px;">
+                <?php echo $this->render_backups_list_html(); ?>
+            </div>
+        </details>
+        <?php endif; ?>
 
         <!-- Confirmation modal -->
         <div id="ross-confirm-modal" style="display:none;">
@@ -1701,19 +1704,16 @@ class RossFooterOptions {
 
     /**
      * Callback for use_template_content toggle
-     * When enabled, displays template content instead of WordPress widget areas
+     * Simplified: Auto-enabled when template is applied
      */
     public function use_template_content_callback() {
-        $checked = isset($this->options['use_template_content']) ? intval($this->options['use_template_content']) : 0;
+        $checked = isset($this->options['use_template_content']) ? intval($this->options['use_template_content']) : 1;
         ?>
-        <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #2271b1; margin-bottom: 10px;">
-            <label style="display: flex; align-items: center; gap: 10px; font-weight: 500;">
-                <input type="checkbox" name="ross_theme_footer_options[use_template_content]" value="1" <?php checked($checked, 1); ?> />
-                <span>Use Template Content</span>
-            </label>
-            <p class="description" style="margin: 10px 0 0 0; padding-left: 30px;">
-                <strong>✓ Checked:</strong> Footer displays the selected template design above<br>
-                <strong>✗ Unchecked:</strong> Footer displays WordPress widget areas (Appearance → Widgets)
+        <input type="hidden" name="ross_theme_footer_options[use_template_content]" value="<?php echo esc_attr($checked); ?>" />
+        <div style="background: #f0f6fc; border-left: 4px solid #0969da; padding: 12px 15px; border-radius: 4px;">
+            <p style="margin: 0; color: #0969da; font-size: 13px;">
+                <span class="dashicons dashicons-info" style="vertical-align: middle;"></span> 
+                <strong>Templates automatically include pre-designed content.</strong> To customize content, go to <a href="<?php echo admin_url('widgets.php'); ?>">Appearance → Widgets</a> and add your own widgets to Footer areas.
             </p>
         </div>
         <?php
@@ -2252,27 +2252,38 @@ class RossFooterOptions {
     public function footer_columns_callback() {
         $value = isset($this->options['footer_columns']) ? $this->options['footer_columns'] : '4';
         ?>
-        <select name="ross_theme_footer_options[footer_columns]" id="footer_columns">
-            <option value="1" <?php selected($value, '1'); ?>>1 Column</option>
-            <option value="2" <?php selected($value, '2'); ?>>2 Columns</option>
-            <option value="3" <?php selected($value, '3'); ?>>3 Columns</option>
-            <option value="4" <?php selected($value, '4'); ?>>4 Columns</option>
-        </select>
-        <p class="description">
-            Number of columns to display in footer.<br>
-            <strong>With Template Content:</strong> Shows first 1-4 columns from selected template.<br>
-            <strong>With Widgets:</strong> Controls number of widget areas (footer-1 to footer-4).
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <?php for ($i = 1; $i <= 4; $i++): ?>
+                <label class="ross-column-option" style="display: inline-flex; align-items: center; padding: 10px 15px; border: 2px solid <?php echo ($value == $i) ? '#0969da' : '#ddd'; ?>; border-radius: 6px; cursor: pointer; background: <?php echo ($value == $i) ? '#f0f6fc' : '#fff'; ?>; transition: all 0.2s;">
+                    <input type="radio" name="ross_theme_footer_options[footer_columns]" value="<?php echo $i; ?>" <?php checked($value, $i); ?> style="margin-right: 8px;" />
+                    <span style="font-weight: 600; color: <?php echo ($value == $i) ? '#0969da' : '#666'; ?>;"><?php echo $i; ?> Column<?php echo ($i > 1) ? 's' : ''; ?></span>
+                </label>
+            <?php endfor; ?>
+        </div>
+        <p class="description" style="margin-top: 10px; color: #666;">
+            Choose how many columns your footer should have. Each column can contain widgets.
         </p>
         <?php
     }
     
     public function footer_width_callback() {
-        $value = isset($this->options['footer_width']) ? $this->options['footer_width'] : 'contained';
+        $value = isset($this->options['footer_width']) ? $this->options['footer_width'] : 'boxed';
+        // Normalize 'contained' to 'boxed' for consistency
+        if ($value === 'contained') $value = 'boxed';
         ?>
-        <select name="ross_theme_footer_options[footer_width]" id="footer_width">
-            <option value="full" <?php selected($value, 'full'); ?>>Full Width</option>
-            <option value="contained" <?php selected($value, 'contained'); ?>>Contained</option>
-        </select>
+        <div style="display: flex; gap: 15px;">
+            <label class="ross-width-option" style="flex: 1; display: flex; flex-direction: column; padding: 15px; border: 2px solid <?php echo ($value === 'boxed') ? '#0969da' : '#ddd'; ?>; border-radius: 6px; cursor: pointer; background: <?php echo ($value === 'boxed') ? '#f0f6fc' : '#fff'; ?>; transition: all 0.2s;">
+                <input type="radio" name="ross_theme_footer_options[footer_width]" value="boxed" <?php checked($value, 'boxed'); ?> style="margin-bottom: 8px;" />
+                <strong style="color: <?php echo ($value === 'boxed') ? '#0969da' : '#333'; ?>; margin-bottom: 5px;">📦 Boxed</strong>
+                <span style="font-size: 12px; color: #666;">Centered container (1200px max width)</span>
+            </label>
+            
+            <label class="ross-width-option" style="flex: 1; display: flex; flex-direction: column; padding: 15px; border: 2px solid <?php echo ($value === 'full') ? '#0969da' : '#ddd'; ?>; border-radius: 6px; cursor: pointer; background: <?php echo ($value === 'full') ? '#f0f6fc' : '#fff'; ?>; transition: all 0.2s;">
+                <input type="radio" name="ross_theme_footer_options[footer_width]" value="full" <?php checked($value, 'full'); ?> style="margin-bottom: 8px;" />
+                <strong style="color: <?php echo ($value === 'full') ? '#0969da' : '#333'; ?>; margin-bottom: 5px;">↔️ Full Width</strong>
+                <span style="font-size: 12px; color: #666;">Spans entire screen width</span>
+            </label>
+        </div>
         <?php
     }
     
