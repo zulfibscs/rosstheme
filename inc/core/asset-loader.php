@@ -57,6 +57,12 @@ function ross_theme_enqueue_assets() {
 		wp_enqueue_style('ross-theme-social-icons', get_template_directory_uri() . '/assets/css/frontend/social-icons.css', array('ross-theme-frontend-footer'), filemtime($social_icons_css));
 	}
 
+	// Homepage templates CSS
+	$homepage_templates_css = get_template_directory() . '/assets/css/frontend/homepage-templates.css';
+	if (file_exists($homepage_templates_css)) {
+		wp_enqueue_style('ross-theme-homepage-templates', get_template_directory_uri() . '/assets/css/frontend/homepage-templates.css', array('ross-theme-style'), filemtime($homepage_templates_css));
+	}
+
 	// Navigation JS
 	$nav_js = get_template_directory() . '/assets/js/frontend/navigation.js';
 	if (file_exists($nav_js)) {

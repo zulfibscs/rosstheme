@@ -76,6 +76,7 @@ class RossThemeResetUtility {
                     <li>📄 Header Options (layout, logo, navigation, colors)</li>
                     <li>📄 Footer Options (layout, widgets, copyright, social)</li>
                     <li>📄 General Settings (colors, typography, buttons, blog)</li>
+                    <li>🏠 Homepage Templates (restore default layouts)</li>
                 </ul>
                 
                 <form method="post" action="<?php echo admin_url('admin-post.php'); ?>" id="ross-reset-form">
