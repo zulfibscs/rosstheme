@@ -1,0 +1,303 @@
+/**
+ * Ross Theme - Minimal Template Styles
+ * Clean typography-focused design
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   MINIMAL HERO
+==================================== */
+
+.ross-template-minimal .minimal-hero {
+    background: #ffffff;
+    padding: 120px 0;
+    text-align: center;
+}
+
+.ross-template-minimal .minimal-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+}
+
+.ross-template-minimal .minimal-hero p {
+    font-size: 1.25rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    color: #666;
+}
+
+.ross-template-minimal .hero-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ross-primary-color, #000000);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 2px solid var(--ross-primary-color, #000000);
+    padding-bottom: 4px;
+    transition: gap 0.3s ease;
+}
+
+.ross-template-minimal .hero-link:hover {
+    gap: 15px;
+}
+
+/* ====================================
+   FEATURES MINIMAL
+==================================== */
+
+.ross-template-minimal .features-minimal {
+    background: #f8f9fa;
+}
+
+.ross-template-minimal .feature-block {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.ross-template-minimal .feature-number {
+    font-size: 4rem;
+    font-weight: 200;
+    color: var(--ross-primary-color, #000000);
+    opacity: 0.2;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.ross-template-minimal .feature-block h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.ross-template-minimal .feature-block p {
+    color: #666;
+    font-weight: 300;
+}
+
+/* ====================================
+   QUOTE SECTION
+==================================== */
+
+.ross-template-minimal .quote-section {
+    background: #ffffff;
+    padding: 100px 0;
+}
+
+.ross-template-minimal blockquote {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+}
+
+.ross-template-minimal blockquote::before {
+    content: '"';
+    font-size: 8rem;
+    position: absolute;
+    top: -40px;
+    left: 0;
+    color: var(--ross-primary-color, #000000);
+    opacity: 0.1;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.ross-template-minimal blockquote p {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+}
+
+.ross-template-minimal cite {
+    font-size: 1.125rem;
+    font-style: normal;
+    color: #666;
+    font-weight: 300;
+}
+
+.ross-template-minimal cite::before {
+    content: '—  ';
+}
+
+/* ====================================
+   SERVICES LIST
+==================================== */
+
+.ross-template-minimal .services-list-minimal {
+    background: #f8f9fa;
+}
+
+.ross-template-minimal .service-list {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.ross-template-minimal .service-item-minimal {
+    padding: 30px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ross-template-minimal .service-item-minimal:last-child {
+    border-bottom: none;
+}
+
+.ross-template-minimal .service-item-minimal h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+}
+
+.ross-template-minimal .service-item-minimal p {
+    color: #666;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* ====================================
+   CTA MINIMAL
+==================================== */
+
+.ross-template-minimal .cta-minimal {
+    background: var(--ross-primary-color, #000000);
+    color: #ffffff;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.ross-template-minimal .cta-minimal h2 {
+    color: #ffffff;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    margin-bottom: 2rem;
+}
+
+.ross-template-minimal .cta-minimal .ross-btn-white-outline {
+    padding: 16px 48px;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+/* ====================================
+   BLOG FEED
+==================================== */
+
+.ross-template-minimal .blog-minimal {
+    background: #ffffff;
+}
+
+.ross-template-minimal .blog-posts {
+    display: grid;
+    gap: 50px;
+}
+
+.ross-template-minimal .blog-post-minimal {
+    padding-bottom: 50px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ross-template-minimal .blog-post-minimal:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.ross-template-minimal .post-date {
+    font-size: 0.875rem;
+    color: #999;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.ross-template-minimal .blog-post-minimal h3 {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.ross-template-minimal .blog-post-minimal h3 a {
+    color: #1a1a1a;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.ross-template-minimal .blog-post-minimal h3 a:hover {
+    color: var(--ross-primary-color, #000000);
+}
+
+.ross-template-minimal .post-excerpt {
+    color: #666;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.ross-template-minimal .read-more {
+    color: var(--ross-primary-color, #000000);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid var(--ross-primary-color, #000000);
+    padding-bottom: 2px;
+    transition: opacity 0.3s ease;
+}
+
+.ross-template-minimal .read-more:hover {
+    opacity: 0.7;
+}
+
+/* ====================================
+   MINIMAL DESIGN PHILOSOPHY
+==================================== */
+
+.ross-template-minimal {
+    /* Increased spacing for breathing room */
+    --minimal-spacing: 60px;
+}
+
+.ross-template-minimal * {
+    /* Smoother font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Refined typography scale */
+.ross-template-minimal h1,
+.ross-template-minimal h2,
+.ross-template-minimal h3 {
+    letter-spacing: -0.015em;
+}
+
+/* Subtle transitions everywhere */
+.ross-template-minimal a,
+.ross-template-minimal button {
+    transition: all 0.3s ease;
+}
+
+/* ====================================
+   RESPONSIVE ADJUSTMENTS
+==================================== */
+
+@media (max-width: 768px) {
+    .ross-template-minimal .minimal-hero {
+        padding: 80px 0;
+    }
+    
+    .ross-template-minimal blockquote::before {
+        font-size: 5rem;
+        top: -20px;
+    }
+    
+    .ross-template-minimal .feature-number {
+        font-size: 3rem;
+    }
+}

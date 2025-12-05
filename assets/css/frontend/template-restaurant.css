@@ -1,0 +1,400 @@
+/**
+ * Ross Theme - Restaurant Template Styles
+ * Food-focused design for restaurants/cafes
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   RESTAURANT HERO
+==================================== */
+
+.ross-template-restaurant .restaurant-hero {
+    position: relative;
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+}
+
+.ross-template-restaurant .hero-overlay-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(var(--ross-primary-color-rgb, 211, 84, 0), 0.85), rgba(var(--ross-secondary-color-rgb, 231, 76, 60), 0.85));
+    z-index: 0;
+}
+
+.ross-template-restaurant .restaurant-hero .ross-container {
+    position: relative;
+    z-index: 1;
+}
+
+.ross-template-restaurant .restaurant-hero h1,
+.ross-template-restaurant .restaurant-hero p {
+    color: #ffffff;
+}
+
+.ross-template-restaurant .hero-badge-restaurant {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .ross-template-restaurant .restaurant-hero {
+        height: 500px;
+    }
+}
+
+/* ====================================
+   ABOUT SECTION
+==================================== */
+
+.ross-template-restaurant .about-restaurant {
+    background: #ffffff;
+}
+
+.ross-template-restaurant .about-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.ross-template-restaurant .about-image-restaurant {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ross-template-restaurant .about-image-restaurant img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .ross-template-restaurant .about-split {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* ====================================
+   MENU SECTION
+==================================== */
+
+.ross-template-restaurant .menu-section {
+    background: #f8f9fa;
+}
+
+.ross-template-restaurant .menu-item {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.ross-template-restaurant .menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.ross-template-restaurant .menu-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px dashed #e0e0e0;
+}
+
+.ross-template-restaurant .menu-item h3 {
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.ross-template-restaurant .menu-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ross-primary-color, #D35400);
+}
+
+.ross-template-restaurant .menu-description {
+    color: #666;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+/* ====================================
+   GALLERY SECTION
+==================================== */
+
+.ross-template-restaurant .gallery-section {
+    background: #ffffff;
+}
+
+.ross-template-restaurant .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.ross-template-restaurant .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.ross-template-restaurant .gallery-item::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.ross-template-restaurant .gallery-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.ross-template-restaurant .gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.ross-template-restaurant .gallery-item-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 2rem;
+    transition: opacity 0.3s ease;
+}
+
+.ross-template-restaurant .gallery-item:hover .gallery-item-overlay {
+    opacity: 1;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-restaurant .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .ross-template-restaurant .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================
+   SPECIAL OFFERS
+==================================== */
+
+.ross-template-restaurant .special-offers {
+    background: var(--ross-primary-color, #D35400);
+    color: #ffffff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.ross-template-restaurant .special-offers h2,
+.ross-template-restaurant .special-offers p {
+    color: #ffffff;
+}
+
+.ross-template-restaurant .offer-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 24px;
+    border-radius: 30px;
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+/* ====================================
+   TESTIMONIALS RESTAURANT
+==================================== */
+
+.ross-template-restaurant .testimonials-restaurant {
+    background: #f8f9fa;
+}
+
+.ross-template-restaurant .testimonial-card-restaurant {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+
+.ross-template-restaurant .testimonial-rating {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1rem;
+}
+
+.ross-template-restaurant .star-filled {
+    color: #ffc107;
+    font-size: 1.25rem;
+}
+
+/* ====================================
+   RESERVATION SECTION
+==================================== */
+
+.ross-template-restaurant .reservation-section {
+    background: #ffffff;
+}
+
+.ross-template-restaurant .reservation-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+}
+
+.ross-template-restaurant .reservation-info {
+    background: #f8f9fa;
+    padding: 40px;
+    border-radius: 12px;
+}
+
+.ross-template-restaurant .info-item {
+    margin-bottom: 2rem;
+}
+
+.ross-template-restaurant .info-item:last-child {
+    margin-bottom: 0;
+}
+
+.ross-template-restaurant .info-item h4 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ross-primary-color, #D35400);
+    margin-bottom: 0.75rem;
+}
+
+.ross-template-restaurant .info-item svg {
+    width: 24px;
+    height: 24px;
+}
+
+.ross-template-restaurant .info-item p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.ross-template-restaurant .reservation-form {
+    background: #ffffff;
+    padding: 40px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+}
+
+.ross-template-restaurant .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-restaurant .reservation-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ross-template-restaurant .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .ross-template-restaurant .reservation-info,
+    .ross-template-restaurant .reservation-form {
+        padding: 30px 20px;
+    }
+}
+
+/* ====================================
+   LOCATION MAP
+==================================== */
+
+.ross-template-restaurant .location-section {
+    background: #f8f9fa;
+    padding: 0;
+}
+
+.ross-template-restaurant .map-container {
+    width: 100%;
+    height: 400px;
+    background: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
+
+.ross-template-restaurant .map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ====================================
+   FOOD-THEMED ACCENTS
+==================================== */
+
+.ross-template-restaurant .section-divider {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.ross-template-restaurant .section-divider::before {
+    content: '❖';
+    color: var(--ross-primary-color, #D35400);
+    font-size: 1.5rem;
+}
+
+/* Decorative elements for restaurant theme */
+.ross-template-restaurant h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--ross-primary-color, #D35400);
+    margin: 1rem auto 0;
+}
+
+.ross-template-restaurant .ross-section-header-center h2::after {
+    margin: 1rem auto 0;
+}

@@ -1,0 +1,391 @@
+/**
+ * Ross Theme - Startup Template Styles
+ * Modern SaaS/App launch template
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   STARTUP HERO
+==================================== */
+
+.ross-template-startup .startup-hero {
+    background: linear-gradient(135deg, var(--ross-primary-color, #5E35B1), var(--ross-secondary-color, #00BCD4));
+    color: #ffffff;
+    padding: 100px 0;
+}
+
+.ross-template-startup .hero-app-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.ross-template-startup .startup-hero h1,
+.ross-template-startup .startup-hero p {
+    color: #ffffff;
+}
+
+.ross-template-startup .app-mockup {
+    position: relative;
+}
+
+.ross-template-startup .app-mockup img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
+}
+
+@media (max-width: 768px) {
+    .ross-template-startup .hero-app-showcase {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* ====================================
+   APP STATS
+==================================== */
+
+.ross-template-startup .app-stats {
+    background: #f8f9fa;
+}
+
+.ross-template-startup .stats-grid-startup {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: center;
+}
+
+.ross-template-startup .stat-item-startup h3 {
+    font-size: 3rem;
+    color: var(--ross-primary-color, #5E35B1);
+    margin-bottom: 0.5rem;
+}
+
+.ross-template-startup .stat-item-startup p {
+    font-size: 1.125rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .ross-template-startup .stats-grid-startup {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ====================================
+   FEATURES SECTION
+==================================== */
+
+.ross-template-startup .features-startup {
+    background: #ffffff;
+}
+
+.ross-template-startup .feature-card-startup {
+    text-align: center;
+    padding: 30px;
+}
+
+.ross-template-startup .feature-icon-startup {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--ross-primary-color, #5E35B1), var(--ross-secondary-color, #00BCD4));
+    border-radius: 16px;
+    color: #ffffff;
+}
+
+.ross-template-startup .feature-icon-startup svg {
+    width: 36px;
+    height: 36px;
+}
+
+/* ====================================
+   PRICING SECTION
+==================================== */
+
+.ross-template-startup .pricing-section {
+    background: #f8f9fa;
+}
+
+.ross-template-startup .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.ross-template-startup .pricing-card {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.ross-template-startup .pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ross-template-startup .pricing-card.popular {
+    border: 3px solid var(--ross-primary-color, #5E35B1);
+    transform: scale(1.05);
+}
+
+.ross-template-startup .pricing-card.popular:hover {
+    transform: scale(1.05) translateY(-10px);
+}
+
+.ross-template-startup .pricing-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ross-primary-color, #5E35B1);
+    color: #ffffff;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ross-template-startup .pricing-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.ross-template-startup .pricing-price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--ross-primary-color, #5E35B1);
+    margin-bottom: 0.5rem;
+}
+
+.ross-template-startup .pricing-price span {
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: #666;
+}
+
+.ross-template-startup .pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.ross-template-startup .pricing-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ross-template-startup .pricing-features li:last-child {
+    border-bottom: none;
+}
+
+.ross-template-startup .pricing-features li::before {
+    content: '✓';
+    color: var(--ross-primary-color, #5E35B1);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-startup .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    
+    .ross-template-startup .pricing-card.popular {
+        transform: scale(1);
+    }
+    
+    .ross-template-startup .pricing-card.popular:hover {
+        transform: translateY(-10px);
+    }
+}
+
+/* ====================================
+   TESTIMONIALS SECTION
+==================================== */
+
+.ross-template-startup .testimonials-startup {
+    background: #ffffff;
+}
+
+.ross-template-startup .testimonial-card-startup {
+    background: #f8f9fa;
+    padding: 35px;
+    border-radius: 12px;
+    border-left: 4px solid var(--ross-primary-color, #5E35B1);
+}
+
+.ross-template-startup .testimonial-stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1rem;
+    color: #ffc107;
+}
+
+/* ====================================
+   FAQ SECTION
+==================================== */
+
+.ross-template-startup .faq-section {
+    background: #f8f9fa;
+}
+
+.ross-template-startup .faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ross-template-startup .faq-item {
+    background: #ffffff;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.ross-template-startup .faq-question {
+    width: 100%;
+    padding: 20px 25px;
+    background: #ffffff;
+    border: none;
+    text-align: left;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.ross-template-startup .faq-question:hover {
+    background: #f8f9fa;
+}
+
+.ross-template-startup .faq-question::after {
+    content: '+';
+    font-size: 1.5rem;
+    color: var(--ross-primary-color, #5E35B1);
+    transition: transform 0.3s ease;
+}
+
+.ross-template-startup .faq-question.active::after {
+    content: '−';
+}
+
+.ross-template-startup .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.ross-template-startup .faq-answer.active {
+    max-height: 300px;
+}
+
+.ross-template-startup .faq-answer p {
+    padding: 0 25px 20px;
+    color: #666;
+    line-height: 1.7;
+}
+
+/* ====================================
+   DOWNLOAD CTA
+==================================== */
+
+.ross-template-startup .download-cta {
+    background: linear-gradient(135deg, var(--ross-primary-color, #5E35B1), var(--ross-secondary-color, #00BCD4));
+    color: #ffffff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.ross-template-startup .download-cta h2,
+.ross-template-startup .download-cta p {
+    color: #ffffff;
+}
+
+.ross-template-startup .app-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.ross-template-startup .app-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.ross-template-startup .app-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.ross-template-startup .app-button svg {
+    width: 32px;
+    height: 32px;
+}
+
+.ross-template-startup .app-button-text {
+    text-align: left;
+}
+
+.ross-template-startup .app-button-text small {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.ross-template-startup .app-button-text strong {
+    display: block;
+    font-size: 16px;
+}
+
+/* ====================================
+   RESPONSIVE ADJUSTMENTS
+==================================== */
+
+@media (max-width: 768px) {
+    .ross-template-startup .app-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .ross-template-startup .app-button {
+        justify-content: center;
+    }
+}

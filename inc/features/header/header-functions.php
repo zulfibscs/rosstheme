@@ -94,13 +94,42 @@ function ross_theme_get_header_layout() {
  * Display the appropriate header
  */
 function ross_theme_display_header() {
-    $layout = ross_theme_get_header_layout();
     $options = ross_theme_get_header_options();
+    
+    // Check if using new template system
+    if (isset($options['header_template']) && !empty($options['header_template'])) {
+        $template_id = $options['header_template'];
+        
+        // Map template IDs to template part names
+        $template_map = array(
+            'business-classic' => 'business-classic',
+            'creative-agency' => 'creative-agency',
+            'ecommerce-shop' => 'ecommerce-shop',
+            'minimal-modern' => 'minimal-modern',
+            'transparent-hero' => 'transparent-hero'
+        );
+        
+        if (isset($template_map[$template_id])) {
+            // Check if template file exists
+            $template_file = get_template_directory() . '/template-parts/header/header-' . $template_map[$template_id] . '.php';
+            
+            if (file_exists($template_file)) {
+                if (current_user_can('manage_options')) {
+                    echo "<!-- Ross Theme Header Template: " . esc_html($template_id) . " -->\n";
+                }
+                get_template_part('template-parts/header/header', $template_map[$template_id]);
+                return;
+            }
+        }
+    }
+    
+    // Fallback to legacy header_style option
+    $layout = isset($options['header_style']) ? $options['header_style'] : 'default';
     
     // Debug output
     if (current_user_can('manage_options')) {
         echo "<!-- Ross Theme Header: " . esc_html($layout) . " -->\n";
-        echo "<!-- Logo URL: " . esc_html($options['logo_upload']) . " -->\n";
+        echo "<!-- Logo URL: " . esc_html($options['logo_upload'] ?? '') . " -->\n";
     }
     
     // Load header template

@@ -1,0 +1,280 @@
+/**
+ * Ross Theme - Business Template Styles
+ * Professional business homepage template
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   BUSINESS HERO
+==================================== */
+
+.ross-template-business .business-hero {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #ffffff;
+}
+
+.ross-template-business .business-hero h1 {
+    color: #ffffff;
+}
+
+.ross-template-business .business-hero p {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* ====================================
+   SERVICES SECTION
+==================================== */
+
+.ross-template-business .business-services {
+    background: #f8f9fa;
+}
+
+.ross-template-business .service-item {
+    text-align: center;
+}
+
+.ross-template-business .service-icon {
+    background: linear-gradient(135deg, var(--ross-primary-color, #001946), var(--ross-secondary-color, #003875));
+}
+
+.ross-template-business .service-item h3 {
+    color: var(--ross-primary-color, #001946);
+}
+
+/* ====================================
+   ABOUT SECTION
+==================================== */
+
+.ross-template-business .business-about {
+    background: #ffffff;
+}
+
+.ross-template-business .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.ross-template-business .about-image {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ross-template-business .about-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .ross-template-business .about-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ====================================
+   FEATURES SECTION
+==================================== */
+
+.ross-template-business .business-features {
+    background: #ffffff;
+}
+
+.ross-template-business .feature-item {
+    display: flex;
+    gap: 20px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid var(--ross-primary-color, #001946);
+}
+
+.ross-template-business .feature-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ross-primary-color, #001946);
+    border-radius: 50%;
+}
+
+.ross-template-business .feature-icon svg {
+    width: 26px;
+    height: 26px;
+    color: #ffffff;
+}
+
+/* ====================================
+   STATS SECTION
+==================================== */
+
+.ross-template-business .business-stats {
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+    text-align: center;
+}
+
+.ross-template-business .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.ross-template-business .stat-item h3 {
+    font-size: 3rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.ross-template-business .stat-item p {
+    font-size: 1.125rem;
+    opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-business .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .ross-template-business .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ====================================
+   TEAM SECTION
+==================================== */
+
+.ross-template-business .business-team {
+    background: #f8f9fa;
+}
+
+.ross-template-business .team-member {
+    text-align: center;
+}
+
+.ross-template-business .team-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    overflow: hidden;
+    border: 4px solid var(--ross-primary-color, #001946);
+}
+
+.ross-template-business .team-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ross-template-business .team-member h4 {
+    margin-bottom: 0.5rem;
+}
+
+.ross-template-business .team-role {
+    color: var(--ross-primary-color, #001946);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.ross-template-business .team-social {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.ross-template-business .team-social a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border-radius: 50%;
+    color: var(--ross-primary-color, #001946);
+    transition: all 0.3s ease;
+}
+
+.ross-template-business .team-social a:hover {
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+}
+
+/* ====================================
+   TESTIMONIALS
+==================================== */
+
+.ross-template-business .business-testimonials {
+    background: #ffffff;
+}
+
+.ross-template-business .testimonial-stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1rem;
+    color: #ffc107;
+}
+
+/* ====================================
+   CONTACT SECTION
+==================================== */
+
+.ross-template-business .business-contact {
+    background: #f8f9fa;
+}
+
+.ross-template-business .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.ross-template-business .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.ross-template-business .contact-item {
+    display: flex;
+    gap: 15px;
+}
+
+.ross-template-business .contact-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ross-primary-color, #001946);
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .ross-template-business .contact-wrapper {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+/* ====================================
+   CTA SECTION
+==================================== */
+
+.ross-template-business .business-cta {
+    background: linear-gradient(135deg, var(--ross-primary-color, #001946), var(--ross-secondary-color, #003875));
+}

@@ -118,7 +118,7 @@ class RossHomepageManager {
             'ross-homepage-templates-admin',
             get_template_directory_uri() . '/assets/css/admin/homepage-templates.css',
             array(),
-            '1.0.0'
+            '1.0.2'
         );
         
         // Admin JS
@@ -126,7 +126,7 @@ class RossHomepageManager {
             'ross-homepage-templates-admin',
             get_template_directory_uri() . '/assets/js/admin/homepage-templates.js',
             array('jquery'),
-            '1.0.0',
+            '1.0.2',
             true
         );
         
@@ -267,12 +267,14 @@ class RossHomepageManager {
         
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Insufficient permissions', 'ross-theme')));
+            return;
         }
         
         $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : '';
         
         if (!isset($this->templates[$template_id])) {
             wp_send_json_error(array('message' => __('Invalid template', 'ross-theme')));
+            return;
         }
         
         $template_data = $this->templates[$template_id];
@@ -287,23 +289,41 @@ class RossHomepageManager {
      * AJAX: Apply homepage template
      */
     public function ajax_apply_homepage_template() {
+        // Clean ALL output buffers that might break JSON
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        ob_start();
+        
         check_ajax_referer('ross_homepage_templates_nonce', 'nonce');
         
         if (!current_user_can('manage_options')) {
+            while (ob_get_level()) { ob_end_clean(); }
             wp_send_json_error(array('message' => __('Insufficient permissions', 'ross-theme')));
+            return;
         }
         
         $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : '';
         
         if (!isset($this->templates[$template_id])) {
-            wp_send_json_error(array('message' => __('Invalid template', 'ross-theme')));
+            while (ob_get_level()) { ob_end_clean(); }
+            wp_send_json_error(array('message' => __('Invalid template ID: ' . $template_id, 'ross-theme')));
+            return;
         }
         
         // Create or update homepage
         $page_id = $this->create_homepage_from_template($template_id);
         
         if (is_wp_error($page_id)) {
+            while (ob_get_level()) { ob_end_clean(); }
             wp_send_json_error(array('message' => $page_id->get_error_message()));
+            return;
+        }
+        
+        if (!$page_id) {
+            while (ob_get_level()) { ob_end_clean(); }
+            wp_send_json_error(array('message' => __('Failed to create page', 'ross-theme')));
+            return;
         }
         
         // Set as front page
@@ -313,6 +333,11 @@ class RossHomepageManager {
         // Store template meta
         update_post_meta($page_id, '_ross_homepage_template', $template_id);
         update_post_meta($page_id, '_ross_template_version', '1.0.0');
+        
+        // Clean ALL output buffers before sending JSON
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
         
         wp_send_json_success(array(
             'message' => __('Homepage template applied successfully!', 'ross-theme'),
@@ -347,7 +372,7 @@ class RossHomepageManager {
             // Create new page
             $page_id = wp_insert_post(array(
                 'post_title' => $template_data['title'],
-                'post_name' => $template_id,
+                'post_name' => str_replace('home-', '', $template_id),
                 'post_type' => 'page',
                 'post_status' => 'publish',
                 'post_content' => $this->get_template_default_content($template_id),
@@ -382,12 +407,14 @@ class RossHomepageManager {
         
         if (!current_user_can('manage_options')) {
             wp_send_json_error(array('message' => __('Insufficient permissions', 'ross-theme')));
+            return;
         }
         
         $template_id = isset($_POST['template_id']) ? sanitize_text_field($_POST['template_id']) : '';
         
         if (!isset($this->templates[$template_id])) {
             wp_send_json_error(array('message' => __('Invalid template', 'ross-theme')));
+            return;
         }
         
         // Find the page
@@ -400,6 +427,7 @@ class RossHomepageManager {
         
         if (empty($pages)) {
             wp_send_json_error(array('message' => __('Template page not found', 'ross-theme')));
+            return;
         }
         
         $page_id = $pages[0]->ID;
@@ -424,5 +452,4 @@ class RossHomepageManager {
     }
 }
 
-// Initialize
-RossHomepageManager::get_instance();
+// Note: Initialized in functions.php

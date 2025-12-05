@@ -1,0 +1,85 @@
+﻿<?php
+/**
+ * Default Footer Template - Modern Professional
+ * Fully dynamic based on Ross Theme options
+ */
+
+if (!defined('ABSPATH')) exit;
+
+// Get theme options
+$footer_options = get_option('ross_theme_footer_options', array());
+$general_options = get_option('ross_theme_general_options', array());
+
+// Footer styling from options
+$footer_bg = $footer_options['styling_bg_color'] ?? '#1a1a1a';
+$footer_text = $footer_options['text_color'] ?? '#ffffff';
+$footer_link = $footer_options['link_color'] ?? '#E5C902';
+$footer_heading = $footer_options['heading_color'] ?? '#ffffff';
+
+// Layout options
+$footer_columns = $footer_options['footer_columns'] ?? '4';
+$footer_width = $footer_options['footer_width'] ?? 'contained';
+
+// Padding options
+$pad_top = $footer_options['styling_padding_top'] ?? $footer_options['footer_padding'] ?? '60';
+$pad_bottom = $footer_options['styling_padding_bottom'] ?? $footer_options['footer_padding'] ?? '40';
+
+// Widget areas
+$enable_widgets = $footer_options['enable_widgets'] ?? 1;
+
+// Social icons
+$enable_social = function_exists('ross_theme_should_show_social_icons') ? ross_theme_should_show_social_icons() : false;
+
+// Copyright options
+$show_copyright = function_exists('ross_theme_should_show_copyright') ? ross_theme_should_show_copyright() : true;
+$copyright_text = $footer_options['copyright_text'] ?? '&copy; {year} {site_name}. All rights reserved.';
+$copyright_bg = $footer_options['copyright_bg_color'] ?? '#111111';
+$copyright_text_color = $footer_options['copyright_text_color'] ?? '#ffffff';
+$copyright_alignment = $footer_options['copyright_alignment'] ?? 'center';
+
+// Replace placeholders
+$copyright_text = str_replace('{year}', date('Y'), $copyright_text);
+$copyright_text = str_replace('{site_name}', get_bloginfo('name'), $copyright_text);
+
+// Background gradient
+$use_gradient = $footer_options['styling_bg_gradient'] ?? 0;
+$gradient_from = $footer_options['styling_bg_gradient_from'] ?? '#1a1a1a';
+$gradient_to = $footer_options['styling_bg_gradient_to'] ?? '#2a2a2a';
+
+// Calculate background
+$footer_background = $use_gradient 
+    ? "linear-gradient(135deg, {$gradient_from} 0%, {$gradient_to} 100%)"
+    : $footer_bg;
+
+// Background image
+$bg_image = $footer_options['styling_bg_image'] ?? '';
+$bg_style = $bg_image ? "background-image: url('" . esc_url($bg_image) . "'); background-size: cover; background-position: center;" : '';
+
+$container_class = $footer_width === 'full' ? 'container-fluid' : 'container';
+?>
+
+<footer class="site-footer ross-footer-default">
+    <div class="ross-footer-container <?php echo esc_attr($container_class); ?>">
+        
+        <?php if ($enable_widgets): ?>
+        <div class="ross-footer-widgets">
+            <div class="ross-footer-columns ross-footer-columns-<?php echo esc_attr($footer_columns); ?>">
+                <?php
+                $columns = max(1, min(4, intval($footer_columns)));
+                for ($i = 1; $i <= $columns; $i++):
+                    $sidebar_id = 'footer-' . $i;
+                ?>
+                <div class="ross-footer-column">
+                    <?php if (is_active_sidebar($sidebar_id)): ?>
+                        <?php dynamic_sidebar($sidebar_id); ?>
+                    <?php else: ?>
+                        <p>Add widgets to Footer <?php echo esc_html($i); ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php endfor; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+    </div>
+</footer>

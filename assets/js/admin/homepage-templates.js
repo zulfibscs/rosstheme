@@ -8,6 +8,14 @@
     
     $(document).ready(function() {
         
+        // Show success message if just applied
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('applied') === '1') {
+            showNotice('success', 'Template applied successfully!');
+            // Clean URL without reloading
+            window.history.replaceState({}, document.title, window.location.pathname + '?page=ross-homepage-templates');
+        }
+        
         // Filter templates by category
         $('.ross-filter-btn').on('click', function() {
             const category = $(this).data('category');
@@ -30,6 +38,8 @@
             const $button = $(this);
             const templateId = $button.data('template');
             
+            console.log('Applying template:', templateId);
+            
             if ($button.prop('disabled')) {
                 return;
             }
@@ -42,6 +52,10 @@
             // Disable button and show loading
             $button.prop('disabled', true)
                    .text(rossHomepageTemplates.strings.applying);
+            
+            console.log('Sending AJAX request to:', rossHomepageTemplates.ajaxUrl);
+            console.log('Template ID:', templateId);
+            console.log('Nonce:', rossHomepageTemplates.nonce);
             
             // AJAX request
             $.ajax({
@@ -57,9 +71,9 @@
                         // Show success message
                         showNotice('success', response.data.message);
                         
-                        // Reload page to update UI
+                        // Reload page to update UI (only once)
                         setTimeout(function() {
-                            window.location.reload();
+                            window.location.href = window.location.href.split('?')[0] + '?page=ross-homepage-templates&applied=1';
                         }, 1500);
                     } else {
                         showNotice('error', response.data.message || rossHomepageTemplates.strings.error);
@@ -67,8 +81,9 @@
                                .text('Apply Template');
                     }
                 },
-                error: function() {
-                    showNotice('error', rossHomepageTemplates.strings.error);
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error, xhr.responseText);
+                    showNotice('error', rossHomepageTemplates.strings.error + ' (' + error + ')');
                     $button.prop('disabled', false)
                            .text('Apply Template');
                 }

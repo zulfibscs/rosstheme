@@ -61,6 +61,203 @@ function ross_theme_dynamic_css() {
         echo '.primary-menu .current-menu-item a::after { background: ' . esc_attr($header_options['menu_border_color']) . ' !important; }';
     }
 
+    // ===== PHASE 1 ENHANCEMENTS: NEW HEADER CONTROLS =====
+    
+    // Mobile Logo
+    if (!empty($header_options['mobile_logo'])) {
+        $mobile_breakpoint = isset($header_options['mobile_breakpoint']) ? absint($header_options['mobile_breakpoint']) : 768;
+        echo '@media (max-width: ' . $mobile_breakpoint . 'px) {';
+        echo '.site-logo .desktop-logo { display: none !important; }';
+        echo '.site-logo .mobile-logo { display: block !important; }';
+        echo '}';
+        echo '@media (min-width: ' . ($mobile_breakpoint + 1) . 'px) {';
+        echo '.site-logo .mobile-logo { display: none !important; }';
+        echo '}';
+    }
+    
+    if (!empty($header_options['mobile_logo_width'])) {
+        $mobile_breakpoint = isset($header_options['mobile_breakpoint']) ? absint($header_options['mobile_breakpoint']) : 768;
+        $width = absint($header_options['mobile_logo_width']);
+        echo '@media (max-width: ' . $mobile_breakpoint . 'px) {';
+        echo '.site-logo img, .site-logo .mobile-logo { max-width: ' . $width . 'px !important; }';
+        echo '}';
+    }
+    
+    // Header Opacity
+    if (isset($header_options['header_opacity']) && $header_options['header_opacity'] !== '' && $header_options['header_opacity'] != 1) {
+        $opacity = floatval($header_options['header_opacity']);
+        echo '.site-header { opacity: ' . $opacity . ' !important; }';
+    }
+    
+    // Transparent Header Overlay
+    if (!empty($header_options['transparent_overlay_enable'])) {
+        $overlay_color = isset($header_options['transparent_overlay_color']) ? $header_options['transparent_overlay_color'] : '#000000';
+        $overlay_opacity = isset($header_options['transparent_overlay_opacity']) ? floatval($header_options['transparent_overlay_opacity']) : 0.3;
+        
+        // Convert hex to RGB
+        $hex = ltrim($overlay_color, '#');
+        if (strlen($hex) === 3) {
+            $r = hexdec(str_repeat(substr($hex,0,1),2));
+            $g = hexdec(str_repeat(substr($hex,1,1),2));
+            $b = hexdec(str_repeat(substr($hex,2,1),2));
+        } else {
+            $r = hexdec(substr($hex,0,2));
+            $g = hexdec(substr($hex,2,2));
+            $b = hexdec(substr($hex,4,2));
+        }
+        $rgba = 'rgba(' . $r . ',' . $g . ',' . $b . ',' . $overlay_opacity . ')';
+        
+        echo '.site-header.has-transparent-overlay { position: relative !important; }';
+        echo '.site-header.has-transparent-overlay::before { content: "" !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background: ' . $rgba . ' !important; pointer-events: none !important; z-index: 0 !important; }';
+        echo '.site-header.has-transparent-overlay > * { position: relative !important; z-index: 1 !important; }';
+    }
+    
+    // Header Shadow
+    if (!empty($header_options['header_shadow_enable'])) {
+        $shadow_size = isset($header_options['header_shadow_size']) ? $header_options['header_shadow_size'] : 'medium';
+        $shadow_values = array(
+            'small' => '0 2px 4px rgba(0,0,0,0.1)',
+            'medium' => '0 4px 8px rgba(0,0,0,0.15)',
+            'large' => '0 6px 16px rgba(0,0,0,0.2)'
+        );
+        $shadow = isset($shadow_values[$shadow_size]) ? $shadow_values[$shadow_size] : $shadow_values['medium'];
+        echo '.site-header { box-shadow: ' . $shadow . ' !important; }';
+    }
+    
+    // Header Bottom Border
+    if (!empty($header_options['header_border_enable'])) {
+        $border_color = isset($header_options['header_border_color']) ? $header_options['header_border_color'] : '#e0e0e0';
+        $border_width = isset($header_options['header_border_width']) ? absint($header_options['header_border_width']) : 1;
+        echo '.site-header { border-bottom: ' . $border_width . 'px solid ' . esc_attr($border_color) . ' !important; }';
+    }
+    
+    // Header Typography
+    if (!empty($header_options['header_font_family']) && $header_options['header_font_family'] !== 'inherit') {
+        $font_family = esc_attr($header_options['header_font_family']);
+        echo '.site-header, .primary-menu a { font-family: ' . $font_family . ' !important; }';
+    }
+    
+    if (!empty($header_options['header_font_weight']) && $header_options['header_font_weight'] !== '400') {
+        $font_weight = esc_attr($header_options['header_font_weight']);
+        echo '.primary-menu a { font-weight: ' . $font_weight . ' !important; }';
+    }
+    
+    // Menu Hover Effects
+    if (!empty($header_options['menu_hover_effect'])) {
+        $effect = $header_options['menu_hover_effect'];
+        
+        if ($effect === 'background') {
+            $hover_color = isset($header_options['menu_hover_color']) ? $header_options['menu_hover_color'] : '#E5C902';
+            echo '.primary-menu a:hover { background-color: ' . esc_attr($hover_color) . ' !important; padding: 8px 12px !important; border-radius: 4px !important; }';
+            echo '.primary-menu a::after { display: none !important; }';
+        } elseif ($effect === 'none') {
+            echo '.primary-menu a::after { display: none !important; }';
+        }
+        // 'underline' is default, already handled by existing CSS
+    }
+    
+    if (!empty($header_options['menu_hover_underline_style']) && $header_options['menu_hover_effect'] === 'underline') {
+        $style = $header_options['menu_hover_underline_style'];
+        
+        if ($style === 'slide') {
+            echo '.primary-menu a::after { width: 0 !important; transition: width 0.3s ease !important; }';
+            echo '.primary-menu a:hover::after, .primary-menu .current-menu-item a::after { width: 100% !important; }';
+        } elseif ($style === 'fade') {
+            echo '.primary-menu a::after { opacity: 0 !important; transition: opacity 0.3s ease !important; }';
+            echo '.primary-menu a:hover::after, .primary-menu .current-menu-item a::after { opacity: 1 !important; }';
+        } elseif ($style === 'instant') {
+            echo '.primary-menu a::after { transition: none !important; }';
+        }
+    }
+    
+    // Sticky Header Behavior
+    if (!empty($header_options['sticky_shrink_header'])) {
+        $normal_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
+        $sticky_height = isset($header_options['sticky_header_height']) ? absint($header_options['sticky_header_height']) : 60;
+        
+        echo '.site-header { transition: all 0.3s ease !important; }';
+        echo '.site-header.is-sticky.shrink { height: ' . $sticky_height . 'px !important; padding-top: 10px !important; padding-bottom: 10px !important; }';
+        echo '.site-header.is-sticky.shrink .site-logo img { max-height: ' . ($sticky_height - 20) . 'px !important; transition: max-height 0.3s ease !important; }';
+    }
+    
+    // Search Type Styling
+    if (!empty($header_options['search_type'])) {
+        $search_type = $header_options['search_type'];
+        
+        if ($search_type === 'dropdown') {
+            echo '.header-search-dropdown { position: absolute !important; top: 100% !important; right: 0 !important; background: #fff !important; padding: 15px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; border-radius: 4px !important; min-width: 300px !important; z-index: 1000 !important; }';
+        } elseif ($search_type === 'inline') {
+            echo '.header-search-inline { display: inline-flex !important; align-items: center !important; max-width: 0 !important; overflow: hidden !important; transition: max-width 0.3s ease !important; }';
+            echo '.header-search-inline.active { max-width: 300px !important; margin-left: 15px !important; }';
+        }
+    }
+    
+    // CTA Button Styling
+    if (!empty($header_options['cta_button_text_color'])) {
+        $text_color = esc_attr($header_options['cta_button_text_color']);
+        echo '.header-cta-button { color: ' . $text_color . ' !important; }';
+    }
+    
+    if (!empty($header_options['cta_button_style'])) {
+        $style = $header_options['cta_button_style'];
+        $bg_color = isset($header_options['cta_button_color']) ? $header_options['cta_button_color'] : '#E5C902';
+        $text_color = isset($header_options['cta_button_text_color']) ? $header_options['cta_button_text_color'] : '#ffffff';
+        
+        if ($style === 'outline') {
+            echo '.header-cta-button { background: transparent !important; border: 2px solid ' . esc_attr($bg_color) . ' !important; color: ' . esc_attr($bg_color) . ' !important; }';
+            echo '.header-cta-button:hover { background: ' . esc_attr($bg_color) . ' !important; color: ' . esc_attr($text_color) . ' !important; }';
+        } elseif ($style === 'ghost') {
+            echo '.header-cta-button { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.3) !important; backdrop-filter: blur(10px) !important; }';
+            echo '.header-cta-button:hover { background: rgba(255,255,255,0.2) !important; }';
+        } elseif ($style === 'gradient') {
+            // Create gradient from button color
+            $hex = ltrim($bg_color, '#');
+            if (strlen($hex) === 3) {
+                $r = hexdec(str_repeat(substr($hex,0,1),2));
+                $g = hexdec(str_repeat(substr($hex,1,1),2));
+                $b = hexdec(str_repeat(substr($hex,2,1),2));
+            } else {
+                $r = hexdec(substr($hex,0,2));
+                $g = hexdec(substr($hex,2,2));
+                $b = hexdec(substr($hex,4,2));
+            }
+            // Darken for gradient end
+            $r2 = max(0, $r - 30);
+            $g2 = max(0, $g - 30);
+            $b2 = max(0, $b - 30);
+            $color2 = sprintf('#%02x%02x%02x', $r2, $g2, $b2);
+            echo '.header-cta-button { background: linear-gradient(135deg, ' . esc_attr($bg_color) . ' 0%, ' . $color2 . ' 100%) !important; }';
+        }
+        // 'solid' is default, already handled
+    }
+    
+    // Mobile Menu Styling (basic structure, full implementation in navigation.js)
+    $mobile_breakpoint = isset($header_options['mobile_breakpoint']) ? absint($header_options['mobile_breakpoint']) : 768;
+    
+    if (!empty($header_options['mobile_menu_style'])) {
+        $menu_style = $header_options['mobile_menu_style'];
+        
+        echo '@media (max-width: ' . $mobile_breakpoint . 'px) {';
+        
+        if ($menu_style === 'fullscreen') {
+            echo '.mobile-menu-overlay { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; background: rgba(0,0,0,0.95) !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; }';
+            echo '.mobile-menu-overlay .primary-menu { flex-direction: column !important; gap: 30px !important; }';
+            echo '.mobile-menu-overlay .primary-menu a { font-size: 24px !important; }';
+        } elseif ($menu_style === 'slide') {
+            $position = isset($header_options['mobile_menu_position']) ? $header_options['mobile_menu_position'] : 'left';
+            $transform = $position === 'right' ? 'translateX(100%)' : 'translateX(-100%)';
+            if ($position === 'top') $transform = 'translateY(-100%)';
+            
+            echo '.mobile-menu-slide { position: fixed !important; top: 0 !important; ' . ($position === 'right' ? 'right' : 'left') . ': 0 !important; width: 300px !important; height: 100vh !important; background: #fff !important; box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important; transform: ' . $transform . ' !important; transition: transform 0.3s ease !important; z-index: 9999 !important; overflow-y: auto !important; }';
+            echo '.mobile-menu-slide.active { transform: translateX(0) !important; }';
+        } elseif ($menu_style === 'push') {
+            echo 'body.mobile-menu-open { overflow: hidden !important; }';
+            echo 'body.mobile-menu-open .site-wrapper { transform: translateX(-300px) !important; transition: transform 0.3s ease !important; }';
+        }
+        
+        echo '}';
+    }
+
     // Footer template colors
     $footer_options = get_option('ross_theme_footer_options', array());
     $template = isset($footer_options['footer_template']) ? $footer_options['footer_template'] : 'business-professional';

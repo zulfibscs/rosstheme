@@ -141,6 +141,7 @@ function ross_theme_main_page() {
             <h2>Welcome to Ross Theme</h2>
             <p>Use the submenus to configure different aspects of your theme:</p>
             <ul>
+                <li><strong><a href="<?php echo admin_url('admin.php?page=ross-homepage-templates'); ?>">🏠 Homepage Templates</a>:</strong> Choose pre-designed homepage templates</li>
                 <li><strong><a href="<?php echo admin_url('admin.php?page=ross-theme-header'); ?>">Header Options</a>:</strong> Configure logo, navigation, and header layout</li>
                 <li><strong><a href="<?php echo admin_url('admin.php?page=ross-theme-footer'); ?>">Footer Options</a>:</strong> Setup footer layout, widgets, and copyright</li>
                 <li><strong><a href="<?php echo admin_url('admin.php?page=ross-theme-general'); ?>">General Settings</a>:</strong> Customize colors, typography, and global settings</li>
@@ -160,7 +161,8 @@ function ross_theme_header_page() {
         
         <!-- Tab Navigation -->
         <div class="ross-tabs-nav">
-            <button class="ross-tab-btn active" data-tab="layout">🧱 Layout & Structure</button>
+            <button class="ross-tab-btn active" data-tab="templates">📐 Templates</button>
+            <button class="ross-tab-btn" data-tab="layout">🧱 Layout & Structure</button>
             <button class="ross-tab-btn" data-tab="logo">🧭 Logo & Branding</button>
             <button class="ross-tab-btn" data-tab="topbar">☎️ Top Bar</button>
             <button class="ross-tab-btn" data-tab="announcement">📣 Announcement</button>
@@ -174,8 +176,17 @@ function ross_theme_header_page() {
             settings_fields('ross_theme_header_group');
             ?>
             
+            <!-- Templates Tab -->
+            <div class="ross-tab-content active" id="tab-templates">
+                <?php
+                // Include header templates admin interface
+                require_once dirname(__FILE__) . '/header-templates-admin.php';
+                ross_theme_render_header_templates_admin();
+                ?>
+            </div>
+            
             <!-- Layout & Structure Tab -->
-            <div class="ross-tab-content active" id="tab-layout">
+            <div class="ross-tab-content" id="tab-layout">
                 <?php do_settings_sections('ross-theme-header-layout'); ?>
             </div>
             

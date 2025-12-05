@@ -1,0 +1,323 @@
+/**
+ * Ross Theme - E-commerce Template Styles
+ * Product-focused store template
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   E-COMMERCE HERO
+==================================== */
+
+.ross-template-ecommerce .ecommerce-hero {
+    background-size: cover;
+    background-position: center;
+    padding: 100px 0;
+}
+
+.ross-template-ecommerce .hero-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.ross-template-ecommerce .hero-badge {
+    background: var(--ross-secondary-color, #FFC107);
+    color: #1a1a1a;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .ross-template-ecommerce .hero-split {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+/* ====================================
+   CATEGORIES SECTION
+==================================== */
+
+.ross-template-ecommerce .categories-section {
+    background: #f8f9fa;
+}
+
+.ross-template-ecommerce .category-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 200px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.ross-template-ecommerce .category-card:hover {
+    transform: translateY(-5px);
+}
+
+.ross-template-ecommerce .category-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.ross-template-ecommerce .category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: background 0.3s ease;
+}
+
+.ross-template-ecommerce .category-card:hover .category-overlay {
+    background: rgba(var(--ross-primary-color-rgb, 255, 87, 34), 0.8);
+}
+
+/* ====================================
+   PRODUCTS SECTION
+==================================== */
+
+.ross-template-ecommerce .products-section {
+    background: #ffffff;
+}
+
+.ross-template-ecommerce .product-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.ross-template-ecommerce .product-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--ross-primary-color, #FF5722);
+}
+
+.ross-template-ecommerce .product-image {
+    position: relative;
+    height: 250px;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.ross-template-ecommerce .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.ross-template-ecommerce .product-card:hover .product-image img {
+    transform: scale(1.1);
+}
+
+.ross-template-ecommerce .product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e74c3c;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ross-template-ecommerce .product-info {
+    padding: 20px;
+}
+
+.ross-template-ecommerce .product-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1a1a1a;
+}
+
+.ross-template-ecommerce .product-price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.ross-template-ecommerce .price-sale {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ross-primary-color, #FF5722);
+}
+
+.ross-template-ecommerce .price-original {
+    font-size: 1.125rem;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.ross-template-ecommerce .add-to-cart {
+    width: 100%;
+    padding: 12px;
+    background: var(--ross-primary-color, #FF5722);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ross-template-ecommerce .add-to-cart:hover {
+    background: var(--ross-secondary-color, #FFC107);
+    transform: translateY(-2px);
+}
+
+/* ====================================
+   PROMO BANNER
+==================================== */
+
+.ross-template-ecommerce .promo-banner {
+    background: linear-gradient(135deg, var(--ross-primary-color, #FF5722), var(--ross-secondary-color, #FFC107));
+    color: #ffffff;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.ross-template-ecommerce .promo-banner h2 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.ross-template-ecommerce .promo-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+/* ====================================
+   NEWSLETTER SECTION
+==================================== */
+
+.ross-template-ecommerce .newsletter-section {
+    background: #f8f9fa;
+}
+
+.ross-template-ecommerce .newsletter-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ross-template-ecommerce .newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+.ross-template-ecommerce .newsletter-form input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.ross-template-ecommerce .newsletter-form button {
+    padding: 14px 32px;
+    background: var(--ross-primary-color, #FF5722);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .ross-template-ecommerce .newsletter-form {
+        flex-direction: column;
+    }
+}
+
+/* ====================================
+   TRUST BADGES
+==================================== */
+
+.ross-template-ecommerce .trust-section {
+    background: #ffffff;
+}
+
+.ross-template-ecommerce .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.ross-template-ecommerce .trust-item {
+    text-align: center;
+}
+
+.ross-template-ecommerce .trust-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ross-primary-color, #FF5722);
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+.ross-template-ecommerce .trust-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-ecommerce .trust-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .ross-template-ecommerce .trust-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================
+   SALE ANIMATIONS
+==================================== */
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.ross-template-ecommerce .product-badge {
+    animation: pulse 2s infinite;
+}

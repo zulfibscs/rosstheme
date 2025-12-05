@@ -23,16 +23,23 @@ if ( file_exists( get_template_directory() . '/inc/template-tags-footer-social.p
 }
 
 // Feature modules
+require_once get_template_directory() . '/inc/features/header/header-template-manager.php';
 require_once get_template_directory() . '/inc/features/header/header-options.php';
 require_once get_template_directory() . '/inc/features/header/header-functions.php';
 require_once get_template_directory() . '/inc/features/footer/footer-options.php';
 require_once get_template_directory() . '/inc/features/footer/footer-functions.php';
 require_once get_template_directory() . '/inc/features/general/general-options.php';
+
+// Homepage Templates
 require_once get_template_directory() . '/inc/features/homepage-templates/homepage-manager.php';
+
+// Initialize Homepage Templates Manager
+if (class_exists('RossHomepageManager')) {
+	RossHomepageManager::get_instance();
+}
 
 // Frontend modules
 require_once get_template_directory() . '/inc/frontend/dynamic-css.php';
-require_once get_template_directory() . '/inc/frontend/dynamic-css-variables.php';
 
 // Utility modules
 require_once get_template_directory() . '/inc/utilities/helper-functions.php';

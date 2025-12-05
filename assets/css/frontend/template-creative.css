@@ -1,0 +1,381 @@
+/**
+ * Ross Theme - Creative Template Styles
+ * Modern creative agency template
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   CREATIVE HERO - FULLSCREEN
+==================================== */
+
+.ross-template-creative .creative-hero {
+    background: linear-gradient(135deg, var(--ross-primary-color, #6C63FF), var(--ross-secondary-color, #FF6584));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+}
+
+.ross-template-creative .creative-hero h1,
+.ross-template-creative .creative-hero p {
+    color: #ffffff;
+}
+
+.ross-template-creative .scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-5px);
+    }
+}
+
+/* ====================================
+   SERVICES CREATIVE
+==================================== */
+
+.ross-template-creative .services-creative {
+    background: #ffffff;
+}
+
+.ross-template-creative .service-card-creative {
+    position: relative;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.ross-template-creative .service-card-creative::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--ross-primary-color, #6C63FF);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.ross-template-creative .service-card-creative:hover::before {
+    transform: scaleY(1);
+}
+
+.ross-template-creative .service-card-creative:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.ross-template-creative .service-icon-creative {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+/* ====================================
+   PORTFOLIO SECTION
+==================================== */
+
+.ross-template-creative .portfolio-section {
+    background: #f8f9fa;
+}
+
+.ross-template-creative .portfolio-filters {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.ross-template-creative .filter-btn {
+    padding: 10px 24px;
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ross-template-creative .filter-btn.active,
+.ross-template-creative .filter-btn:hover {
+    background: var(--ross-primary-color, #6C63FF);
+    color: #ffffff;
+    border-color: var(--ross-primary-color, #6C63FF);
+}
+
+.ross-template-creative .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.ross-template-creative .portfolio-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ross-template-creative .portfolio-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.ross-template-creative .portfolio-item:hover img {
+    transform: scale(1.1);
+}
+
+.ross-template-creative .portfolio-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--ross-primary-color, #6C63FF), var(--ross-secondary-color, #FF6584));
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    transition: opacity 0.3s ease;
+}
+
+.ross-template-creative .portfolio-item:hover .portfolio-overlay {
+    opacity: 0.95;
+}
+
+.ross-template-creative .portfolio-overlay h3 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-creative .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .ross-template-creative .portfolio-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================
+   TEAM SECTION
+==================================== */
+
+.ross-template-creative .team-creative {
+    background: #ffffff;
+}
+
+.ross-template-creative .team-member-creative {
+    text-align: center;
+}
+
+.ross-template-creative .team-photo {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ross-template-creative .team-photo img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.ross-template-creative .team-social-overlay {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    transition: bottom 0.3s ease;
+}
+
+.ross-template-creative .team-member-creative:hover .team-social-overlay {
+    bottom: 0;
+}
+
+.ross-template-creative .team-social-overlay a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ross-primary-color, #6C63FF);
+    color: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.ross-template-creative .team-social-overlay a:hover {
+    transform: scale(1.1);
+}
+
+/* ====================================
+   CLIENT LOGOS
+==================================== */
+
+.ross-template-creative .clients-section {
+    background: #f8f9fa;
+}
+
+.ross-template-creative .client-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 30px;
+    align-items: center;
+}
+
+.ross-template-creative .client-logo {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.ross-template-creative .client-logo:hover {
+    opacity: 1;
+}
+
+@media (max-width: 1024px) {
+    .ross-template-creative .client-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .ross-template-creative .client-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ====================================
+   PROCESS TIMELINE
+==================================== */
+
+.ross-template-creative .process-section {
+    background: #ffffff;
+}
+
+.ross-template-creative .process-timeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 30px;
+    position: relative;
+}
+
+.ross-template-creative .process-timeline::before {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 0;
+}
+
+.ross-template-creative .process-step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.ross-template-creative .process-number {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 3px solid var(--ross-primary-color, #6C63FF);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ross-primary-color, #6C63FF);
+}
+
+@media (max-width: 1024px) {
+    .ross-template-creative .process-timeline {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .ross-template-creative .process-timeline::before {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .ross-template-creative .process-timeline {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================
+   CTA CREATIVE
+==================================== */
+
+.ross-template-creative .cta-creative {
+    background: linear-gradient(135deg, var(--ross-primary-color, #6C63FF), var(--ross-secondary-color, #FF6584));
+}
+
+/* ====================================
+   CONTACT SECTION
+==================================== */
+
+.ross-template-creative .contact-creative {
+    background: #f8f9fa;
+}
+
+.ross-template-creative .contact-split {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+}
+
+@media (max-width: 768px) {
+    .ross-template-creative .contact-split {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
