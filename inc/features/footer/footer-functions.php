@@ -11,6 +11,12 @@ function ross_theme_get_footer_layout() {
 
 function ross_theme_display_footer() {
     $footer_options = get_option('ross_theme_footer_options', array());
+
+    // If a custom footer is enabled and has content, render it and skip template loading
+    if (!empty($footer_options['enable_custom_footer']) && !empty($footer_options['custom_footer_html'])) {
+        ross_theme_render_custom_footer();
+        return;
+    }
     
     // Get selected template
     $template_id = $footer_options['footer_template'] ?? 'creative-agency';
@@ -33,13 +39,21 @@ function ross_theme_display_footer() {
  * Render custom footer HTML when enabled
  */
 function ross_theme_render_custom_footer() {
-    $footer_options = get_option('ross_theme_footer_options');
+    $footer_options = get_option('ross_theme_footer_options', array());
     if (empty($footer_options) || empty($footer_options['enable_custom_footer'])) {
         return;
     }
 
-    if (!empty($footer_options['custom_footer_html'])) {
-        echo '<div class="site-footer-custom">' . $footer_options['custom_footer_html'] . '</div>';
+    $custom_html = isset($footer_options['custom_footer_html']) ? $footer_options['custom_footer_html'] : '';
+    $custom_js   = isset($footer_options['custom_footer_js']) ? $footer_options['custom_footer_js'] : '';
+
+    if (!empty($custom_html)) {
+        // Wrap in a footer element so it inherits global footer styles/spacing
+        echo '<footer class="site-footer site-footer-custom">' . wp_kses_post($custom_html) . '</footer>';
+    }
+
+    if (!empty($custom_js)) {
+        echo '<script>' . $custom_js . '</script>';
     }
 }
 

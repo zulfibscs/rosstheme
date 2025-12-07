@@ -155,7 +155,8 @@ function ross_theme_header_classes() {
     $classes[] = 'header-' . $options['header_width'];
     // Centered layout flag
     if (!empty($options['header_center'])) {
-        $classes[] = 'header-center';
+        // Use the same class name used in CSS (.header-centered)
+        $classes[] = 'header-centered';
     }
     
     return implode(' ', $classes);
@@ -348,9 +349,15 @@ function ross_theme_render_announcement_strip($options = null) {
 
     $announcement = $options['announcement_text'];
     $anim = isset($options['announcement_animation']) ? $options['announcement_animation'] : 'marquee';
-    $bg = isset($options['announcement_bg_color']) ? $options['announcement_bg_color'] : '#E5C902';
-    $text_color = isset($options['announcement_text_color']) ? $options['announcement_text_color'] : '#001946';
-    $font = isset($options['announcement_font_size']) ? $options['announcement_font_size'] : '14px';
+    $bg = isset($options['announcement_bg_color']) ? sanitize_hex_color($options['announcement_bg_color']) : '#E5C902';
+    $text_color = isset($options['announcement_text_color']) ? sanitize_hex_color($options['announcement_text_color']) : '#001946';
+    $font_raw = isset($options['announcement_font_size']) ? trim($options['announcement_font_size']) : '14px';
+    // Normalize font size: allow numeric (assume px) or valid CSS unit string
+    if (is_numeric($font_raw)) {
+        $font = $font_raw . 'px';
+    } else {
+        $font = $font_raw;
+    }
 
     $anim_class = 'announce-' . esc_attr($anim);
     $position = isset($options['announcement_position']) ? $options['announcement_position'] : 'top_of_topbar';
@@ -371,7 +378,7 @@ function ross_theme_render_announcement_strip($options = null) {
     $inline_style = 'background:' . esc_attr($bg) . '; color:' . esc_attr($text_color) . '; font-size:' . esc_attr($font) . '; padding:6px 0;';
     if (!empty($options['announcement_sticky'])) {
         $offset = isset($options['announcement_sticky_offset']) ? absint($options['announcement_sticky_offset']) : 0;
-        $inline_style .= ' position: sticky; top: ' . $offset . 'px; z-index: 9999;';
+        $inline_style .= ' --announcement-sticky-offset:' . $offset . 'px; position: sticky; top: ' . $offset . 'px; z-index: 9999;';
     }
 
     echo '<div class="site-announcement-strip' . $extra_class . '" style="' . $inline_style . '">';

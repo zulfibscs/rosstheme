@@ -148,7 +148,21 @@ function ross_theme_dynamic_css() {
         
         if ($effect === 'background') {
             $hover_color = isset($header_options['menu_hover_color']) ? $header_options['menu_hover_color'] : '#E5C902';
-            echo '.primary-menu a:hover { background-color: ' . esc_attr($hover_color) . ' !important; padding: 8px 12px !important; border-radius: 4px !important; }';
+            // Choose a contrasting text color so hover background and text never blend.
+            $text_color = '#ffffff';
+            $hex = ltrim($hover_color, '#');
+            if (strlen($hex) === 3) {
+                $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+            }
+            if (strlen($hex) === 6) {
+                $r = hexdec(substr($hex, 0, 2));
+                $g = hexdec(substr($hex, 2, 2));
+                $b = hexdec(substr($hex, 4, 2));
+                $brightness = (0.299 * $r) + (0.587 * $g) + (0.114 * $b);
+                $text_color = ($brightness > 186) ? '#111111' : '#ffffff';
+            }
+
+            echo '.primary-menu a:hover { background-color: ' . esc_attr($hover_color) . ' !important; color: ' . esc_attr($text_color) . ' !important; padding: 8px 12px !important; border-radius: 4px !important; }';
             echo '.primary-menu a::after { display: none !important; }';
         } elseif ($effect === 'none') {
             echo '.primary-menu a::after { display: none !important; }';

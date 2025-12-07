@@ -92,47 +92,9 @@ $bg_style = $bg_image ? "background-image: url('" . esc_url($bg_image) . "'); ba
         <!-- Social Icons -->
         <div class="ross-footer-social">
             <?php
-            // Get social links from customizer or options
-            $social_links = get_theme_mod('footer_social_links', array());
-            
-            if (empty($social_links)) {
-                // Fallback to footer options
-                $social_platforms = array(
-                    'facebook' => $footer_options['social_facebook'] ?? '',
-                    'twitter' => $footer_options['social_twitter'] ?? '',
-                    'instagram' => $footer_options['social_instagram'] ?? '',
-                    'linkedin' => $footer_options['social_linkedin'] ?? '',
-                    'youtube' => $footer_options['social_youtube'] ?? '',
-                    'pinterest' => $footer_options['social_pinterest'] ?? '',
-                );
-                
-                foreach ($social_platforms as $platform => $url):
-                    if (!empty($url)):
-            ?>
-            <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" 
-               class="ross-social-link ross-social-<?php echo esc_attr($platform); ?>"
-               aria-label="<?php echo esc_attr(ucfirst($platform)); ?>"
-               style="color: <?php echo esc_attr($footer_link); ?>;">
-                <i class="fab fa-<?php echo esc_attr($platform); ?>"></i>
-            </a>
-            <?php
-                    endif;
-                endforeach;
-            } else {
-                // Use customizer social links
-                foreach ($social_links as $link):
-                    if (!empty($link['url'])):
-                        $platform = $link['platform'] ?? 'link';
-            ?>
-            <a href="<?php echo esc_url($link['url']); ?>" target="_blank" rel="noopener noreferrer"
-               class="ross-social-link ross-social-<?php echo esc_attr($platform); ?>"
-               aria-label="<?php echo esc_attr(ucfirst($platform)); ?>"
-               style="color: <?php echo esc_attr($footer_link); ?>;">
-                <i class="fab fa-<?php echo esc_attr($platform); ?>"></i>
-            </a>
-            <?php
-                    endif;
-                endforeach;
+            // Unified renderer: respects enable/disable toggles, custom icon, size, shape, colors
+            if (function_exists('ross_footer_social_icons')) {
+                ross_footer_social_icons();
             }
             ?>
         </div>

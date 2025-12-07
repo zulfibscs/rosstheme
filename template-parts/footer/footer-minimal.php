@@ -14,16 +14,9 @@ $footer_options = get_option('ross_theme_footer_options');
 
 			<?php if ( function_exists('ross_theme_should_show_social_icons') && ross_theme_should_show_social_icons() ) : ?>
 				<div class="footer-social">
-					<?php
-					$facebook = $footer_options['facebook_url'] ?? '';
-					$linkedin = $footer_options['linkedin_url'] ?? '';
-					if ( ! empty( $facebook ) ) {
-						echo '<a class="social-icon social-icon--facebook" href="' . esc_url( $facebook ) . '" target="_blank" rel="noopener noreferrer">Facebook</a>';
-					}
-					if ( ! empty( $linkedin ) ) {
-						echo '<a class="social-icon social-icon--linkedin" href="' . esc_url( $linkedin ) . '" target="_blank" rel="noopener noreferrer">LinkedIn</a>';
-					}
-					?>
+					<?php if ( function_exists( 'ross_footer_social_icons' ) ) : ?>
+						<?php ross_footer_social_icons(); ?>
+					<?php endif; ?>
 				</div>
 			<?php endif; ?>
 		</div>

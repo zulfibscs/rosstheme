@@ -23,8 +23,27 @@ class RossFooterOptions {
         add_action('wp_ajax_ross_get_footer_template_preview', array($this, 'ajax_get_footer_template_preview'));
         // Admin notice to show when a template is applied to protect against overwrites
         add_action('admin_notices', array($this, 'show_template_applied_notice'));
+        add_action('admin_notices', array($this, 'show_settings_saved_notice'));
         add_action('wp_ajax_ross_sync_footer_templates', array($this, 'ajax_sync_footer_templates'));
         add_action('wp_ajax_ross_apply_template_sync', array($this, 'ajax_apply_template_sync'));
+        
+        // Hook to track when option is updated
+        add_action('update_option_ross_theme_footer_options', array($this, 'on_footer_options_updated'), 10, 3);
+    }
+    
+    /**
+     * Called when footer options are updated
+     * Log for debugging and clear any caches if needed
+     */
+    public function on_footer_options_updated($old_value, $new_value, $option_name) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Footer options UPDATED successfully!');
+            error_log('Old template: ' . (isset($old_value['footer_template']) ? $old_value['footer_template'] : 'none'));
+            error_log('New template: ' . (isset($new_value['footer_template']) ? $new_value['footer_template'] : 'none'));
+        }
+        
+        // Set a transient to show success message
+        set_transient('ross_footer_settings_saved', 1, 30);
     }
 
     /**
@@ -239,10 +258,34 @@ class RossFooterOptions {
         if (!get_transient('ross_template_applied_notice')) return;
         delete_transient('ross_template_applied_notice');
         ?>
-        <div  class="notice notice-success is-dismissible">
+        <div  class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;">
             <p ><strong>Footer template applied:</strong> The selected template was applied and your footer layout has been updated. Saving this page will not overwrite the applied template values.</p>
         </div>
         <?php
+    }
+    
+    /** Admin notice to confirm settings were saved successfully */
+    public function show_settings_saved_notice() {
+        // Check if we're on the footer settings page
+        if (!isset($_GET['page']) || $_GET['page'] !== 'ross-theme-footer') {
+            return;
+        }
+        
+        // Check both the WordPress settings-updated parameter and our custom transient
+        $settings_updated = isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true';
+        $transient_set = get_transient('ross_footer_settings_saved');
+        
+        if ($transient_set) {
+            delete_transient('ross_footer_settings_saved');
+        }
+        
+        if ($settings_updated || $transient_set) {
+            ?>
+            <div class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;">
+                <p><strong>✅ Footer settings saved successfully!</strong> Your changes have been applied. <a href="<?php echo home_url('/'); ?>" target="_blank">View your site →</a></p>
+            </div>
+            <?php
+        }
     }
 
     /** Return templates array - stored override falls back to default hardcoded list */
@@ -3257,6 +3300,17 @@ class RossFooterOptions {
     
     // Sanitization
     public function sanitize_footer_options($input) {
+        // Debug logging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Footer options sanitize called. Input count: ' . (is_array($input) ? count($input) : 0));
+        }
+        
+        // Validate input
+        if (!is_array($input)) {
+            error_log('ERROR: Footer options input is not an array!');
+            return get_option('ross_theme_footer_options', array());
+        }
+        
         // If a template was recently applied via AJAX, restore the applied values here
         // to prevent saving stale values from the options form (opened before Apply)
         if (is_admin()) {
@@ -3466,6 +3520,18 @@ class RossFooterOptions {
             $sanitized[$platform . '_enabled'] = isset($input[$platform . '_enabled']) ? 1 : 0;
             $sanitized[$platform . '_url'] = isset($input[$platform . '_url']) ? esc_url_raw($input[$platform . '_url']) : '';
         }
+
+        // Extended platforms (for Customizer repeater support) — preserve existing values if not posted
+        $existing_opts = get_option('ross_theme_footer_options', array());
+        $extra_platforms = array('youtube', 'pinterest');
+        foreach ($extra_platforms as $platform) {
+            $sanitized[$platform . '_enabled'] = isset($input[$platform . '_enabled'])
+                ? 1
+                : ( isset($existing_opts[$platform . '_enabled']) ? (int) $existing_opts[$platform . '_enabled'] : 0 );
+            $sanitized[$platform . '_url'] = isset($input[$platform . '_url'])
+                ? esc_url_raw($input[$platform . '_url'])
+                : ( isset($existing_opts[$platform . '_url']) ? esc_url_raw($existing_opts[$platform . '_url']) : '' );
+        }
         
         // Custom platform
         $sanitized['custom_social_enabled'] = isset($input['custom_social_enabled']) ? 1 : 0;
@@ -3476,7 +3542,9 @@ class RossFooterOptions {
         
         // Display order
         if (isset($input['social_display_order']) && is_array($input['social_display_order'])) {
-            $sanitized['social_display_order'] = array_map('sanitize_text_field', $input['social_display_order']);
+            // Keep unique, sanitized order; allow extended platforms to persist
+            $order = array_map('sanitize_text_field', $input['social_display_order']);
+            $sanitized['social_display_order'] = array_values(array_unique($order));
         } else {
             $sanitized['social_display_order'] = array('facebook', 'instagram', 'twitter', 'linkedin', 'custom');
         }
@@ -3508,6 +3576,12 @@ class RossFooterOptions {
         // Advanced: custom CSS / JS
         $sanitized['custom_footer_css'] = isset($input['custom_footer_css']) ? wp_strip_all_tags($input['custom_footer_css']) : '';
         $sanitized['custom_footer_js'] = isset($input['custom_footer_js']) ? wp_strip_all_tags($input['custom_footer_js']) : '';
+        
+        // Debug logging
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Footer options sanitized. Output count: ' . count($sanitized));
+            error_log('Template value: ' . (isset($sanitized['footer_template']) ? $sanitized['footer_template'] : 'NOT SET'));
+        }
         
         return $sanitized;
     }

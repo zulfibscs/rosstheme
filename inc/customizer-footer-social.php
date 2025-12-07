@@ -108,17 +108,41 @@ add_action( 'customize_save_after', function( $wp_customize ) {
     if ( ! is_array( $icons ) ) $icons = array();
 
     $footer_opts = get_option( 'ross_theme_footer_options', array() );
-    // map common social URLs to legacy keys
+    // Reset known platforms before remapping
+    $known = array('facebook','instagram','twitter','linkedin','youtube','pinterest');
+    foreach ( $known as $plat ) {
+        $footer_opts[ $plat . '_url' ] = $footer_opts[ $plat . '_url' ] ?? '';
+        $footer_opts[ $plat . '_enabled' ] = $footer_opts[ $plat . '_enabled' ] ?? 0;
+    }
+
+    // map common social URLs to option keys + build display order
+    $order = array();
     foreach ( $icons as $it ) {
         $icon = isset( $it['icon'] ) ? strtolower( $it['icon'] ) : '';
         $url = isset( $it['url'] ) ? esc_url_raw( $it['url'] ) : '';
-        if ( strpos( $icon, 'facebook' ) !== false ) {
-            $footer_opts['facebook_url'] = $url;
-        } elseif ( strpos( $icon, 'linkedin' ) !== false ) {
-            $footer_opts['linkedin_url'] = $url;
-        } elseif ( strpos( $icon, 'instagram' ) !== false ) {
-            $footer_opts['instagram_url'] = $url;
+        if ( empty( $icon ) || empty( $url ) ) {
+            continue;
         }
+
+        $platform = '';
+        foreach ( $known as $plat ) {
+            if ( false !== strpos( $icon, $plat ) || ( 'twitter' === $plat && false !== strpos( $icon, 'x-' ) ) ) {
+                $platform = $plat;
+                break;
+            }
+        }
+
+        if ( $platform ) {
+            $footer_opts[ $platform . '_url' ] = $url;
+            $footer_opts[ $platform . '_enabled' ] = 1;
+            if ( ! in_array( $platform, $order, true ) ) {
+                $order[] = $platform;
+            }
+        }
+    }
+
+    if ( ! empty( $order ) ) {
+        $footer_opts['social_display_order'] = $order;
     }
     // also save the raw icons JSON under a key for future use
     $footer_opts['social_icons_json'] = json_encode( $icons );

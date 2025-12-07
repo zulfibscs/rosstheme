@@ -299,7 +299,6 @@ When reporting issues, please include:
 - Steps to reproduce
 
 ---
-
 **Version**: 1.0.0  
 **Last Updated**: 2025  
 **Compatibility**: WordPress 5.0+  

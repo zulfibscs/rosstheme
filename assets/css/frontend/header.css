@@ -53,6 +53,11 @@
 	box-sizing: border-box;
 	text-align: center;
 }
+.site-announcement-strip.site-announcement--sticky {
+	position: sticky;
+	top: var(--announcement-sticky-offset, 0px);
+	z-index: 9999;
+}
 .site-announcement-strip .announcement-text {
 	display: inline-block;
 	white-space: nowrap;

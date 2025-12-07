@@ -30,19 +30,8 @@ if ($show_copyright) {
             <?php echo wp_kses_post($copyright_text); ?>
         </div>
         
-        <?php 
-        // Render custom footer HTML inside copyright container
-        if ($show_custom_footer && !empty($footer_options['custom_footer_html'])) {
-            echo '<div class="site-footer-custom">' . wp_kses_post($footer_options['custom_footer_html']) . '</div>';
-        }
-        ?>
     </div>
 </div>
 <?php
-}
-
-// Output custom footer JavaScript if enabled
-if ($show_custom_footer && !empty($footer_options['custom_footer_js'])) {
-    echo '<script>' . $footer_options['custom_footer_js'] . '</script>';
 }
 ?>

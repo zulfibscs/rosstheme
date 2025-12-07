@@ -60,7 +60,7 @@ class RossThemeResetUtility {
             <?php
             // Show success message if reset was done
             if (isset($_GET['reset']) && $_GET['reset'] === 'success') {
-                echo '<div class="notice notice-success is-dismissible"><p>✅ <strong>Success!</strong> All theme settings have been reset to default values.</p></div>';
+                echo '<div class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;"><p>✅ <strong>Success!</strong> All theme settings have been reset to default values.</p></div>';
             }
             ?>
             
@@ -368,7 +368,7 @@ class RossThemeResetUtility {
         if (isset($_GET['page']) && $_GET['page'] === 'ross-theme-reset' && isset($_GET['reset']) && $_GET['reset'] === 'success') {
             add_action('admin_notices', function() {
                 ?>
-                <div class="notice notice-success is-dismissible">
+                <div class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;">
                     <p>✅ <strong>Success!</strong> All theme settings have been reset to default values.</p>
                 </div>
                 <?php

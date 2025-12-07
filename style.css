@@ -55,6 +55,24 @@
     padding: 1.5rem 0 1rem;
 }
 
+.header-centered .header-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-centered .header-logo,
+.header-centered .header-navigation,
+.header-centered .header-actions {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.header-centered .primary-menu {
+    justify-content: center;
+}
+
 .header-centered .header-logo-centered {
     margin-bottom: 1.5rem;
 }

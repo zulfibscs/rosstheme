@@ -1,0 +1,6 @@
+/* Force success notices to render green text even if inline color overrides */
+.notice.notice-success.settings-error p,
+.notice.notice-success.settings-error p strong,
+.notice.notice-success.settings-error .notice-dismiss {
+	color: #14532d !important;
+}

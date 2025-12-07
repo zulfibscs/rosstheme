@@ -3,8 +3,37 @@ jQuery(document).ready(function($) {
     try {
         console.log('ross-footer-admin script loaded', typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin : 'rossFooterAdmin UNDEFINED');
     } catch(e) { console.warn('ross-footer-admin debug log failed', e); }
-    // Initialize color pickers
-    $('.color-picker').wpColorPicker();
+    
+    // FIX: Ensure submit button is clickable
+    $(document).on('click', '.ross-submit-btn, input[type="submit"]', function(e) {
+        console.log('Submit button clicked');
+        // Don't prevent default - let form submit naturally
+    });
+    
+    // Diagnostic: Check for button state
+    setTimeout(function() {
+        var $submitBtn = $('.ross-submit-btn, input[type="submit"]');
+        if ($submitBtn.length > 0) {
+            console.log('Submit button found:', $submitBtn.length);
+            console.log('Button is visible:', $submitBtn.is(':visible'));
+            console.log('Button is disabled:', $submitBtn.prop('disabled'));
+            console.log('Button CSS pointer-events:', $submitBtn.css('pointer-events'));
+            console.log('Button z-index:', $submitBtn.css('z-index'));
+        } else {
+            console.error('Submit button NOT found!');
+        }
+    }, 1000);
+    
+    // Initialize color pickers with error handling
+    try {
+        if ($.fn.wpColorPicker) {
+            $('.color-picker').wpColorPicker();
+        } else {
+            console.warn('wpColorPicker not available');
+        }
+    } catch(err) {
+        console.error('Color picker initialization failed:', err);
+    }
 
     // Media uploader for background image field (reusable frame per button)
     $(document).on('click', '.ross-upload-button', function(e) {
@@ -931,12 +960,52 @@ jQuery(document).ready(function($) {
         }).fail(function(){ $modal.html('<div style="padding:16px;color:red;">Failed to fetch sync preview.</div>'); });
     });
 
-        // small helper to provide a link to the Widgets admin (can't access PHP here). Build link to Appearance -> Widgets.
-        function admin_url_placeholder() {
-            try {
-                return window.location.origin + '/wp-admin/widgets.php';
-            } catch(e) {
-                return '/wp-admin/widgets.php';
-            }
+    // small helper to provide a link to the Widgets admin (can't access PHP here). Build link to Appearance -> Widgets.
+    function admin_url_placeholder() {
+        try {
+            return window.location.origin + '/wp-admin/widgets.php';
+        } catch(e) {
+            return '/wp-admin/widgets.php';
         }
+    }
+    
+    // FIX: Final check - ensure form submission is not blocked
+    console.log('Footer options JS initialized. Form submission enabled.');
+    
+    // Debug: Log any form submit events
+    $('form.ross-settings-form').on('submit', function(e) {
+        console.log('Form submitting...', e);
+        console.log('Form action:', $(this).attr('action'));
+        console.log('Form method:', $(this).attr('method'));
+        
+        // Count form fields
+        var fieldCount = $(this).find('input, select, textarea').length;
+        console.log('Total form fields:', fieldCount);
+        
+        // Check for required hidden fields
+        var optionPage = $(this).find('input[name="option_page"]');
+        var action = $(this).find('input[name="action"]');
+        var nonceField = $(this).find('input[name="_wpnonce"]');
+        
+        console.log('option_page field:', optionPage.length > 0 ? optionPage.val() : 'MISSING');
+        console.log('action field:', action.length > 0 ? action.val() : 'MISSING');
+        console.log('nonce field:', nonceField.length > 0 ? 'present' : 'MISSING');
+        
+        // Do NOT prevent default - let WordPress handle it
+        return true;
+    });
+    
+    // Monitor settings updates via AJAX (if WordPress uses it)
+    $(document).ajaxSuccess(function(event, xhr, settings) {
+        if (settings.url && settings.url.indexOf('options.php') !== -1) {
+            console.log('Settings update AJAX completed');
+        }
+    });
+    
+    $(document).ajaxError(function(event, xhr, settings, error) {
+        if (settings.url && settings.url.indexOf('options.php') !== -1) {
+            console.error('Settings update AJAX error:', error);
+            console.error('Response:', xhr.responseText);
+        }
+    });
 });

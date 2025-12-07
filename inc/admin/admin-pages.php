@@ -1078,6 +1078,9 @@ function ross_theme_footer_page() {
             padding-top: 2.5rem;
             border-top: 3px solid #e9ecef;
             text-align: center;
+            position: relative;
+            z-index: 100;
+            clear: both;
         }
         
         .ross-submit-btn {
@@ -1090,11 +1093,24 @@ function ross_theme_footer_page() {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
             font-weight: 600 !important;
             letter-spacing: 0.3px !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 101 !important;
         }
         
         .ross-submit-btn:hover {
             transform: translateY(-3px) !important;
             box-shadow: 0 10px 30px rgba(102,126,234,0.45) !important;
+        }
+        
+        .ross-submit-btn:active {
+            transform: translateY(-1px) !important;
+        }
+        
+        .ross-submit-btn:focus {
+            outline: 3px solid rgba(102,126,234,0.4) !important;
+            outline-offset: 2px !important;
         }
         
         /* Form Table Improvements */
