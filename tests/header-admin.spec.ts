@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
 const ADMIN_URL = process.env.ADMIN_URL || 'http://theme.dev/wp-admin';
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
@@ -6,7 +6,7 @@ const ADMIN_PASS = process.env.ADMIN_PASS || 'password';
 const SITE_URL = process.env.SITE_URL || 'http://theme.dev';
 
 // Helper: Login to WordPress admin
-async function adminLogin(page) {
+async function adminLogin(page: Page) {
   await page.goto(ADMIN_URL);
   await page.fill('input#user_login', ADMIN_USER);
   await page.fill('input#user_pass', ADMIN_PASS);
@@ -339,13 +339,13 @@ test.describe('Header Frontend Display', () => {
     
     // Check if rossHeaderOptions is available in window
     const hasOptions = await page.evaluate(() => {
-      return typeof window['rossHeaderOptions'] !== 'undefined';
+      return typeof (window as any).rossHeaderOptions !== 'undefined';
     });
     
     expect(hasOptions).toBeTruthy();
     
     // Verify specific options are present
-    const options = await page.evaluate(() => window['rossHeaderOptions']);
+    const options = await page.evaluate(() => (window as any).rossHeaderOptions);
     
     expect(options).toHaveProperty('sticky_header');
     expect(options).toHaveProperty('mobile_menu_style');
