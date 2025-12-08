@@ -143,3 +143,41 @@ if ($selected_template &&
     <?php
     get_footer();
 }
+                <p>"They transformed our accounting process and saved us time every month."</p>
+                <div class="author">— Sarah J., CEO</div>
+            </div>
+            <div class="testimonial">
+                <p>"Reliable, insightful and great communication. Highly recommended."</p>
+                <div class="author">— Mark P., Founder</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="front-reviews container">
+        <h2>Reviews</h2>
+        <div class="review-list">
+            <div class="review">⭐⭐⭐⭐⭐ — Excellent support and fast turnaround.</div>
+            <div class="review">⭐⭐⭐⭐ — Helpful advice and friendly team.</div>
+            <div class="review">⭐⭐⭐⭐⭐ — Saved us significant tax last year.</div>
+        </div>
+    </section>
+
+    <section class="front-comments container">
+        <h2>Recent Comments</h2>
+        <div class="comment">Great article on small business tax — very practical.</div>
+        <div class="comment">Helpful onboarding process, thanks.</div>
+    </section>
+
+    <section class="front-gallery container">
+        <h2>Gallery</h2>
+        <div class="gallery-grid">
+            <img src="https://images.unsplash.com/photo-1585386959984-a415522e3f9b?w=800&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=5b4b1b2d8f5b9ce6d6b5b4c9f986b3c1" alt="gallery-1"/>
+            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=7c3a5abc55b1f6c3b5f2b2ff1b1f3e7a" alt="gallery-2"/>
+            <img src="https://images.unsplash.com/photo-1551836022-1ba2f3c0cde4?w=800&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=9a1d4a8c1d3e4b5a6c7d8e9f0a1b2c3d" alt="gallery-3"/>
+            <img src="https://images.unsplash.com/photo-1508385082359-fc2f3d8f8f48?w=800&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2e3b4c5d6f7a8b9c0d1e2f3a4b5c6d7e" alt="gallery-4"/>
+        </div>
+    </section>
+
+</main>
+
+<?php get_footer();
