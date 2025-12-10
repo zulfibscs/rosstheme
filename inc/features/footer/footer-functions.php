@@ -4,32 +4,24 @@
  * Handles footer display logic based on options
  */
 
-function ross_theme_get_footer_layout() {
-    // Footer style option removed; always use the default layout.
-    return 'default';
-}
-
+/**
+ * Display the appropriate footer template
+ */
 function ross_theme_display_footer() {
     $footer_options = get_option('ross_theme_footer_options', array());
 
-    // If a custom footer is enabled and has content, render it and skip template loading
     if (!empty($footer_options['enable_custom_footer']) && !empty($footer_options['custom_footer_html'])) {
         ross_theme_render_custom_footer();
         return;
     }
     
-    // Get selected template
     $template_id = $footer_options['footer_template'] ?? 'business-professional';
-    
-    // Check if template part exists
     $template_part = 'template-parts/footer/footer-' . $template_id;
     $template_file = locate_template($template_part . '.php');
     
     if ($template_file) {
-        // Use specific template
         get_template_part('template-parts/footer/footer', $template_id);
     } else {
-        // Fallback to default
         get_template_part('template-parts/footer/footer-default');
     }
 }
@@ -40,15 +32,15 @@ function ross_theme_display_footer() {
  */
 function ross_theme_render_custom_footer() {
     $footer_options = get_option('ross_theme_footer_options', array());
-    if (empty($footer_options) || empty($footer_options['enable_custom_footer'])) {
+    
+    if (empty($footer_options['enable_custom_footer'])) {
         return;
     }
 
-    $custom_html = isset($footer_options['custom_footer_html']) ? $footer_options['custom_footer_html'] : '';
-    $custom_js   = isset($footer_options['custom_footer_js']) ? $footer_options['custom_footer_js'] : '';
+    $custom_html = $footer_options['custom_footer_html'] ?? '';
+    $custom_js   = $footer_options['custom_footer_js'] ?? '';
 
     if (!empty($custom_html)) {
-        // Wrap in a footer element so it inherits global footer styles/spacing
         echo '<footer class="site-footer site-footer-custom">' . wp_kses_post($custom_html) . '</footer>';
     }
 
@@ -57,72 +49,87 @@ function ross_theme_render_custom_footer() {
     }
 }
 
+/**
+ * Check if footer widgets should be displayed
+ */
 function ross_theme_should_show_footer_widgets() {
-    $footer_options = get_option('ross_theme_footer_options');
-    return isset($footer_options['enable_widgets']) ? $footer_options['enable_widgets'] : true;
+    $footer_options = get_option('ross_theme_footer_options', array());
+    return $footer_options['enable_widgets'] ?? true;
 }
 
+/**
+ * Check if footer CTA should be displayed
+ */
 function ross_theme_should_show_footer_cta() {
-    $footer_options = get_option('ross_theme_footer_options');
-    // Developer override: allow defining ROSS_DISABLE_CTA to globally disable CTA
+    $footer_options = get_option('ross_theme_footer_options', array());
+    
     if (defined('ROSS_DISABLE_CTA') && ROSS_DISABLE_CTA) {
         return false;
     }
-    // Always-visible override
+    
     if (!empty($footer_options['cta_always_visible'])) {
         return true;
     }
 
-    // Respect the enable toggle; fall back to false
-    $enabled = isset($footer_options['enable_footer_cta']) ? (bool) $footer_options['enable_footer_cta'] : false;
-    if (!$enabled) return false;
+    $enabled = (bool) ($footer_options['enable_footer_cta'] ?? false);
+    
+    if (!$enabled) {
+        return false;
+    }
 
-    // If enabled, optionally check 'cta_display_on' for template-specific visibility
     if (!empty($footer_options['cta_display_on']) && is_array($footer_options['cta_display_on'])) {
         $visible_on = $footer_options['cta_display_on'];
-        // If 'all' selected, show everywhere
+        
         if (in_array('all', $visible_on, true)) return true;
-        // Front page
         if (in_array('front', $visible_on, true) && is_front_page()) return true;
         if (in_array('home', $visible_on, true) && is_home()) return true;
         if (in_array('single', $visible_on, true) && is_single()) return true;
         if (in_array('page', $visible_on, true) && is_page()) return true;
         if (in_array('archive', $visible_on, true) && is_archive()) return true;
 
-        // No matching visibility: do not show.
         return false;
     }
 
     return $enabled;
 }
 
+/**
+ * Check if social icons should be displayed
+ */
 function ross_theme_should_show_social_icons() {
-    // Prefer Customizer theme_mod if present
-    $theme_mod = get_theme_mod( 'footer_social_enable', null );
-    if ( null !== $theme_mod ) {
+    $theme_mod = get_theme_mod('footer_social_enable', null);
+    if (null !== $theme_mod) {
         return (bool) $theme_mod;
     }
-    $footer_options = get_option('ross_theme_footer_options');
-    return isset($footer_options['enable_social_icons']) ? (bool) $footer_options['enable_social_icons'] : true;
+    
+    $footer_options = get_option('ross_theme_footer_options', array());
+    return (bool) ($footer_options['enable_social_icons'] ?? true);
 }
 
+/**
+ * Check if copyright should be displayed
+ */
 function ross_theme_should_show_copyright() {
-    $footer_options = get_option('ross_theme_footer_options');
-    // If a custom footer is enabled, avoid showing the default copyright block
+    $footer_options = get_option('ross_theme_footer_options', array());
+    
     if (!empty($footer_options['enable_custom_footer'])) {
         return false;
     }
-    return isset($footer_options['enable_copyright']) ? (bool) $footer_options['enable_copyright'] : true;
+    
+    return (bool) ($footer_options['enable_copyright'] ?? true);
 }
 
+/**
+ * Get copyright text with placeholders replaced
+ */
 function ross_theme_get_copyright_text() {
-    $footer_options = get_option('ross_theme_footer_options');
-    $text = isset($footer_options['copyright_text']) ? $footer_options['copyright_text'] : '© {year} {site_name}. All rights reserved.';
-    // Replace placeholders
+    $footer_options = get_option('ross_theme_footer_options', array());
+    $text = $footer_options['copyright_text'] ?? '© {year} {site_name}. All rights reserved.';
+    
     $placeholders = array('{year}', '{site_name}');
     $replacements = array(date('Y'), get_bloginfo('name'));
     $text = str_replace($placeholders, $replacements, $text);
-    // Allow HTML via kses_post but with placeholders replaced
+    
     return wp_kses_post($text);
 }
 

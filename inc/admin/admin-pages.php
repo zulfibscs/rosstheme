@@ -527,6 +527,14 @@ function ross_theme_header_page() {
 }
 
 function ross_theme_footer_page() {
+    // Handle Reset All Settings
+    if (isset($_POST['ross_reset_all_footer']) && $_POST['ross_reset_all_footer'] === '1') {
+        if (check_admin_referer('ross_reset_footer', '_wpnonce')) {
+            delete_option('ross_theme_footer_options');
+            wp_redirect(add_query_arg('settings-updated', 'true', wp_get_referer()));
+            exit;
+        }
+    }
     ?>
     <div class="wrap ross-theme-admin ross-footer-admin">
         <div class="ross-admin-header">
@@ -807,17 +815,21 @@ function ross_theme_footer_page() {
         var submitBtn = document.getElementById('ross-footer-submit');
         
         if (footerForm && submitBtn) {
-            // Ensure submit button always works
-            submitBtn.addEventListener('click', function(e) {
-                // Don't prevent default - let form submit naturally
-                // This ensures WordPress Settings API processes the form
-            });
+            // Remove any existing event listeners that might interfere
+            var newSubmitBtn = submitBtn.cloneNode(true);
+            submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
             
-            // Add form validation
+            // Ensure form submits properly
             footerForm.addEventListener('submit', function(e) {
-                // Allow submission - WordPress handles validation
-                return true;
-            });
+                // Don't prevent default - let WordPress handle it
+                console.log('Footer form submitting...');
+            }, false);
+            
+            // Click handler for submit button
+            newSubmitBtn.addEventListener('click', function(e) {
+                console.log('Submit button clicked');
+                // Let the form submit naturally
+            }, false);
         }
     });
     </script>
@@ -929,6 +941,16 @@ function ross_theme_footer_page() {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        
+        /* Spin animation for loading states */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .dashicons.spin {
+            animation: spin 1s linear infinite;
         }
         
         /* Prevent notices from being hidden */
@@ -2260,6 +2282,13 @@ function ross_theme_footer_page() {
         }
         
         if (confirm('🚨 FINAL WARNING: This will permanently delete all footer customizations. Continue?')) {
+            // Show loading state
+            var btn = document.querySelector('.ross-reset-all-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="dashicons dashicons-update spin"></span> Resetting...';
+            }
+            
             var form = document.createElement('form');
             form.method = 'POST';
             form.action = window.location.href;

@@ -19,5 +19,4 @@ return array(
         array('title' => 'Company', 'items' => array('About', 'Careers', 'Press', 'Affiliates')),
         array('title' => 'Subscribe', 'html' => '<p>Sign up for exclusive offers and product updates.</p>')
     ),
-    'cta' => array('title' => 'Save 10% Now', 'subtitle' => 'Subscribe for a first-time discount.', 'button_text' => 'Subscribe', 'button_url' => '#')
 );

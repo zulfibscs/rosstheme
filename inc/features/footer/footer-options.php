@@ -10,47 +10,40 @@ class RossFooterOptions {
     
     public function __construct() {
         $this->options = get_option('ross_theme_footer_options');
-        // Run a quick migration for legacy template keys before registering settings
+        
+        // Migration hooks (run before settings registration)
         add_action('admin_init', array($this, 'migrate_legacy_template_keys'), 5);
-        add_action('admin_init', array($this, 'migrate_social_icons_enabled_flags'), 5); // NEW: Social icons V2 migration
+        add_action('admin_init', array($this, 'migrate_social_icons_enabled_flags'), 5);
         add_action('admin_init', array($this, 'ensure_default_template_options'), 6);
+        
+        // Core admin hooks
         add_action('admin_init', array($this, 'register_footer_settings'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_footer_scripts'));
+        add_action('admin_notices', array($this, 'show_template_applied_notice'));
+        add_action('admin_notices', array($this, 'show_settings_saved_notice'));
+        
+        // AJAX handlers
         add_action('wp_ajax_ross_apply_footer_template', array($this, 'ajax_apply_footer_template'));
         add_action('wp_ajax_ross_restore_footer_backup', array($this, 'ajax_restore_footer_backup'));
         add_action('wp_ajax_ross_delete_footer_backup', array($this, 'ajax_delete_footer_backup'));
         add_action('wp_ajax_ross_list_footer_backups', array($this, 'ajax_list_footer_backups'));
         add_action('wp_ajax_ross_get_footer_template_preview', array($this, 'ajax_get_footer_template_preview'));
-        // Admin notice to show when a template is applied to protect against overwrites
-        add_action('admin_notices', array($this, 'show_template_applied_notice'));
-        add_action('admin_notices', array($this, 'show_settings_saved_notice'));
         add_action('wp_ajax_ross_sync_footer_templates', array($this, 'ajax_sync_footer_templates'));
         add_action('wp_ajax_ross_apply_template_sync', array($this, 'ajax_apply_template_sync'));
         
-        // Hook to track when option is updated
+        // Option update tracking
         add_action('update_option_ross_theme_footer_options', array($this, 'on_footer_options_updated'), 10, 3);
     }
     
     /**
      * Called when footer options are updated
-     * Log for debugging and clear any caches if needed
      */
     public function on_footer_options_updated($old_value, $new_value, $option_name) {
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Footer options UPDATED successfully!');
-            error_log('Old template: ' . (isset($old_value['footer_template']) ? $old_value['footer_template'] : 'none'));
-            error_log('New template: ' . (isset($new_value['footer_template']) ? $new_value['footer_template'] : 'none'));
-        }
-        
-        // Set a transient to show success message
         set_transient('ross_footer_settings_saved', 1, 30);
     }
 
     /**
-     * Migrate legacy per-template option keys saved under names like
-     * 'template_template1_bg' into the new keys 'template1_bg', etc.
-     * Also migrate old template IDs (template1, template2, etc.) to new naming
-     * This runs once on admin_init and updates the stored option if needed.
+     * Migrate legacy template keys and IDs
      */
     public function migrate_legacy_template_keys() {
         if (!is_admin()) return;
@@ -60,16 +53,17 @@ class RossFooterOptions {
 
         $changed = false;
         
-        // Migrate legacy prefix (template_template1_bg -> template1_bg)
+        // Migrate legacy template prefix (template_template1_bg -> template1_bg)
         for ($i = 1; $i <= 4; $i++) {
             $legacy_prefix = 'template_template' . $i . '_';
             $new_prefix = 'template' . $i . '_';
             $keys = array('bg', 'text', 'accent', 'social');
+            
             foreach ($keys as $k) {
                 $legacy = $legacy_prefix . $k;
                 $new = $new_prefix . $k;
+                
                 if (isset($opts[$legacy])) {
-                    // If new key empty, copy value; otherwise drop legacy key to avoid confusion
                     if (empty($opts[$new]) && $opts[$new] !== '0') {
                         $opts[$new] = $opts[$legacy];
                     }
@@ -79,7 +73,7 @@ class RossFooterOptions {
             }
         }
         
-        // NEW: Migrate old template IDs to new semantic names
+        // Migrate old template IDs to semantic names
         $template_id_map = array(
             'template1' => 'business-professional',
             'template2' => 'ecommerce',
@@ -94,61 +88,46 @@ class RossFooterOptions {
 
         if ($changed) {
             update_option('ross_theme_footer_options', $opts);
-            // Refresh local copy for current request
             $this->options = $opts;
         }
     }
 
     /**
      * Migrate social icons to V2 format with enabled flags
-     * If a platform has a URL but no _enabled field, set it to enabled
-     * This runs once to handle upgrades from old social icons system
      */
     public function migrate_social_icons_enabled_flags() {
-        if (!is_admin()) return;
-        
-        // Check if migration already ran
-        $migration_flag = get_option('ross_social_icons_v2_migrated', false);
-        if ($migration_flag) return;
+        if (!is_admin() || get_option('ross_social_icons_v2_migrated', false)) {
+            return;
+        }
         
         $opts = get_option('ross_theme_footer_options', array());
-        if (empty($opts) || !is_array($opts)) {
+        if (!is_array($opts)) {
             $opts = array();
         }
         
         $changed = false;
         
-        // Ensure master toggle defaults to enabled
         if (!isset($opts['enable_social_icons'])) {
             $opts['enable_social_icons'] = 1;
             $changed = true;
         }
         
-        // Core 4 platforms: If URL exists but no _enabled field, enable it
         $core_platforms = array('facebook', 'instagram', 'twitter', 'linkedin');
         foreach ($core_platforms as $platform) {
             $url_key = $platform . '_url';
             $enabled_key = $platform . '_enabled';
             
-            // If platform has a URL but no enabled flag, enable it
-            if (!empty($opts[$url_key]) && !isset($opts[$enabled_key])) {
-                $opts[$enabled_key] = 1;
-                $changed = true;
-            }
-            // If no URL and no enabled flag, set to enabled by default (user can disable)
-            elseif (!isset($opts[$enabled_key])) {
-                $opts[$enabled_key] = 1;
+            if (!isset($opts[$enabled_key])) {
+                $opts[$enabled_key] = !empty($opts[$url_key]) ? 1 : 1;
                 $changed = true;
             }
         }
         
-        // Custom platform defaults to disabled
         if (!isset($opts['custom_social_enabled'])) {
             $opts['custom_social_enabled'] = 0;
             $changed = true;
         }
         
-        // Set display order if not exists
         if (!isset($opts['social_display_order']) || !is_array($opts['social_display_order'])) {
             $opts['social_display_order'] = array('facebook', 'instagram', 'twitter', 'linkedin', 'custom');
             $changed = true;
@@ -156,93 +135,99 @@ class RossFooterOptions {
         
         if ($changed) {
             update_option('ross_theme_footer_options', $opts);
-            // Refresh local copy
             $this->options = $opts;
         }
         
-        // Set migration flag so this only runs once
         update_option('ross_social_icons_v2_migrated', true);
     }
 
-    /** Ensure that default footer templates exist in stored options (for customization or persistence) */
+    /**
+     * Ensure default footer templates exist in stored options
+     */
     public function ensure_default_template_options() {
         if (!is_admin()) return;
+        
         $templates = get_option('ross_theme_footer_templates', array());
-        // If folder-based templates exist, force them to override stored templates
         $folder_templates = $this->load_templates_from_dir();
         $force_override = apply_filters('ross_theme_force_template_files_override', true);
+        
         if ($force_override && is_array($folder_templates) && !empty($folder_templates)) {
-            // Only update stored option if it differs to avoid unnecessary writes
             if ($templates !== $folder_templates) {
                 update_option('ross_theme_footer_templates', $folder_templates);
                 $templates = $folder_templates;
-                // Set a transient so we can show an admin notice informing the user
                 set_transient('ross_templates_overridden', 1, 30);
                 add_action('admin_notices', array($this, 'show_templates_overridden_notice'));
             }
         }
 
         if (!is_array($templates) || empty($templates)) {
-            // Prefer to load templates from the dedicated `templates/` folder if available
-            if (is_array($folder_templates) && !empty($folder_templates)) {
-                $default = $folder_templates;
-            } else {
-                // Fallback to hardcoded defaults with new template IDs
-                $default = array(
-                'business-professional' => array(
-                    'title' => 'Business Professional',
-                    'description' => 'Clean 4-column layout ideal for professional services and B2B companies',
-                    'icon' => '💼',
-                    'cols' => array(
-                        'About Us|Empowering businesses with expert financial, consulting, and digital solutions for growth.',
-                        'Our Services|Auditing, Tax, Advisory, Digital Transformation, Strategy',
-                        'Insights & Resources|Blog, Case Studies, Whitepapers, FAQs',
-                        'Contact|123 Business Ave, City | (555) 123-4567 | info@businesspro.com | LinkedIn, Facebook'
-                    ),
-                    'bg' => '#f8f9fb',
-                    'text' => '#0b2140',
-                    'accent' => '#0b66a6',
-                    'columns' => 4
-                ),
-                'ecommerce' => array(
-                    'title' => 'E-commerce',
-                    'description' => 'Modern layout optimized for online stores with product categories',
-                    'icon' => '🛒',
-                    'cols' => array('Shop|All Products, New Arrivals, Sale', 'Customer Service|Shipping, Returns, FAQ', 'Company|About, Careers, Press', 'Subscribe|Join our newsletter'),
-                    'bg' => '#fff',
-                    'text' => '#0b2140',
-                    'accent' => '#b02a2a',
-                    'columns' => 4
-                ),
-                'creative-agency' => array(
-                    'title' => 'Creative Agency',
-                    'description' => 'Bold dark design perfect for creative studios and agencies',
-                    'icon' => '🎨',
-                    'cols' => array('Who We Are|Design-led agency crafting beautiful experiences.', 'Work|Case Studies, Clients', 'Services|Branding, UX/UI', 'Contact|hello@agency.example'),
-                    'bg' => '#0c0c0d',
-                    'text' => '#f3f4f6',
-                    'accent' => '#E5C902',
-                    'columns' => 4
-                ),
-                'minimal-modern' => array(
-                    'title' => 'Minimal Modern',
-                    'description' => 'Ultra-clean minimalist design ideal for SaaS products',
-                    'icon' => '✨',
-                    'cols' => array('Company|About, Contact', 'Explore|Features, Pricing', 'Resources|Docs, API', 'Follow|Social links'),
-                    'bg' => '#fafafa',
-                    'text' => '#0b2140',
-                    'accent' => '#0b66a6',
-                    'columns' => 1
-                ),
-                );
-            }
+            $default = is_array($folder_templates) && !empty($folder_templates) 
+                ? $folder_templates 
+                : $this->get_default_templates();
+            
             update_option('ross_theme_footer_templates', $default);
             $templates = $default;
         }
+        
         return $templates;
     }
+    
+    /**
+     * Get hardcoded default templates
+     */
+    private function get_default_templates() {
+        return array(
+            'business-professional' => array(
+                'title' => 'Business Professional',
+                'description' => 'Clean 4-column layout ideal for professional services and B2B companies',
+                'icon' => '💼',
+                'cols' => array(
+                    'About Us|Empowering businesses with expert financial, consulting, and digital solutions for growth.',
+                    'Our Services|Auditing, Tax, Advisory, Digital Transformation, Strategy',
+                    'Insights & Resources|Blog, Case Studies, Whitepapers, FAQs',
+                    'Contact|123 Business Ave, City | (555) 123-4567 | info@businesspro.com | LinkedIn, Facebook'
+                ),
+                'bg' => '#f8f9fb',
+                'text' => '#0b2140',
+                'accent' => '#0b66a6',
+                'columns' => 4
+            ),
+            'ecommerce' => array(
+                'title' => 'E-commerce',
+                'description' => 'Modern layout optimized for online stores with product categories',
+                'icon' => '🛒',
+                'cols' => array('Shop|All Products, New Arrivals, Sale', 'Customer Service|Shipping, Returns, FAQ', 'Company|About, Careers, Press', 'Subscribe|Join our newsletter'),
+                'bg' => '#fff',
+                'text' => '#0b2140',
+                'accent' => '#b02a2a',
+                'columns' => 4
+            ),
+            'creative-agency' => array(
+                'title' => 'Creative Agency',
+                'description' => 'Bold dark design perfect for creative studios and agencies',
+                'icon' => '🎨',
+                'cols' => array('Who We Are|Design-led agency crafting beautiful experiences.', 'Work|Case Studies, Clients', 'Services|Branding, UX/UI', 'Contact|hello@agency.example'),
+                'bg' => '#0c0c0d',
+                'text' => '#f3f4f6',
+                'accent' => '#E5C902',
+                'columns' => 4
+            ),
+            'minimal-modern' => array(
+                'title' => 'Minimal Modern',
+                'description' => 'Ultra-clean minimalist design ideal for SaaS products',
+                'icon' => '✨',
+                'cols' => array('Company|About, Contact', 'Explore|Features, Pricing', 'Resources|Docs, API', 'Follow|Social links'),
+                'bg' => '#fafafa',
+                'text' => '#0b2140',
+                'accent' => '#0b66a6',
+                'columns' => 1
+            ),
+        );
+    }
 
-    /** Render admin notice informing that folder templates were used to override stored templates */
+    /**
+     * Admin notice: Templates overridden by folder files
+     */
     public function show_templates_overridden_notice() {
         if (!get_transient('ross_templates_overridden')) return;
         delete_transient('ross_templates_overridden');
@@ -253,25 +238,27 @@ class RossFooterOptions {
         <?php
     }
 
-    /** Admin notice to inform when a template was applied and protected by transient */
+    /**
+     * Admin notice: Template applied successfully
+     */
     public function show_template_applied_notice() {
         if (!get_transient('ross_template_applied_notice')) return;
         delete_transient('ross_template_applied_notice');
         ?>
-        <div  class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;">
-            <p ><strong>Footer template applied:</strong> The selected template was applied and your footer layout has been updated. Saving this page will not overwrite the applied template values.</p>
+        <div class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;">
+            <p><strong>Footer template applied:</strong> The selected template was applied and your footer layout has been updated. Saving this page will not overwrite the applied template values.</p>
         </div>
         <?php
     }
     
-    /** Admin notice to confirm settings were saved successfully */
+    /**
+     * Admin notice: Settings saved successfully
+     */
     public function show_settings_saved_notice() {
-        // Check if we're on the footer settings page
         if (!isset($_GET['page']) || $_GET['page'] !== 'ross-theme-footer') {
             return;
         }
         
-        // Check both the WordPress settings-updated parameter and our custom transient
         $settings_updated = isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true';
         $transient_set = get_transient('ross_footer_settings_saved');
         
@@ -288,21 +275,19 @@ class RossFooterOptions {
         }
     }
 
-    /** Return templates array - stored override falls back to default hardcoded list */
+    /**
+     * Get footer templates (folder files override stored options)
+     */
     private function get_templates() {
         $stored = get_option('ross_theme_footer_templates', array());
-
-        // Try loading templates from the 'templates' folder first
         $from_dir = $this->load_templates_from_dir();
-
-        // Allow plugin/theme to opt-out of enforcement via a filter (default TRUE)
         $force_override = apply_filters('ross_theme_force_template_files_override', true);
-        // Force folder-based templates to override any stored templates of the same key
+        
         $templates = is_array($stored) ? $stored : array();
+        
         if ($force_override && is_array($from_dir) && !empty($from_dir)) {
             foreach ($from_dir as $k => $v) {
                 if (isset($templates[$k]) && is_array($templates[$k]) && is_array($v)) {
-                    // folder keys should win over stored; merge where needed
                     $templates[$k] = array_replace_recursive($templates[$k], $v);
                 } else {
                     $templates[$k] = $v;
@@ -310,33 +295,21 @@ class RossFooterOptions {
             }
         }
 
-        if (!empty($templates)) return $templates;
-
-        // default templates (same as earlier sample list)
-        return array(
-            'template1' => array(
-                'title' => 'Business Professional',
-                'cols' => array(
-                    'About Us|Empowering businesses with expert financial, consulting, and digital solutions for growth.',
-                    'Our Services|Auditing, Tax, Advisory, Digital Transformation, Strategy',
-                    'Insights & Resources|Blog, Case Studies, Whitepapers, FAQs',
-                    'Contact|123 Business Ave, City | (555) 123-4567 | info@businesspro.com | LinkedIn, Facebook'
-                ),
-                'bg' => '#f8f9fb'
-            ),
-            'template2' => array('title' => 'E-commerce', 'cols' => array('Shop|All Products, New Arrivals, Sale', 'Customer Service|Shipping, Returns, FAQ', 'Company|About, Careers, Press', 'Subscribe|Join our newsletter'), 'bg' => '#fff'),
-            'template3' => array('title' => 'Creative Agency', 'cols' => array('Who We Are|Design-led agency crafting beautiful experiences.', 'Work|Case Studies, Clients', 'Services|Branding, UX/UI', 'Contact|hello@agency.example'), 'bg' => '#111'),
-            'template4' => array('title' => 'Minimal Modern', 'cols' => array('Company|About, Contact', 'Explore|Features, Pricing', 'Resources|Docs, API', 'Follow|Social links'), 'bg' => '#fafafa'),
-        );
+        return !empty($templates) ? $templates : $this->get_default_templates();
     }
 
-    /** Scan `templates` subfolder and load individual template files (return associative array keyed by file basename) */
+    /**
+     * Load templates from templates/ directory
+     */
     private function load_templates_from_dir() {
         $dir = __DIR__ . '/templates';
         $templates = array();
-        if (!is_dir($dir)) return $templates;
+        
+        if (!is_dir($dir)) {
+            return $templates;
+        }
+        
         foreach (glob($dir . '/*.php') as $file) {
-            // Filename becomes the template id: e.g. template1.php -> template1
             $id = basename($file, '.php');
             try {
                 $data = include $file;
@@ -344,139 +317,143 @@ class RossFooterOptions {
                     $templates[$id] = $data;
                 }
             } catch (Exception $e) {
-                // skip files that throw errors
+                continue;
             }
         }
+        
         return $templates;
     }
     
+    /**
+     * Enqueue admin scripts and styles for footer settings page
+     */
     public function enqueue_footer_scripts($hook) {
-        // Enqueue footer admin scripts when on the Footer Options page.
-        // The $hook value differs for top-level vs submenu pages, so check by presence
-        // of the page slug as well as the GET param for robustness.
         $is_footer_page = false;
-        // If available, use current screen to reliably determine the page
+        
         if (function_exists('get_current_screen')) {
             $screen = get_current_screen();
-            if ($screen && (strpos($screen->id, 'ross-theme-footer') !== false || isset($_GET['page']) && $_GET['page'] === 'ross-theme-footer')) {
+            if ($screen && strpos($screen->id, 'ross-theme-footer') !== false) {
                 $is_footer_page = true;
             }
         }
-        if (!$is_footer_page && is_string($hook) && strpos($hook, 'ross-theme-footer') !== false) {
-            $is_footer_page = true;
-        }
+        
         if (!$is_footer_page && isset($_GET['page']) && $_GET['page'] === 'ross-theme-footer') {
             $is_footer_page = true;
         }
-
-        if ($is_footer_page) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('ross_footer_enqueue_scripts: enqueueing footer scripts for hook=' . print_r($hook, true));
-            }
-            
-            // Font Awesome for social icons display in admin
-            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
-            
-            wp_enqueue_style('wp-color-picker');
-            wp_enqueue_script('wp-color-picker');
-            // Media uploader for background image field
-            wp_enqueue_media();
-            wp_enqueue_script('ross-footer-admin', get_template_directory_uri() . '/assets/js/admin/footer-options.js', array('jquery', 'wp-color-picker'), filemtime(get_template_directory() . '/assets/js/admin/footer-options.js'), true);
-            
-            // NEW: Enqueue modern template selector JS
-            $template_selector_js = get_template_directory() . '/assets/js/admin/footer-template-selector.js';
-            if (file_exists($template_selector_js)) {
-                wp_enqueue_script('ross-footer-template-selector', get_template_directory_uri() . '/assets/js/admin/footer-template-selector.js', array('jquery'), filemtime($template_selector_js), true);
-            }
-            
-            // Admin UI styling for footer options
-            wp_enqueue_style('ross-footer-admin-css', get_template_directory_uri() . '/assets/css/admin/footer-styling-admin.css', array(), '1.0.0');
-            
-            // NEW: Tooltips and help system CSS
-            $tooltips_css = get_template_directory() . '/assets/css/admin/footer-admin-tooltips.css';
-            if (file_exists($tooltips_css)) {
-                wp_enqueue_style('ross-footer-tooltips', get_template_directory_uri() . '/assets/css/admin/footer-admin-tooltips.css', array(), filemtime($tooltips_css));
-            }
-            
-            // NEW: Enqueue modern template selector CSS
-            $template_ui_css = get_template_directory() . '/assets/css/admin/footer-template-ui.css';
-            if (file_exists($template_ui_css)) {
-                wp_enqueue_style('ross-footer-template-ui', get_template_directory_uri() . '/assets/css/admin/footer-template-ui.css', array(), filemtime($template_ui_css));
-            }
-            
-            // NEW: Enqueue social icons UI CSS
-            $social_ui_css = get_template_directory() . '/assets/css/admin/social-icons-ui.css';
-            if (file_exists($social_ui_css)) {
-                wp_enqueue_style('ross-social-icons-ui', get_template_directory_uri() . '/assets/css/admin/social-icons-ui.css', array('wp-color-picker'), filemtime($social_ui_css));
-            }
-            
-            // NEW: Enqueue social icons manager JS
-            $social_ui_js = get_template_directory() . '/assets/js/admin/social-icons-manager.js';
-            if (file_exists($social_ui_js)) {
-                wp_enqueue_script('ross-social-icons-manager', get_template_directory_uri() . '/assets/js/admin/social-icons-manager.js', array('jquery', 'wp-color-picker'), filemtime($social_ui_js), true);
-            }
-            
-            wp_localize_script('ross-footer-admin', 'rossFooterAdmin', array(
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('ross_apply_footer_template'),
-                'sync_nonce' => wp_create_nonce('ross_sync_footer_templates'),
-                'site_url' => home_url('/'),
-                'site_name' => get_bloginfo('name'),
-                'widgets_url' => admin_url('widgets.php')
-            ));
-            // enqueue preview CSS
-            wp_enqueue_style('ross-footer-preview-css', get_template_directory_uri() . '/assets/css/admin/footer-preview.css', array(), '1.0.0');
-            
-            // Add inline script for conditional field display
-            wp_add_inline_script('ross-footer-admin', "
-                jQuery(document).ready(function($) {
-                    // Conditional display for copyright fields
-                    function toggleCopyrightFields() {
-                        var isEnabled = $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').is(':checked');
-                        var copyrightFields = [
-                            'copyright_text', 'copyright_alignment', 'copyright_bg_color', 
-                            'copyright_text_color', 'copyright_font_size', 'copyright_font_weight',
-                            'copyright_letter_spacing', 'copyright_padding_top', 'copyright_padding_bottom',
-                            'copyright_border_top', 'copyright_border_color', 'copyright_border_width',
-                            'copyright_link_color', 'copyright_link_hover_color',
-                            'enable_custom_footer', 'custom_footer_html', 'custom_footer_css', 'custom_footer_js'
-                        ];
-                        
-                        copyrightFields.forEach(function(field) {
-                            var row = $('input[name=\"ross_theme_footer_options[' + field + ']\"], textarea[name=\"ross_theme_footer_options[' + field + ']\"], select[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
-                            if (isEnabled) {
-                                row.show();
-                            } else {
-                                row.hide();
-                            }
-                        });
-                    }
-                    
-                    // Conditional display for custom footer fields
-                    function toggleCustomFooterFields() {
-                        var isEnabled = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').is(':checked');
-                        var customFields = ['custom_footer_html', 'custom_footer_css', 'custom_footer_js'];
-                        
-                        customFields.forEach(function(field) {
-                            var row = $('textarea[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
-                            if (isEnabled) {
-                                row.show();
-                            } else {
-                                row.hide();
-                            }
-                        });
-                    }
-                    
-                    // Initialize on page load
-                    toggleCopyrightFields();
-                    toggleCustomFooterFields();
-                    
-                    // Toggle on change
-                    $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').on('change', toggleCopyrightFields);
-                    $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').on('change', toggleCustomFooterFields);
-                });
-            ");
+        
+        if (!$is_footer_page && is_string($hook) && strpos($hook, 'ross-theme-footer') !== false) {
+            $is_footer_page = true;
         }
+
+        if (!$is_footer_page) {
+            return;
+        }
+        
+        // Core WordPress assets
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_media();
+        
+        // External dependencies
+        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
+        
+        // Theme admin assets
+        $this->enqueue_admin_assets();
+        
+        // Localize script data
+        wp_localize_script('ross-footer-admin', 'rossFooterAdmin', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('ross_apply_footer_template'),
+            'sync_nonce' => wp_create_nonce('ross_sync_footer_templates'),
+            'site_url' => home_url('/'),
+            'site_name' => get_bloginfo('name'),
+            'widgets_url' => admin_url('widgets.php')
+        ));
+        
+        // Add conditional field toggle scripts
+        $this->add_conditional_field_scripts();
+    }
+    
+    /**
+     * Enqueue theme admin assets
+     */
+    private function enqueue_admin_assets() {
+        $theme_dir = get_template_directory();
+        $theme_uri = get_template_directory_uri();
+        
+        // JavaScript
+        $js_files = array(
+            'ross-footer-admin' => array('file' => '/assets/js/admin/footer-options.js', 'deps' => array('jquery', 'wp-color-picker')),
+            'ross-footer-template-selector' => array('file' => '/assets/js/admin/footer-template-selector.js', 'deps' => array('jquery')),
+            'ross-social-icons-manager' => array('file' => '/assets/js/admin/social-icons-manager.js', 'deps' => array('jquery', 'wp-color-picker'))
+        );
+        
+        foreach ($js_files as $handle => $config) {
+            $file_path = $theme_dir . $config['file'];
+            if (file_exists($file_path)) {
+                wp_enqueue_script($handle, $theme_uri . $config['file'], $config['deps'], filemtime($file_path), true);
+            }
+        }
+        
+        // CSS
+        $css_files = array(
+            'ross-footer-admin-css' => '/assets/css/admin/footer-styling-admin.css',
+            'ross-footer-tooltips' => '/assets/css/admin/footer-admin-tooltips.css',
+            'ross-footer-template-ui' => '/assets/css/admin/footer-template-ui.css',
+            'ross-social-icons-ui' => '/assets/css/admin/social-icons-ui.css',
+            'ross-footer-preview-css' => '/assets/css/admin/footer-preview.css'
+        );
+        
+        foreach ($css_files as $handle => $file) {
+            $file_path = $theme_dir . $file;
+            if (file_exists($file_path)) {
+                wp_enqueue_style($handle, $theme_uri . $file, array(), filemtime($file_path));
+            }
+        }
+    }
+    
+    /**
+     * Add inline scripts for conditional field display
+     */
+    private function add_conditional_field_scripts() {
+        $script = "
+            jQuery(document).ready(function($) {
+                function toggleCopyrightFields() {
+                    var isEnabled = $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').is(':checked');
+                    var fields = [
+                        'copyright_text', 'copyright_alignment', 'copyright_bg_color', 'copyright_text_color',
+                        'copyright_font_size', 'copyright_font_weight', 'copyright_letter_spacing',
+                        'copyright_padding_top', 'copyright_padding_bottom', 'copyright_border_top',
+                        'copyright_border_color', 'copyright_border_width', 'copyright_link_color',
+                        'copyright_link_hover_color', 'enable_custom_footer', 'custom_footer_html',
+                        'custom_footer_css', 'custom_footer_js'
+                    ];
+                    
+                    fields.forEach(function(field) {
+                        var row = $('input[name=\"ross_theme_footer_options[' + field + ']\"], textarea[name=\"ross_theme_footer_options[' + field + ']\"], select[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
+                        isEnabled ? row.show() : row.hide();
+                    });
+                }
+                
+                function toggleCustomFooterFields() {
+                    var isEnabled = $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').is(':checked');
+                    var customFields = ['custom_footer_html', 'custom_footer_css', 'custom_footer_js'];
+                    
+                    customFields.forEach(function(field) {
+                        var row = $('textarea[name=\"ross_theme_footer_options[' + field + ']\"]').closest('tr');
+                        isEnabled ? row.show() : row.hide();
+                    });
+                }
+                
+                toggleCopyrightFields();
+                toggleCustomFooterFields();
+                
+                $('input[name=\"ross_theme_footer_options[enable_copyright]\"]').on('change', toggleCopyrightFields);
+                $('input[name=\"ross_theme_footer_options[enable_custom_footer]\"]').on('change', toggleCustomFooterFields);
+            });
+        ";
+        
+        wp_add_inline_script('ross-footer-admin', $script);
     }
     
     public function register_footer_settings() {

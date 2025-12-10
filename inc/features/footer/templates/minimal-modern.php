@@ -16,5 +16,4 @@ return array(
     'cols' => array(
         array('title' => 'Company', 'items' => array('About', 'Careers', 'Contact'))
     ),
-    'cta' => array('title' => 'Join our newsletter', 'subtitle' => 'Simple, minimal updates.', 'button_text' => 'Subscribe', 'button_url' => '#')
 );
