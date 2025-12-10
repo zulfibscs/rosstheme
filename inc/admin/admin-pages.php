@@ -61,34 +61,42 @@ function ross_theme_handle_footer_reset() {
 }
 add_action('admin_init', 'ross_theme_handle_footer_reset');
 
-// Show reset success notices
-function ross_theme_footer_reset_notices() {
-    if (!isset($_GET['page']) || $_GET['page'] !== 'ross-theme-footer') {
-        return;
-    }
-    
-    if (isset($_GET['reset'])) {
-        $section = sanitize_text_field($_GET['reset']);
-        $message = '';
+// Suppress default WordPress settings errors display on our custom pages
+function ross_theme_suppress_default_notices() {
+    $screen = get_current_screen();
+    if ($screen && (strpos($screen->id, 'ross-theme') !== false)) {
+        // Remove settings errors from admin_notices hook
+        remove_action('admin_notices', 'settings_errors');
         
-        if ($section === 'all') {
-            $message = '✅ All footer settings have been reset to defaults.';
-        } else {
-            $section_names = array(
-                'layout' => 'Layout & Templates',
-                'styling' => 'Styling',
-                'cta' => 'Call to Action',
-                'social' => 'Social Icons',
-                'copyright' => 'Copyright'
-            );
-            $section_name = isset($section_names[$section]) ? $section_names[$section] : $section;
-            $message = '✅ ' . $section_name . ' section has been reset to defaults.';
-        }
-        
-        echo '<div class="notice notice-warning is-dismissible" style="border-left-color: #dc3545; background: #fff5f5;"><p style="color: #dc3545; font-weight: 600;">' . esc_html($message) . '</p></div>';
+        // Add CSS to hide any notices that appear outside our custom container
+        echo '<style>
+            /* Hide all WordPress notices except those in our custom container */
+            .wrap > .notice,
+            .wrap > .updated,
+            .wrap > .error,
+            .ross-admin-layout .notice,
+            .ross-admin-layout .updated,
+            .ross-admin-layout .error,
+            form.ross-settings-form > .notice,
+            form.ross-settings-form > .updated,
+            form.ross-settings-form > .error {
+                display: none !important;
+            }
+            
+            /* Only show notices inside our custom container */
+            .ross-settings-notices .notice,
+            .ross-settings-notices .updated,
+            .ross-settings-notices .error {
+                display: block !important;
+            }
+        </style>';
     }
 }
-add_action('admin_notices', 'ross_theme_footer_reset_notices');
+add_action('admin_head', 'ross_theme_suppress_default_notices');
+
+// Show reset success notices
+// Reset notices are now displayed via settings_errors() in the custom .ross-settings-notices container
+// The admin_notices hook is suppressed by ross_theme_suppress_default_notices() to prevent duplicates
 
 function ross_theme_admin_menu() {
     add_menu_page(
@@ -157,7 +165,12 @@ function ross_theme_header_page() {
     ?>
     <div class="wrap ross-theme-admin">
         <h1>Header Options</h1>
-        <?php settings_errors(); ?>
+        <div class="ross-settings-notices">
+            <?php 
+            // Display settings errors manually in our custom container
+            settings_errors('ross_theme_header_options', false, true); 
+            ?>
+        </div>
         
         <!-- Tab Navigation -->
         <div class="ross-tabs-nav">
@@ -236,11 +249,115 @@ function ross_theme_header_page() {
                 <?php do_settings_sections('ross-theme-header-appearance'); ?>
             </div>
             
-            <?php submit_button('Save Header Settings', 'primary', 'submit', true, array('class' => 'button-large ross-submit')); ?>
+            <?php submit_button('Save Header Settings', 'primary', 'submit', true, array('class' => 'button-large ross-submit', 'id' => 'ross-header-submit')); ?>
         </form>
     </div>
     
+    <script>
+    // Ensure form submission works properly
+    document.addEventListener('DOMContentLoaded', function() {
+        var headerForm = document.querySelector('.ross-form-tabbed');
+        var submitBtn = document.getElementById('ross-header-submit');
+        
+        if (headerForm && submitBtn) {
+            // Ensure submit button always works
+            submitBtn.addEventListener('click', function(e) {
+                // Don't prevent default - let form submit naturally
+                // This ensures WordPress Settings API processes the form
+            });
+            
+            // Add form validation
+            headerForm.addEventListener('submit', function(e) {
+                // Allow submission - WordPress handles validation
+                return true;
+            });
+        }
+    });
+    </script>
+    
     <style>
+        /* Settings Notifications */
+        .ross-settings-notices {
+            margin: 1.5rem 0;
+        }
+        
+        .ross-settings-notices .notice,
+        .ross-settings-notices .updated,
+        .ross-settings-notices .error,
+        .ross-settings-notices .settings-error {
+            margin: 0.5rem 0;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        /* Success Messages - GREEN */
+        .ross-settings-notices .notice.notice-success,
+        .ross-settings-notices .updated,
+        .ross-settings-notices .notice-success {
+            background: #d4edda !important;
+            border-left-color: #28a745 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-success p,
+        .ross-settings-notices .updated p,
+        .ross-settings-notices .notice-success p {
+            color: #155724 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Error Messages - RED */
+        .ross-settings-notices .notice.notice-error,
+        .ross-settings-notices .error,
+        .ross-settings-notices .settings-error {
+            background: #f8d7da !important;
+            border-left-color: #dc3545 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-error p,
+        .ross-settings-notices .error p,
+        .ross-settings-notices .settings-error p {
+            color: #721c24 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Warning Messages - YELLOW */
+        .ross-settings-notices .notice.notice-warning,
+        .ross-settings-notices .notice-warning {
+            background: #fff3cd !important;
+            border-left-color: #ffc107 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-warning p,
+        .ross-settings-notices .notice-warning p {
+            color: #856404 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Slide In Animation */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Prevent notices from being hidden */
+        .ross-settings-notices .notice {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    
         .ross-theme-admin .ross-tabs-nav {
             display: flex;
             gap: 0.5rem;
@@ -290,13 +407,66 @@ function ross_theme_header_page() {
     
     <script>
     document.addEventListener('DOMContentLoaded', function(){
+        // Prevent WordPress from auto-hiding notices
+        var noticeContainer = document.querySelector('.ross-settings-notices');
+        if (noticeContainer) {
+            var notices = noticeContainer.querySelectorAll('.notice');
+            notices.forEach(function(notice) {
+                // Stop WordPress core from hiding notices
+                notice.style.display = 'block';
+                notice.style.visibility = 'visible';
+                notice.style.opacity = '1';
+                
+                // Re-enable dismiss button functionality
+                var dismissBtn = notice.querySelector('.notice-dismiss');
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        notice.style.display = 'none';
+                    });
+                }
+            });
+            
+            // Prevent WordPress admin.js from interfering
+            setTimeout(function() {
+                notices.forEach(function(notice) {
+                    notice.style.display = 'block';
+                    notice.style.visibility = 'visible';
+                    notice.style.opacity = '1';
+                });
+            }, 100);
+        }
+    
         var tabBtns = document.querySelectorAll('.ross-tab-btn');
         var tabContents = document.querySelectorAll('.ross-tab-content');
         
+        // Restore last active tab from localStorage
+        var savedTab = localStorage.getItem('ross_header_active_tab');
+        if (savedTab) {
+            var savedBtn = document.querySelector('.ross-tab-btn[data-tab="' + savedTab + '"]');
+            var savedContent = document.getElementById('tab-' + savedTab);
+            
+            if (savedBtn && savedContent) {
+                // Deactivate all tabs
+                tabBtns.forEach(function(b) { b.classList.remove('active'); });
+                tabContents.forEach(function(c) { c.classList.remove('active'); });
+                
+                // Activate saved tab
+                savedBtn.classList.add('active');
+                savedContent.classList.add('active');
+            }
+        }
+        
         tabBtns.forEach(function(btn) {
             btn.addEventListener('click', function(e) {
-                e.preventDefault();
+                // Only prevent default if this is actually a tab button click, not form submission
+                if (e.target.closest('.ross-tab-btn')) {
+                    e.preventDefault();
+                }
                 var tabId = this.getAttribute('data-tab');
+                
+                // Save active tab to localStorage
+                localStorage.setItem('ross_header_active_tab', tabId);
                 
                 // Deactivate all tabs
                 tabBtns.forEach(function(b) { b.classList.remove('active'); });
@@ -375,7 +545,13 @@ function ross_theme_footer_page() {
                 </div>
             </div>
         </div>
-        <?php settings_errors(); ?>
+        
+        <div class="ross-settings-notices">
+            <?php 
+            // Display settings errors manually in our custom container
+            settings_errors('ross_theme_footer_options', false, true); 
+            ?>
+        </div>
 
         <div class="ross-tabs-nav">
             <button class="ross-tab-btn active" data-tab="layout">
@@ -410,15 +586,6 @@ function ross_theme_footer_page() {
                     <?php do_settings_sections('ross-theme-footer-layout'); ?>
                 </div>
             </div>                <div class="ross-tab-content" id="tab-styling">
-                    <div class="ross-section-header">
-                        <div class="ross-section-title">
-                            <h2>🎨 Footer Styling</h2>
-                            <p class="ross-section-desc">Customize colors, fonts, and visual appearance</p>
-                        </div>
-                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('styling')">
-                            <span class="dashicons dashicons-image-rotate"></span> Reset Section
-                        </button>
-                    </div>
                     <div class="ross-split-layout">
                         <div class="ross-settings-column">
                             <?php do_settings_sections('ross-theme-footer-styling'); ?>
@@ -427,12 +594,17 @@ function ross_theme_footer_page() {
                             <div class="ross-preview-sticky">
                                 <div class="ross-preview-header">
                                     <div class="ross-preview-title">
-                                        <h3>🎨 Live Preview</h3>
-                                        <p>Styling changes appear here</p>
+                                        <h3>🎨 Live Preview<span class="ross-preview-live-badge">LIVE</span></h3>
+                                        <p>Styling changes appear instantly</p>
                                     </div>
-                                    <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('styling')" title="Refresh Preview">
-                                        <span class="dashicons dashicons-update"></span>
-                                    </button>
+                                    <div class="ross-preview-actions">
+                                        <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('styling')" title="Refresh Preview">
+                                            <span class="dashicons dashicons-update"></span>
+                                        </button>
+                                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('styling')" title="Reset Section">
+                                            <span class="dashicons dashicons-image-rotate"></span> Reset
+                                        </button>
+                                    </div>
                                 </div>
                                 <div id="ross-styling-preview" class="ross-preview-box">
                                     <div class="preview-footer-sample">
@@ -459,16 +631,6 @@ function ross_theme_footer_page() {
                 </div>
 
             <div class="ross-tab-content" id="tab-cta">
-                <div class="ross-section-header">
-                    <div class="ross-section-title">
-                        <h2>📢 Call to Action Section</h2>
-                        <p class="ross-section-desc">Create a powerful CTA above your footer to drive conversions</p>
-                    </div>
-                    <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('cta')">
-                        <span class="dashicons dashicons-image-rotate"></span> Reset Section
-                    </button>
-                </div>
-                
                 <div class="ross-cta-subtabs-wrapper">
                     <div class="ross-cta-subtabs-nav">
                         <button type="button" class="ross-cta-subtab-btn active" data-section="ross_footer_cta_visibility">
@@ -492,9 +654,6 @@ function ross_theme_footer_page() {
                         <button type="button" class="ross-cta-subtab-btn" data-section="ross_footer_cta_animation">
                             <span class="subtab-icon">🎬</span> Animation
                         </button>
-                        <button type="button" class="ross-cta-subtab-btn" data-section="ross_footer_cta_advanced">
-                            <span class="subtab-icon">🔧</span> Advanced
-                        </button>
                     </div>
                 </div>
                 
@@ -506,12 +665,17 @@ function ross_theme_footer_page() {
                         <div class="ross-preview-sticky">
                             <div class="ross-preview-header">
                                 <div class="ross-preview-title">
-                                    <h3>📢 CTA Preview</h3>
-                                    <p>See your changes in real-time</p>
+                                    <h3>📢 CTA Preview<span class="ross-preview-live-badge">LIVE</span></h3>
+                                    <p>See your changes instantly</p>
                                 </div>
-                                <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('cta')" title="Refresh Preview">
-                                    <span class="dashicons dashicons-update"></span>
-                                </button>
+                                <div class="ross-preview-actions">
+                                    <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('cta')" title="Refresh Preview">
+                                        <span class="dashicons dashicons-update"></span>
+                                    </button>
+                                    <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('cta')" title="Reset Section">
+                                        <span class="dashicons dashicons-image-rotate"></span> Reset
+                                    </button>
+                                </div>
                             </div>
                             <div id="ross-cta-preview" class="ross-preview-box">
                                 <div class="preview-cta-sample">
@@ -524,15 +688,6 @@ function ross_theme_footer_page() {
                     </div>
                 </div>
             </div>                <div class="ross-tab-content" id="tab-social">
-                    <div class="ross-section-header">
-                        <div class="ross-section-title">
-                            <h2>🌍 Social Media Icons</h2>
-                            <p class="ross-section-desc">Connect with your audience through social media links</p>
-                        </div>
-                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('social')">
-                            <span class="dashicons dashicons-image-rotate"></span> Reset Section
-                        </button>
-                    </div>
                     <div class="ross-split-layout">
                         <div class="ross-settings-column">
                             <?php do_settings_sections('ross-theme-footer-social'); ?>
@@ -541,12 +696,17 @@ function ross_theme_footer_page() {
                             <div class="ross-preview-sticky">
                                 <div class="ross-preview-header">
                                     <div class="ross-preview-title">
-                                        <h3>🌍 Social Icons Preview</h3>
-                                        <p>Preview your social icons</p>
+                                        <h3>🌍 Social Icons Preview<span class="ross-preview-live-badge">LIVE</span></h3>
+                                        <p>Preview updates instantly</p>
                                     </div>
-                                    <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('social')" title="Refresh Preview">
-                                        <span class="dashicons dashicons-update"></span>
-                                    </button>
+                                    <div class="ross-preview-actions">
+                                        <button type="button" class="ross-refresh-preview-btn" onclick="rossRefreshPreview('social')" title="Refresh Preview">
+                                            <span class="dashicons dashicons-update"></span>
+                                        </button>
+                                        <button type="button" class="ross-reset-section-btn" onclick="rossResetSection('social')" title="Reset Section">
+                                            <span class="dashicons dashicons-image-rotate"></span> Reset
+                                        </button>
+                                    </div>
                                 </div>
                                 <div id="ross-social-preview" class="ross-preview-box">
                                     <div class="preview-social-sample">
@@ -604,11 +764,63 @@ function ross_theme_footer_page() {
                 </div>
 
                 <div class="ross-submit-section">
-                    <?php submit_button('💾 Save Footer Settings', 'primary large', 'submit', true, array('class' => 'ross-submit-btn')); ?>
+                    <?php submit_button('💾 Save Footer Settings', 'primary large', 'submit', true, array('class' => 'ross-submit-btn', 'id' => 'ross-footer-submit')); ?>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+    // Ensure footer form submission works properly
+    document.addEventListener('DOMContentLoaded', function() {
+        // Prevent WordPress from auto-hiding notices
+        var noticeContainer = document.querySelector('.ross-settings-notices');
+        if (noticeContainer) {
+            var notices = noticeContainer.querySelectorAll('.notice');
+            notices.forEach(function(notice) {
+                // Stop WordPress core from hiding notices
+                notice.style.display = 'block';
+                notice.style.visibility = 'visible';
+                notice.style.opacity = '1';
+                
+                // Re-enable dismiss button functionality
+                var dismissBtn = notice.querySelector('.notice-dismiss');
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        notice.style.display = 'none';
+                    });
+                }
+            });
+            
+            // Prevent WordPress admin.js from interfering
+            setTimeout(function() {
+                notices.forEach(function(notice) {
+                    notice.style.display = 'block';
+                    notice.style.visibility = 'visible';
+                    notice.style.opacity = '1';
+                });
+            }, 100);
+        }
+    
+        var footerForm = document.querySelector('.ross-settings-form');
+        var submitBtn = document.getElementById('ross-footer-submit');
+        
+        if (footerForm && submitBtn) {
+            // Ensure submit button always works
+            submitBtn.addEventListener('click', function(e) {
+                // Don't prevent default - let form submit naturally
+                // This ensures WordPress Settings API processes the form
+            });
+            
+            // Add form validation
+            footerForm.addEventListener('submit', function(e) {
+                // Allow submission - WordPress handles validation
+                return true;
+            });
+        }
+    });
+    </script>
 
     <style>
         /* ===== MODERN ADMIN STYLING ===== */
@@ -618,6 +830,112 @@ function ross_theme_footer_page() {
             margin-right: -20px;
             padding: 0 20px 40px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        /* Settings Notifications */
+        .ross-settings-notices {
+            margin: 1.5rem 0;
+        }
+        
+        .ross-settings-notices .notice,
+        .ross-settings-notices .updated,
+        .ross-settings-notices .error,
+        .ross-settings-notices .settings-error {
+            margin: 0.5rem 0;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        /* Success Messages - GREEN */
+        .ross-settings-notices .notice.notice-success,
+        .ross-settings-notices .updated,
+        .ross-settings-notices .notice-success {
+            background: #d4edda !important;
+            border-left-color: #28a745 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-success p,
+        .ross-settings-notices .updated p,
+        .ross-settings-notices .notice-success p {
+            color: #155724 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Error Messages - RED */
+        .ross-settings-notices .notice.notice-error,
+        .ross-settings-notices .error,
+        .ross-settings-notices .settings-error {
+            background: #f8d7da !important;
+            border-left-color: #dc3545 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-error p,
+        .ross-settings-notices .error p,
+        .ross-settings-notices .settings-error p {
+            color: #721c24 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Warning Messages - YELLOW */
+        .ross-settings-notices .notice.notice-warning,
+        .ross-settings-notices .notice-warning {
+            background: #fff3cd !important;
+            border-left-color: #ffc107 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-warning p,
+        .ross-settings-notices .notice-warning p {
+            color: #856404 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Info Messages - BLUE */
+        .ross-settings-notices .notice.notice-info,
+        .ross-settings-notices .notice-info {
+            background: #d1ecf1 !important;
+            border-left-color: #0c5460 !important;
+        }
+        
+        .ross-settings-notices .notice.notice-info p,
+        .ross-settings-notices .notice-info p {
+            color: #0c5460 !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+        }
+        
+        /* Dismiss Button Styling */
+        .ross-settings-notices .notice-dismiss {
+            color: inherit !important;
+            opacity: 0.6;
+        }
+        
+        .ross-settings-notices .notice-dismiss:hover {
+            opacity: 1;
+        }
+        
+        /* Slide In Animation */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Prevent notices from being hidden */
+        .ross-settings-notices .notice {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         
         /* Header Section */
@@ -835,6 +1153,27 @@ function ross_theme_footer_page() {
         .ross-preview-sticky {
             position: sticky;
             top: 32px;
+            max-height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        /* Custom scrollbar for preview */
+        .ross-preview-sticky::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .ross-preview-sticky::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .ross-preview-sticky::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+        
+        .ross-preview-sticky::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
         }
         
         .ross-preview-header {
@@ -845,6 +1184,38 @@ function ross_theme_footer_page() {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.2);
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Live indicator badge */
+        .ross-preview-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            background: rgba(40,167,69,0.2);
+            border: 1px solid rgba(40,167,69,0.4);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #d4edda;
+            margin-left: 0.5rem;
+        }
+        
+        .ross-preview-live-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
         
         .ross-preview-title h3 {
@@ -852,12 +1223,20 @@ function ross_theme_footer_page() {
             font-size: 1.15rem;
             color: white;
             font-weight: 600;
+            display: flex;
+            align-items: center;
         }
         
         .ross-preview-title p {
             margin: 0;
             font-size: 0.88rem;
             color: rgba(255,255,255,0.88);
+        }
+        
+        .ross-preview-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
         }
         
         .ross-refresh-preview-btn {
@@ -894,6 +1273,27 @@ function ross_theme_footer_page() {
             border-radius: 0 0 12px 12px;
             padding: 2.5rem;
             min-height: 250px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Preview updating indicator */
+        .ross-preview-box.updating::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            z-index: 10;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
         
         /* Preview Samples - Enhanced */
@@ -1238,6 +1638,11 @@ function ross_theme_footer_page() {
             animation: fadeIn 0.3s ease;
         }
         
+        /* Force table rows to be visible in active sections */
+        .ross-cta-section-wrapper.active table tr {
+            display: table-row !important;
+        }
+        
         /* Field Descriptions */
         .ross-settings-form .description {
             color: #6c757d;
@@ -1410,10 +1815,35 @@ function ross_theme_footer_page() {
         // Tab Switching
         var tabBtns = document.querySelectorAll('.ross-tab-btn');
         var tabContents = document.querySelectorAll('.ross-tab-content');
+        
+        // Restore last active tab from localStorage
+        var savedTab = localStorage.getItem('ross_footer_active_tab');
+        if (savedTab) {
+            var savedBtn = document.querySelector('.ross-tab-btn[data-tab="' + savedTab + '"]');
+            var savedContent = document.getElementById('tab-' + savedTab);
+            
+            if (savedBtn && savedContent) {
+                // Deactivate all tabs
+                tabBtns.forEach(function(b) { b.classList.remove('active'); });
+                tabContents.forEach(function(c) { c.classList.remove('active'); });
+                
+                // Activate saved tab
+                savedBtn.classList.add('active');
+                savedContent.classList.add('active');
+            }
+        }
+        
         tabBtns.forEach(function(btn){
             btn.addEventListener('click', function(e){
-                e.preventDefault();
+                // Only prevent default if this is actually a tab button click, not form submission
+                if (e.target.closest('.ross-tab-btn')) {
+                    e.preventDefault();
+                }
                 var tab = this.getAttribute('data-tab');
+                
+                // Save active tab to localStorage
+                localStorage.setItem('ross_footer_active_tab', tab);
+                
                 tabBtns.forEach(function(b){ b.classList.remove('active'); });
                 tabContents.forEach(function(c){ c.classList.remove('active'); });
                 this.classList.add('active');
@@ -1438,6 +1868,7 @@ function ross_theme_footer_page() {
             // Add IDs to section headings and wrap them
             function wrapCtaSections() {
                 var allH2 = document.querySelectorAll('#tab-cta h2');
+                console.log('Found', allH2.length, 'CTA section headings');
                 
                 allH2.forEach(function(heading) {
                     var headingText = heading.textContent.trim();
@@ -1451,13 +1882,19 @@ function ross_theme_footer_page() {
                         }
                     }
                     
-                    if (!sectionId) return;
+                    if (!sectionId) {
+                        console.log('No mapping found for heading:', headingText);
+                        return;
+                    }
+                    
+                    console.log('Processing section:', headingText, '→', sectionId);
                     
                     // Add ID to heading
                     heading.id = sectionId;
                     
                     // Check if already wrapped
                     if (heading.parentElement && heading.parentElement.classList.contains('ross-cta-section-wrapper')) {
+                        console.log('Already wrapped:', sectionId);
                         return;
                     }
                     
@@ -1470,7 +1907,29 @@ function ross_theme_footer_page() {
                         table = table.nextElementSibling;
                     }
                     
-                    if (!table) return;
+                    // If no table found, still wrap the heading and description
+                    if (!table) {
+                        console.warn('No table found for section:', headingText, sectionId, '- wrapping anyway');
+                        // Create wrapper even without table
+                        var wrapper = document.createElement('div');
+                        wrapper.className = 'ross-cta-section-wrapper';
+                        wrapper.setAttribute('data-section', sectionId);
+                        
+                        heading.parentNode.insertBefore(wrapper, heading);
+                        wrapper.appendChild(heading);
+                        if (description && description.tagName === 'P') {
+                            wrapper.appendChild(description);
+                        }
+                        // Add a notice that fields are missing
+                        var notice = document.createElement('div');
+                        notice.className = 'notice notice-warning inline';
+                        notice.style.margin = '10px 0';
+                        notice.innerHTML = '<p>⚠️ No settings fields found for this section. Please check the field registration in footer-options.php</p>';
+                        wrapper.appendChild(notice);
+                        return;
+                    }
+                    
+                    console.log('Found table for', sectionId);
                     
                     // Create wrapper
                     var wrapper = document.createElement('div');
@@ -1489,11 +1948,16 @@ function ross_theme_footer_page() {
             
             // Show specific section
             function showCtaSection(sectionId) {
+                console.log('showCtaSection called with:', sectionId);
                 var wrappers = document.querySelectorAll('.ross-cta-section-wrapper');
+                console.log('Found', wrappers.length, 'section wrappers');
                 wrappers.forEach(function(wrapper) {
+                    var wrapperSection = wrapper.getAttribute('data-section');
+                    console.log('Checking wrapper:', wrapperSection, 'against', sectionId);
                     wrapper.classList.remove('active');
-                    if (wrapper.getAttribute('data-section') === sectionId) {
+                    if (wrapperSection === sectionId) {
                         wrapper.classList.add('active');
+                        console.log('✓ Activated section:', sectionId);
                     }
                 });
             }
@@ -1505,7 +1969,10 @@ function ross_theme_footer_page() {
             // Subtab click handlers
             ctaSubtabBtns.forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
-                    e.preventDefault();
+                    // Only prevent default if this is actually a subtab button click
+                    if (e.target.closest('.ross-cta-subtab-btn')) {
+                        e.preventDefault();
+                    }
                     var section = this.getAttribute('data-section');
                     
                     // Update active state
@@ -1522,6 +1989,13 @@ function ross_theme_footer_page() {
         function updateCtaPreview() {
             var preview = document.querySelector('#ross-cta-preview .preview-cta-sample');
             if (!preview) return;
+            
+            // Add updating indicator
+            var previewBox = document.querySelector('#ross-cta-preview');
+            if (previewBox) {
+                previewBox.classList.add('updating');
+                setTimeout(function() { previewBox.classList.remove('updating'); }, 300);
+            }
             
             // Get option name prefix
             var opts = window.ross_theme_footer_options || {};
@@ -1624,6 +2098,13 @@ function ross_theme_footer_page() {
             var preview = document.querySelector('#ross-styling-preview .preview-footer-sample');
             if (!preview) return;
             
+            // Add updating indicator
+            var previewBox = document.querySelector('#ross-styling-preview');
+            if (previewBox) {
+                previewBox.classList.add('updating');
+                setTimeout(function() { previewBox.classList.remove('updating'); }, 300);
+            }
+            
             // Background Color
             var bgInput = document.querySelector('input[name="ross_theme_footer_options[styling_bg_color]"]');
             if (bgInput && bgInput.value) {
@@ -1681,13 +2162,96 @@ function ross_theme_footer_page() {
             input.addEventListener('input', updateCopyrightPreview);
         });
         
+        // Social icons live preview
+        var socialInputs = document.querySelectorAll('#tab-social input, #tab-social select');
+        socialInputs.forEach(function(input) {
+            input.addEventListener('input', updateSocialPreview);
+            input.addEventListener('change', updateSocialPreview);
+        });
+        
         // Initialize previews with current values
         setTimeout(function() {
             updateCtaPreview();
             updateStylingPreview();
             updateCopyrightPreview();
+            updateSocialPreview();
         }, 100);
     });
+    
+    // Social Icons Preview Update
+    function updateSocialPreview() {
+        var preview = document.querySelector('#ross-social-preview');
+        if (!preview) return;
+        
+        // Add updating indicator
+        preview.classList.add('updating');
+        setTimeout(function() { preview.classList.remove('updating'); }, 300);
+        
+        var icons = preview.querySelectorAll('.social-icon');
+        
+        // Icon Size
+        var sizeInput = document.querySelector('input[name="ross_theme_footer_options[social_icon_size]"]');
+        if (sizeInput && sizeInput.value) {
+            var size = parseInt(sizeInput.value) || 56;
+            icons.forEach(function(icon) {
+                icon.style.width = size + 'px';
+                icon.style.height = size + 'px';
+                icon.style.fontSize = (size * 0.45) + 'px';
+            });
+        }
+        
+        // Icon Style
+        var styleInput = document.querySelector('select[name="ross_theme_footer_options[social_icon_style]"]');
+        if (styleInput) {
+            var style = styleInput.value || 'circle';
+            icons.forEach(function(icon) {
+                if (style === 'circle') {
+                    icon.style.borderRadius = '50%';
+                    icon.style.background = '';
+                } else if (style === 'square') {
+                    icon.style.borderRadius = '0';
+                    icon.style.background = '';
+                } else if (style === 'rounded') {
+                    icon.style.borderRadius = '12px';
+                    icon.style.background = '';
+                } else if (style === 'plain') {
+                    icon.style.borderRadius = '0';
+                    icon.style.background = 'transparent';
+                }
+            });
+        }
+        
+        // Icon Color
+        var colorInput = document.querySelector('input[name="ross_theme_footer_options[social_icon_color]"]');
+        if (colorInput && colorInput.value) {
+            icons.forEach(function(icon) {
+                icon.style.color = colorInput.value;
+            });
+        }
+        
+        // Background Color
+        var bgColorInput = document.querySelector('input[name="ross_theme_footer_options[social_icon_bg_color]"]');
+        if (bgColorInput && bgColorInput.value && styleInput && styleInput.value !== 'plain') {
+            icons.forEach(function(icon) {
+                icon.style.backgroundColor = bgColorInput.value;
+            });
+        }
+        
+        // Border Width
+        var borderWidthInput = document.querySelector('input[name="ross_theme_footer_options[social_icon_border_width]"]');
+        var borderColorInput = document.querySelector('input[name="ross_theme_footer_options[social_icon_border_color]"]');
+        if (borderWidthInput && parseInt(borderWidthInput.value) > 0) {
+            var borderWidth = parseInt(borderWidthInput.value);
+            var borderColor = borderColorInput && borderColorInput.value ? borderColorInput.value : 'rgba(255,255,255,0.3)';
+            icons.forEach(function(icon) {
+                icon.style.border = borderWidth + 'px solid ' + borderColor;
+            });
+        } else {
+            icons.forEach(function(icon) {
+                icon.style.border = 'none';
+            });
+        }
+    }
     
     // ===== RESET FUNCTIONS =====
     function rossResetAllFooterSettings() {
@@ -1728,28 +2292,112 @@ function ross_theme_footer_page() {
         
         var sectionName = sectionNames[section] || section;
         
-        if (!confirm('⚠️ Reset ' + sectionName + ' section to defaults?\n\nThis will clear all customizations in this section.\n\nContinue?')) {
+        if (!confirm('⚠️ Reset ' + sectionName + ' settings to defaults?\n\nThis will restore all default values for this section only.\n\nOther sections will not be affected.')) {
             return;
         }
         
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = window.location.href;
+        // Define default values for each section
+        var defaults = {
+            'styling': {
+                'styling_bg_color': '#f8f9fb',
+                'styling_text_color': '#0b2140',
+                'styling_link_color': '#005eb8',
+                'styling_link_hover': '',
+                'styling_font_size': '14',
+                'styling_line_height': '1.6',
+                'styling_padding_top': '60',
+                'styling_padding_bottom': '60',
+                'styling_padding_left': '20',
+                'styling_padding_right': '20',
+                'styling_col_gap': '24',
+                'styling_row_gap': '18',
+                'styling_border_top': '0',
+                'styling_border_color': '',
+                'styling_border_thickness': '1',
+                'styling_widget_title_color': '',
+                'styling_widget_title_size': '18'
+            },
+            'cta': {
+                'enable_footer_cta': '1',
+                'cta_title': 'Ready to Get Started?',
+                'cta_text': 'Join thousands of satisfied customers today',
+                'cta_button_text': 'Get Started Now',
+                'cta_button_url': '#',
+                'cta_bg_color': '#667eea',
+                'cta_text_color': '#ffffff',
+                'cta_button_bg_color': '#ffffff',
+                'cta_button_text_color': '#667eea',
+                'cta_alignment': 'center',
+                'cta_padding_top': '40',
+                'cta_padding_bottom': '40',
+                'cta_title_font_size': '32',
+                'cta_text_font_size': '18',
+                'cta_button_font_size': '16',
+                'cta_border_width': '0',
+                'cta_border_radius': '0',
+                'cta_box_shadow': '0'
+            },
+            'social': {
+                'social_icon_style': 'circle',
+                'social_icon_size': '36',
+                'social_icon_color': '#ffffff',
+                'social_icon_hover_color': '',
+                'social_icon_bg_color': '',
+                'social_icon_bg_active_color': '',
+                'social_icon_bg_hover_color': '',
+                'social_icon_border_width': '0',
+                'social_icon_border_color': '',
+                'social_icon_border_active_color': '',
+                'social_icon_border_hover_color': ''
+            },
+            'copyright': {
+                'enable_copyright': '1',
+                'copyright_text': '© ' + new Date().getFullYear() + ' Your Company. All rights reserved.',
+                'copyright_alignment': 'center',
+                'copyright_bg_color': '',
+                'copyright_text_color': '',
+                'copyright_font_size': '14',
+                'copyright_font_weight': 'normal',
+                'copyright_padding_top': '20',
+                'copyright_padding_bottom': '20',
+                'copyright_border_top': '0'
+            }
+        };
         
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'ross_reset_footer_section';
-        input.value = section;
+        var sectionDefaults = defaults[section];
+        if (!sectionDefaults) {
+            alert('❌ Unknown section: ' + section);
+            return;
+        }
         
-        var nonce = document.createElement('input');
-        nonce.type = 'hidden';
-        nonce.name = '_wpnonce';
-        nonce.value = '<?php echo wp_create_nonce("ross_reset_footer_section"); ?>';
+        // Reset form inputs to default values
+        for (var fieldName in sectionDefaults) {
+            var defaultValue = sectionDefaults[fieldName];
+            var input = document.querySelector('input[name="ross_theme_footer_options[' + fieldName + ']"], textarea[name="ross_theme_footer_options[' + fieldName + ']"], select[name="ross_theme_footer_options[' + fieldName + ']"]');
+            
+            if (input) {
+                if (input.type === 'checkbox') {
+                    input.checked = defaultValue === '1' || defaultValue === 1;
+                } else if (input.type === 'color') {
+                    input.value = defaultValue;
+                } else {
+                    input.value = defaultValue;
+                }
+                
+                // Trigger change event to update preview
+                var event = new Event('input', { bubbles: true });
+                input.dispatchEvent(event);
+            }
+        }
         
-        form.appendChild(input);
-        form.appendChild(nonce);
-        document.body.appendChild(form);
-        form.submit();
+        // Show success message
+        var noticeHtml = '<div class="notice notice-success is-dismissible" style="margin: 1rem 0; animation: slideInDown 0.3s ease-out;"><p><strong>✅ ' + sectionName + ' settings have been reset to defaults!</strong><br>Click "Save Footer Settings" below to save these changes.</p><button type="button" class="notice-dismiss" onclick="this.parentElement.remove()"><span class="screen-reader-text">Dismiss</span></button></div>';
+        
+        var noticeContainer = document.querySelector('.ross-settings-notices');
+        if (noticeContainer) {
+            noticeContainer.innerHTML = noticeHtml;
+            noticeContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     }
     
     function rossRefreshPreview(previewType) {

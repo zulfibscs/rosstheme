@@ -931,12 +931,6 @@ class RossFooterOptions {
             array($this, 'cta_animation_section_callback'),
             'ross-theme-footer-cta'
         );
-        add_settings_section(
-            'ross_footer_cta_advanced',
-            'Advanced',
-            array($this, 'cta_advanced_section_callback'),
-            'ross-theme-footer-cta'
-        );
         
         // Visibility
         add_settings_field(
@@ -1288,35 +1282,7 @@ class RossFooterOptions {
             'ross_footer_cta_animation'
         );
 
-        // Advanced
-        add_settings_field(
-            'enable_custom_cta',
-            'Enable Custom CTA Content',
-            array($this, 'enable_custom_cta_callback'),
-            'ross-theme-footer-cta',
-            'ross_footer_cta_advanced'
-        );
-        add_settings_field(
-            'custom_cta_html',
-            'Custom CTA HTML',
-            array($this, 'custom_cta_html_callback'),
-            'ross-theme-footer-cta',
-            'ross_footer_cta_advanced'
-        );
-        add_settings_field(
-            'custom_cta_css',
-            'Custom CTA CSS',
-            array($this, 'custom_cta_css_callback'),
-            'ross-theme-footer-cta',
-            'ross_footer_cta_advanced'
-        );
-        add_settings_field(
-            'custom_cta_js',
-            'Custom CTA JS',
-            array($this, 'custom_cta_js_callback'),
-            'ross-theme-footer-cta',
-            'ross_footer_cta_advanced'
-        );
+
 
         // Container width
         add_settings_field(
@@ -1390,6 +1356,63 @@ class RossFooterOptions {
         );
         
         add_settings_field(
+            'social_icon_bg_color',
+            'Icon Background Color (Normal)',
+            array($this, 'social_icon_bg_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_bg_active_color',
+            'Icon Background Color (Active)',
+            array($this, 'social_icon_bg_active_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_bg_hover_color',
+            'Icon Background Color (Hover)',
+            array($this, 'social_icon_bg_hover_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        // Border styling fields
+        add_settings_field(
+            'social_icon_border_width',
+            'Border Width',
+            array($this, 'social_icon_border_width_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_border_color',
+            'Border Color (Normal)',
+            array($this, 'social_icon_border_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_border_active_color',
+            'Border Color (Active)',
+            array($this, 'social_icon_border_active_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
+            'social_icon_border_hover_color',
+            'Border Color (Hover)',
+            array($this, 'social_icon_border_hover_color_callback'),
+            'ross-theme-footer-social',
+            'ross_footer_social_section'
+        );
+        
+        add_settings_field(
             'social_icon_hover_color',
             'Icon Hover Color',
             array($this, 'social_icon_hover_color_callback'),
@@ -1422,12 +1445,6 @@ class RossFooterOptions {
             'ross_footer_copyright_styling',
             'Styling',
             array($this, 'copyright_styling_section_callback'),
-            'ross-theme-footer-copyright'
-        );
-        add_settings_section(
-            'ross_footer_copyright_advanced',
-            'Advanced / Custom',
-            array($this, 'copyright_advanced_section_callback'),
             'ross-theme-footer-copyright'
         );
 
@@ -1542,36 +1559,7 @@ class RossFooterOptions {
             'ross_footer_copyright_styling'
         );
 
-        // Custom footer area inside copyright/tab so it's easy to find
-        // Advanced / Custom
-        add_settings_field(
-            'enable_custom_footer',
-            'Enable Custom Footer',
-            array($this, 'enable_custom_footer_callback'),
-            'ross-theme-footer-copyright',
-            'ross_footer_copyright_advanced'
-        );
-        add_settings_field(
-            'custom_footer_html',
-            'Custom Footer HTML',
-            array($this, 'custom_footer_html_callback'),
-            'ross-theme-footer-copyright',
-            'ross_footer_copyright_advanced'
-        );
-        add_settings_field(
-            'custom_footer_css',
-            'Custom Footer CSS',
-            array($this, 'custom_footer_css_callback'),
-            'ross-theme-footer-copyright',
-            'ross_footer_copyright_advanced'
-        );
-        add_settings_field(
-            'custom_footer_js',
-            'Custom Footer JS',
-            array($this, 'custom_footer_js_callback'),
-            'ross-theme-footer-copyright',
-            'ross_footer_copyright_advanced'
-        );
+
     }
     
     // Section Callbacks
@@ -1607,9 +1595,6 @@ class RossFooterOptions {
     }
     public function cta_animation_section_callback() {
         echo '<p>✨ Entrance animations for the CTA appearance.</p>';
-    }
-    public function cta_advanced_section_callback() {
-        echo '<p>Advanced options: custom HTML/CSS/JS for the CTA area.</p>';
     }
     
     public function social_section_callback() {
@@ -2331,24 +2316,6 @@ class RossFooterOptions {
     }
     
     
-
-    // New: custom footer controls
-    public function enable_custom_footer_callback() {
-        $value = isset($this->options['enable_custom_footer']) ? $this->options['enable_custom_footer'] : 0;
-        ?>
-        <input type="checkbox" name="ross_theme_footer_options[enable_custom_footer]" value="1" <?php checked(1, $value); ?> />
-        <label for="enable_custom_footer">Enable custom site footer HTML</label>
-        <?php
-    }
-
-    public function custom_footer_html_callback() {
-        $value = isset($this->options['custom_footer_html']) ? $this->options['custom_footer_html'] : '';
-        ?>
-        <textarea name="ross_theme_footer_options[custom_footer_html]" rows="6" class="large-text" placeholder="Paste allowed HTML for the footer (links allowed)"><?php echo esc_textarea($value); ?></textarea>
-        <p class="description">Use basic HTML. Allowed tags: a, br, strong, em, p, span, div, ul, li</p>
-        <?php
-    }
-    
     // Field Callbacks - Widgets Section
     public function enable_widgets_callback() {
         $value = isset($this->options['enable_widgets']) ? $this->options['enable_widgets'] : 1;
@@ -2698,27 +2665,6 @@ class RossFooterOptions {
         echo '<input type="number" name="ross_theme_footer_options[cta_anim_delay]" value="' . esc_attr($v) . '" class="small-text" /> ms';
     }
 
-    public function enable_custom_cta_callback() {
-        $v = isset($this->options['enable_custom_cta']) ? $this->options['enable_custom_cta'] : 0;
-        echo '<input type="checkbox" name="ross_theme_footer_options[enable_custom_cta]" value="1" ' . checked(1, $v, false) . ' />';
-        echo ' <label for="enable_custom_cta">Use custom CTA HTML/CSS instead of the built-in CTA</label>';
-    }
-
-    public function custom_cta_html_callback() {
-        $v = isset($this->options['custom_cta_html']) ? $this->options['custom_cta_html'] : '';
-        echo '<textarea name="ross_theme_footer_options[custom_cta_html]" rows="6" class="large-text">' . esc_textarea($v) . '</textarea>';
-    }
-
-    public function custom_cta_css_callback() {
-        $v = isset($this->options['custom_cta_css']) ? $this->options['custom_cta_css'] : '';
-        echo '<textarea name="ross_theme_footer_options[custom_cta_css]" rows="6" class="large-text" placeholder="Any additional CSS to apply to the CTA">' . esc_textarea($v) . '</textarea>';
-    }
-
-    public function custom_cta_js_callback() {
-        $v = isset($this->options['custom_cta_js']) ? $this->options['custom_cta_js'] : '';
-        echo '<textarea name="ross_theme_footer_options[custom_cta_js]" rows="6" class="large-text" placeholder="Custom JS for the CTA (will be escaped)">' . esc_textarea($v) . '</textarea>';
-    }
-    
     // Border controls
     public function cta_border_width_callback() {
         $v = isset($this->options['cta_border_width']) ? intval($this->options['cta_border_width']) : 0;
@@ -3052,6 +2998,102 @@ class RossFooterOptions {
         <?php
     }
     
+    public function social_icon_bg_color_callback() {
+        $value = isset($this->options['social_icon_bg_color']) ? $this->options['social_icon_bg_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Default background color for social icons</p>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Background colors are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_bg_active_color_callback() {
+        $value = isset($this->options['social_icon_bg_active_color']) ? $this->options['social_icon_bg_active_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_bg_active_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Background color for active/current social icons (leave empty to use normal color)</p>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Background colors are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_bg_hover_color_callback() {
+        $value = isset($this->options['social_icon_bg_hover_color']) ? $this->options['social_icon_bg_hover_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_bg_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Background color on hover (leave empty for auto-generated effect)</p>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Background colors are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_border_width_callback() {
+        $value = isset($this->options['social_icon_border_width']) ? $this->options['social_icon_border_width'] : '0';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        ?>
+        <input type="number" name="ross_theme_footer_options[social_icon_border_width]" value="<?php echo esc_attr($value); ?>" min="0" max="10" step="1" class="small-text" /> px
+        <p class="description">Border thickness (0 = no border, works with circle/square/rounded styles)</p>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Borders are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_border_color_callback() {
+        $value = isset($this->options['social_icon_border_color']) ? $this->options['social_icon_border_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        $width = isset($this->options['social_icon_border_width']) ? intval($this->options['social_icon_border_width']) : 0;
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_border_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Default border color for social icons</p>
+        <?php if ($width === 0): ?>
+        <p class="description" style="color: #d63638;">⚠️ Set border width above to enable borders</p>
+        <?php endif; ?>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Borders are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_border_active_color_callback() {
+        $value = isset($this->options['social_icon_border_active_color']) ? $this->options['social_icon_border_active_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        $width = isset($this->options['social_icon_border_width']) ? intval($this->options['social_icon_border_width']) : 0;
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_border_active_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Border color for active/current icon (leave empty to use normal border color)</p>
+        <?php if ($width === 0): ?>
+        <p class="description" style="color: #d63638;">⚠️ Set border width above to enable borders</p>
+        <?php endif; ?>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Borders are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
+    public function social_icon_border_hover_color_callback() {
+        $value = isset($this->options['social_icon_border_hover_color']) ? $this->options['social_icon_border_hover_color'] : '';
+        $style = isset($this->options['social_icon_style']) ? $this->options['social_icon_style'] : 'circle';
+        $width = isset($this->options['social_icon_border_width']) ? intval($this->options['social_icon_border_width']) : 0;
+        ?>
+        <input type="text" name="ross_theme_footer_options[social_icon_border_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Border color on hover (leave empty to use normal border color)</p>
+        <?php if ($width === 0): ?>
+        <p class="description" style="color: #d63638;">⚠️ Set border width above to enable borders</p>
+        <?php endif; ?>
+        <?php if ($style === 'plain'): ?>
+        <p class="description" style="color: #d63638;">⚠️ Borders are not applied when style is set to "Plain"</p>
+        <?php endif; ?>
+        <?php
+    }
+    
     public function social_icon_hover_color_callback() {
         $value = isset($this->options['social_icon_hover_color']) ? $this->options['social_icon_hover_color'] : '';
         ?>
@@ -3235,18 +3277,6 @@ class RossFooterOptions {
         <?php
     }
 
-    // New: Custom Footer CSS
-    public function custom_footer_css_callback() {
-        $v = isset($this->options['custom_footer_css']) ? $this->options['custom_footer_css'] : '';
-        echo '<textarea name="ross_theme_footer_options[custom_footer_css]" rows="4" class="large-text" placeholder="Add custom CSS specific to the footer (no <style> tag needed)">' . esc_textarea($v) . '</textarea>';
-    }
-
-    // New: Custom Footer JS
-    public function custom_footer_js_callback() {
-        $v = isset($this->options['custom_footer_js']) ? $this->options['custom_footer_js'] : '';
-        echo '<textarea name="ross_theme_footer_options[custom_footer_js]" rows="4" class="large-text" placeholder="Add JS to run for the footer (will be sanitized)">' . esc_textarea($v) . '</textarea>';
-    }
-
     // Section callbacks for the new sections
     public function copyright_visibility_section_callback() {
         echo '<div style="background: #f0f8ff; padding: 12px; border-left: 4px solid #2271b1; margin-bottom: 15px;">';
@@ -3265,37 +3295,6 @@ class RossFooterOptions {
         echo '<strong>🎨 Styling Options</strong>';
         echo '<p style="margin: 8px 0 0 0;">Complete visual control: colors, typography, spacing, borders and link colors.</p>';
         echo '</div>';
-    }
-    public function copyright_advanced_section_callback() {
-        ?>
-        <div class="ross-collapsible-section" style="background: #fee2e2; border-left: 4px solid #dc2626; margin-bottom: 15px;">
-            <div class="ross-collapsible-header" onclick="rossToggleCollapsible(this)" style="padding: 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <strong>⚡ Advanced Options</strong>
-                    <p style="margin: 8px 0 0 0; font-weight: normal; color: #666;">For developers: custom HTML, CSS, and JavaScript</p>
-                </div>
-                <span class="dashicons dashicons-arrow-down-alt2" style="transition: transform 0.3s;"></span>
-            </div>
-            <div class="ross-collapsible-content" style="display: none; padding: 12px; background: #fff; border-top: 1px solid #dc2626;">
-                <p style="margin: 0 0 10px 0; color: #666; font-size: 13px;">
-                    <strong>⚠️ Warning:</strong> These are advanced settings for developers. Improper code may break your site. Use with caution.
-                </p>
-            </div>
-        </div>
-        <script>
-        function rossToggleCollapsible(header) {
-            var content = header.nextElementSibling;
-            var arrow = header.querySelector('.dashicons');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
-                content.style.display = 'none';
-                arrow.style.transform = 'rotate(0deg)';
-            }
-        }
-        </script>
-        <?php
     }
     
     // Sanitization
@@ -3554,6 +3553,17 @@ class RossFooterOptions {
         $sanitized['social_icon_size'] = isset($input['social_icon_size']) ? absint($input['social_icon_size']) : 36;
         $sanitized['social_icon_color'] = isset($input['social_icon_color']) ? sanitize_hex_color($input['social_icon_color']) : '';
         $sanitized['social_icon_hover_color'] = isset($input['social_icon_hover_color']) ? sanitize_hex_color($input['social_icon_hover_color']) : '';
+        
+        // Background colors (normal, active, hover)
+        $sanitized['social_icon_bg_color'] = isset($input['social_icon_bg_color']) ? sanitize_hex_color($input['social_icon_bg_color']) : '';
+        $sanitized['social_icon_bg_active_color'] = isset($input['social_icon_bg_active_color']) ? sanitize_hex_color($input['social_icon_bg_active_color']) : '';
+        $sanitized['social_icon_bg_hover_color'] = isset($input['social_icon_bg_hover_color']) ? sanitize_hex_color($input['social_icon_bg_hover_color']) : '';
+        
+        // Border styling (width and colors for normal, active, hover)
+        $sanitized['social_icon_border_width'] = isset($input['social_icon_border_width']) ? absint($input['social_icon_border_width']) : 0;
+        $sanitized['social_icon_border_color'] = isset($input['social_icon_border_color']) ? sanitize_hex_color($input['social_icon_border_color']) : '';
+        $sanitized['social_icon_border_active_color'] = isset($input['social_icon_border_active_color']) ? sanitize_hex_color($input['social_icon_border_active_color']) : '';
+        $sanitized['social_icon_border_hover_color'] = isset($input['social_icon_border_hover_color']) ? sanitize_hex_color($input['social_icon_border_hover_color']) : '';
         
         // Copyright
         $sanitized['enable_copyright'] = isset($input['enable_copyright']) ? 1 : 0;

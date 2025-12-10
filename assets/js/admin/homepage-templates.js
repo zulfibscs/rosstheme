@@ -38,8 +38,6 @@
             const $button = $(this);
             const templateId = $button.data('template');
             
-            console.log('Applying template:', templateId);
-            
             if ($button.prop('disabled')) {
                 return;
             }
@@ -52,10 +50,6 @@
             // Disable button and show loading
             $button.prop('disabled', true)
                    .text(rossHomepageTemplates.strings.applying);
-            
-            console.log('Sending AJAX request to:', rossHomepageTemplates.ajaxUrl);
-            console.log('Template ID:', templateId);
-            console.log('Nonce:', rossHomepageTemplates.nonce);
             
             // AJAX request
             $.ajax({
@@ -82,7 +76,6 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', status, error, xhr.responseText);
                     showNotice('error', rossHomepageTemplates.strings.error + ' (' + error + ')');
                     $button.prop('disabled', false)
                            .text('Apply Template');

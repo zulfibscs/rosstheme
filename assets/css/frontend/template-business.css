@@ -176,7 +176,8 @@
 .ross-template-business .team-avatar img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 .ross-template-business .team-member h4 {

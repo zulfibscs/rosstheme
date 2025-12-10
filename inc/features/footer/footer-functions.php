@@ -19,7 +19,7 @@ function ross_theme_display_footer() {
     }
     
     // Get selected template
-    $template_id = $footer_options['footer_template'] ?? 'creative-agency';
+    $template_id = $footer_options['footer_template'] ?? 'business-professional';
     
     // Check if template part exists
     $template_part = 'template-parts/footer/footer-' . $template_id;

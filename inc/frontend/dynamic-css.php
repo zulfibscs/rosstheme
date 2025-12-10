@@ -723,6 +723,13 @@ function ross_theme_dynamic_css() {
     $social_icon_style = isset($footer_options['social_icon_style']) ? $footer_options['social_icon_style'] : 'circle';
     $social_icon_size = isset($footer_options['social_icon_size']) ? intval($footer_options['social_icon_size']) : 36;
     $social_icon_color = isset($footer_options['social_icon_color']) ? $footer_options['social_icon_color'] : '';
+    $social_icon_bg_color = isset($footer_options['social_icon_bg_color']) ? $footer_options['social_icon_bg_color'] : '';
+    $social_icon_bg_active_color = isset($footer_options['social_icon_bg_active_color']) ? $footer_options['social_icon_bg_active_color'] : '';
+    $social_icon_bg_hover_color = isset($footer_options['social_icon_bg_hover_color']) ? $footer_options['social_icon_bg_hover_color'] : '';
+    $social_icon_border_width = isset($footer_options['social_icon_border_width']) ? intval($footer_options['social_icon_border_width']) : 0;
+    $social_icon_border_color = isset($footer_options['social_icon_border_color']) ? $footer_options['social_icon_border_color'] : '';
+    $social_icon_border_active_color = isset($footer_options['social_icon_border_active_color']) ? $footer_options['social_icon_border_active_color'] : '';
+    $social_icon_border_hover_color = isset($footer_options['social_icon_border_hover_color']) ? $footer_options['social_icon_border_hover_color'] : '';
     $social_hover_color = isset($footer_options['social_icon_hover_color']) ? $footer_options['social_icon_hover_color'] : '';
     
     if (!empty($social_icon_size)) {
@@ -737,18 +744,62 @@ function ross_theme_dynamic_css() {
         echo '.ross-social-icons .social-icon { border-radius: 8px !important; }';
     } elseif ($social_icon_style === 'plain') {
         echo '.ross-social-icons .social-icon { background: transparent !important; }';
+        echo '.ross-social-icons .social-icon:hover { background: transparent !important; }';
+    }
+    
+    // Apply custom background colors if set (normal, active, hover)
+    if (!empty($social_icon_bg_color) && $social_icon_style !== 'plain') {
+        // Use multiple selectors with high specificity to override static CSS
+        echo '.ross-social-icons .social-icon, .ross-social-icons a.social-icon { background: ' . esc_attr($social_icon_bg_color) . ' !important; background-image: none !important; }';
+    } elseif ($social_icon_style !== 'plain') {
+        // Fallback to semi-transparent background if no custom bg color
+        echo '.ross-social-icons .social-icon, .ross-social-icons a.social-icon { background: rgba(255,255,255,0.1) !important; background-image: none !important; }';
+    }
+    
+    // Active state background color
+    if (!empty($social_icon_bg_active_color) && $social_icon_style !== 'plain') {
+        echo '.ross-social-icons .social-icon.active, .ross-social-icons .social-icon.current, .ross-social-icons a.social-icon.active, .ross-social-icons a.social-icon.current { background: ' . esc_attr($social_icon_bg_active_color) . ' !important; background-image: none !important; }';
+    }
+    
+    // Hover state background color (override platform-specific hover styles with attribute selector)
+    if (!empty($social_icon_bg_hover_color) && $social_icon_style !== 'plain') {
+        // Use attribute selector to match static CSS specificity
+        echo '.ross-social-icons .social-icon:hover, .ross-social-icons a.social-icon:hover, .ross-social-icons .social-icon[data-platform]:hover { background: ' . esc_attr($social_icon_bg_hover_color) . ' !important; background-image: none !important; }';
+    } elseif ($social_icon_style !== 'plain') {
+        // Fallback hover effect with attribute selector
+        echo '.ross-social-icons .social-icon:hover, .ross-social-icons a.social-icon:hover, .ross-social-icons .social-icon[data-platform]:hover { background: rgba(255,255,255,0.2) !important; background-image: none !important; }';
     }
     
     if (!empty($social_icon_color)) {
         echo '.ross-social-icons .social-icon { color: ' . esc_attr($social_icon_color) . ' !important; }';
-        if ($social_icon_style !== 'plain') {
-            echo '.ross-social-icons .social-icon { background: rgba(255,255,255,0.1) !important; }';
-        }
     }
     
     if (!empty($social_hover_color)) {
         echo '.ross-social-icons .social-icon:hover { color: ' . esc_attr($social_hover_color) . ' !important; }';
-        echo '.ross-social-icons .social-icon:hover { background: rgba(255,255,255,0.2) !important; }';
+    }
+    
+    // Border styling (normal, active, hover) - only for circle/square/rounded styles
+    if ($social_icon_border_width > 0 && $social_icon_style !== 'plain') {
+        // Normal state border
+        if (!empty($social_icon_border_color)) {
+            echo '.ross-social-icons .social-icon, .ross-social-icons a.social-icon { border: ' . intval($social_icon_border_width) . 'px solid ' . esc_attr($social_icon_border_color) . ' !important; }';
+        } else {
+            // Default border when width is set but no color specified
+            echo '.ross-social-icons .social-icon, .ross-social-icons a.social-icon { border: ' . intval($social_icon_border_width) . 'px solid rgba(255,255,255,0.3) !important; }';
+        }
+        
+        // Active state border
+        if (!empty($social_icon_border_active_color)) {
+            echo '.ross-social-icons .social-icon.active, .ross-social-icons .social-icon.current, .ross-social-icons a.social-icon.active, .ross-social-icons a.social-icon.current { border-color: ' . esc_attr($social_icon_border_active_color) . ' !important; }';
+        }
+        
+        // Hover state border
+        if (!empty($social_icon_border_hover_color)) {
+            echo '.ross-social-icons .social-icon:hover, .ross-social-icons a.social-icon:hover, .ross-social-icons .social-icon[data-platform]:hover { border-color: ' . esc_attr($social_icon_border_hover_color) . ' !important; }';
+        }
+    } else {
+        // Ensure no borders when width is 0
+        echo '.ross-social-icons .social-icon, .ross-social-icons a.social-icon { border: none !important; }';
     }
 
     // Custom footer CSS if provided

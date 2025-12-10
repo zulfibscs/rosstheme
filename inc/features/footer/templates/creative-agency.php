@@ -19,5 +19,4 @@ return array(
         array('title' => 'Services', 'items' => array('Branding', 'UX / UI', 'Product Design', 'Design Systems')),
         array('title' => 'Contact', 'items' => array('hello@agency.example', 'New York, USA')),
     ),
-    'cta' => array('title' => 'Let\'s build something', 'subtitle' => 'We help ambitious brands scale.', 'button_text' => 'Talk to us', 'button_url' => '#')
 );

@@ -1,38 +1,11 @@
 jQuery(document).ready(function($) {
-    // Debug: log when admin script loads and if localized data exists
-    try {
-        console.log('ross-footer-admin script loaded', typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin : 'rossFooterAdmin UNDEFINED');
-    } catch(e) { console.warn('ross-footer-admin debug log failed', e); }
-    
-    // FIX: Ensure submit button is clickable
-    $(document).on('click', '.ross-submit-btn, input[type="submit"]', function(e) {
-        console.log('Submit button clicked');
-        // Don't prevent default - let form submit naturally
-    });
-    
-    // Diagnostic: Check for button state
-    setTimeout(function() {
-        var $submitBtn = $('.ross-submit-btn, input[type="submit"]');
-        if ($submitBtn.length > 0) {
-            console.log('Submit button found:', $submitBtn.length);
-            console.log('Button is visible:', $submitBtn.is(':visible'));
-            console.log('Button is disabled:', $submitBtn.prop('disabled'));
-            console.log('Button CSS pointer-events:', $submitBtn.css('pointer-events'));
-            console.log('Button z-index:', $submitBtn.css('z-index'));
-        } else {
-            console.error('Submit button NOT found!');
-        }
-    }, 1000);
-    
     // Initialize color pickers with error handling
     try {
         if ($.fn.wpColorPicker) {
             $('.color-picker').wpColorPicker();
-        } else {
-            console.warn('wpColorPicker not available');
         }
     } catch(err) {
-        console.error('Color picker initialization failed:', err);
+        // Silent fallback - color picker not available
     }
 
     // Media uploader for background image field (reusable frame per button)
@@ -103,13 +76,8 @@ jQuery(document).ready(function($) {
             if (ends && ends.length) $input = ends;
         }
 
-        // Log debug info about the resolution
-        console.debug('Uploader target: ', {target: target, inputName: inputName, found: ($input && $input.length ? true : false)});
-
-        // If still not found, stop gracefully and inform the developer/admin
+        // If still not found, stop gracefully
         if (!$input || !$input.length) {
-            console.error('Target input field not found: ' + (target || 'unknown') + ' (data-input-name: ' + (inputName || 'none') + ')');
-            // Do not block further UI; show a non-blocking notice in console only
             return;
         }
 
@@ -374,6 +342,7 @@ jQuery(document).ready(function($) {
     toggleSocialFields();
     toggleCopyrightFields();
     toggleCustomCtaFields();
+    toggleCustomFooterFields();
     
     // Bind events
     $(document).on('change', 'input[name="ross_theme_footer_options[enable_widgets]"]', toggleWidgetsFields);
@@ -381,6 +350,7 @@ jQuery(document).ready(function($) {
     $(document).on('change', 'input[name="ross_theme_footer_options[enable_custom_cta]"]', toggleCustomCtaFields);
     $(document).on('change', 'input[name="ross_theme_footer_options[enable_social_icons]"]', toggleSocialFields);
     $(document).on('change', 'input[name="ross_theme_footer_options[enable_copyright]"]', toggleCopyrightFields);
+    $(document).on('change', 'input[name="ross_theme_footer_options[enable_custom_footer]"]', toggleCustomFooterFields);
 
     // Background type controls (for Styling tab)
     function updateBgTypeFields() {
@@ -594,7 +564,7 @@ jQuery(document).ready(function($) {
     }
 
     // Bind preview update listeners for CTA inputs
-    $(document).on('input change', 'input[name^="ross_theme_footer_options[cta_"], textarea[name^="ross_theme_footer_options[cta_"]], select[name^="ross_theme_footer_options[cta_"]', function(){
+    $(document).on('input change', 'input[name^="ross_theme_footer_options[cta_]"], textarea[name^="ross_theme_footer_options[cta_]"], select[name^="ross_theme_footer_options[cta_]"]', function(){
         updateCtaPreview();
     });
     $(document).ready(function(){ updateCtaPreview(); });
@@ -690,7 +660,7 @@ jQuery(document).ready(function($) {
                 try { if (typeof toggleCustomCtaFields === 'function') toggleCustomCtaFields(); } catch(e) {}
                 try { if (typeof updateCtaBgTypeFields === 'function') updateCtaBgTypeFields(); } catch(e) {}
                 try { if (typeof updateCtaOverlayFields === 'function') updateCtaOverlayFields(); } catch(e) {}
-            } catch(e) { console.warn('rossShowCtaFields error', e); }
+            } catch(e) {}
         };
 
         // Bind click on subtab buttons (admin-pages.php toggles wrappers but we show/hide rows explicitly here)
@@ -719,9 +689,8 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Footer template preview (delegated handler + debug)
+    // Footer template preview (delegated handler)
     $(document).on('click', '#ross-preview-template', function(e) {
-        console.log('ross-preview-template clicked');
         e.preventDefault();
         var selected = $('input[name="ross_theme_footer_options[footer_template]"]:checked').val();
         if (!selected) return alert('Please select a template to preview.');
@@ -733,16 +702,13 @@ jQuery(document).ready(function($) {
             // Attempt to fetch preview via AJAX if it's not embedded
             if (typeof rossFooterAdmin !== 'undefined' && rossFooterAdmin.ajax_url) {
                 var payload = { action: 'ross_get_footer_template_preview', template: selected, nonce: rossFooterAdmin.nonce };
-                console.log('Requesting server-side preview for', selected);
                 $.post(rossFooterAdmin.ajax_url, payload, function(resp) {
                     if (resp && resp.success && resp.data && resp.data.html) {
                         container.html(resp.data.html);
                     } else {
-                        console.warn('Server preview fetch failed', resp);
                         container.html('<em>No preview available</em>');
                     }
                 }).fail(function(xhr) {
-                    console.error('Preview AJAX call failed', xhr);
                     container.html('<em>Error fetching preview</em>');
                 });
             } else {
@@ -789,9 +755,8 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Apply template (delegated handler + debug)
+    // Apply template (delegated handler)
     $(document).on('click', '#ross-apply-template', function(e) {
-        console.log('ross-apply-template clicked');
         e.preventDefault();
         if (!confirm('This will replace your current footer widgets with the selected template sample content. Continue?')) return;
 
@@ -808,7 +773,6 @@ jQuery(document).ready(function($) {
         var $btn = $(this);
         $btn.prop('disabled', true);
         $.post((typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.ajax_url : ajaxurl), data, function(resp) {
-            console.log('Apply template response', resp);
             if (!resp) return alert('Unexpected response from server');
             if (resp.success) {
                 var msg = $('<div class="notice notice-success inline" id="ross-footer-apply-notice" style="margin-top:10px;"></div>');
@@ -826,17 +790,15 @@ jQuery(document).ready(function($) {
                     var backupId = $(this).data('backup-id');
                     var restoreData = { action: 'ross_restore_footer_backup', backup_id: backupId, nonce: (typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.nonce : '') };
                     $.post((typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.ajax_url : ajaxurl), restoreData, function(res) {
-                        console.log('Undo restore response', res);
                         if (res && res.success) {
                             alert('Footer restored from backup.');
                             // Update backups list if server included HTML
                             if (res.data && res.data.backups_html) {
                                 $('#ross-footer-backups').html('<h4>Recent Footer Backups</h4>' + res.data.backups_html);
                             } else {
-                                try { reloadFooterBackups(); } catch(e) { console.warn('Unable to reload backups after undo', e); }
+                                try { reloadFooterBackups(); } catch(e) {}
                             }
                         } else {
-                            console.error('Undo restore failed', res);
                             alert('Failed to restore: ' + (res && res.data ? res.data : 'unknown'));
                         }
                     });
@@ -848,14 +810,9 @@ jQuery(document).ready(function($) {
                 if (resp.data && resp.data.backups_html) {
                     $('#ross-footer-backups').html('<h4>Recent Footer Backups</h4>' + resp.data.backups_html);
                 } else {
-                    try { reloadFooterBackups(); } catch(e) { console.warn('Unable to reload footer backups', e); }
-                }
-                // Log returned footer option state for debugging
-                if (resp.data && resp.data.footer_options) {
-                    console.log('Saved footer options after apply:', resp.data.footer_options);
+                    try { reloadFooterBackups(); } catch(e) {}
                 }
             } else {
-                console.error('Apply template error', resp);
                 alert('Error applying template: ' + (resp.data || 'unknown'));
                 $btn.prop('disabled', false);
             }
@@ -869,22 +826,19 @@ jQuery(document).ready(function($) {
     $('#ross-footer-backups').on('click', '.ross-restore-backup', function(e) {
         e.preventDefault();
         var id = $(this).data('backup-id');
-        console.log('ross-restore-backup clicked, id=', id);
         if (!id) return alert('Missing backup id');
         if (!confirm('Restore this backup? This will replace current footer widgets.')) return;
 
         var data = { action: 'ross_restore_footer_backup', backup_id: id, nonce: (typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.nonce : '') };
         $.post((typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.ajax_url : ajaxurl), data, function(resp){
-            console.log('Restore action response', resp);
             if (resp && resp.success) {
                 alert('Backup restored successfully.');
                 if (resp.data && resp.data.backups_html) {
                     $('#ross-footer-backups').html('<h4>Recent Footer Backups</h4>' + resp.data.backups_html);
                 } else {
-                    try { reloadFooterBackups(); } catch(e) { console.warn('Unable to reload backups after restore', e); }
+                    try { reloadFooterBackups(); } catch(e) {}
                 }
             } else {
-                console.error('Restore failed', resp);
                 alert('Restore failed: ' + (resp && resp.data ? resp.data : 'unknown'));
             }
         });
@@ -894,22 +848,19 @@ jQuery(document).ready(function($) {
         e.preventDefault();
         var $row = $(this).closest('tr');
         var id = $(this).data('backup-id');
-        console.log('ross-delete-backup clicked, id=', id);
         if (!id) return alert('Missing backup id');
         if (!confirm('Delete this backup?')) return;
 
         var data = { action: 'ross_delete_footer_backup', backup_id: id, nonce: (typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.nonce : '') };
         $.post((typeof rossFooterAdmin !== 'undefined' ? rossFooterAdmin.ajax_url : ajaxurl), data, function(resp){
-            console.log('Delete action response', resp);
             if (resp && resp.success) {
                 $row.fadeOut(200, function(){ $(this).remove(); });
                 if (resp.data && resp.data.backups_html) {
                     $('#ross-footer-backups').html('<h4>Recent Footer Backups</h4>' + resp.data.backups_html);
                 } else {
-                    try { reloadFooterBackups(); } catch(e) { console.warn('Unable to reload backups after delete', e); }
+                    try { reloadFooterBackups(); } catch(e) {}
                 }
             } else {
-                console.error('Delete failed', resp);
                 alert('Delete failed: ' + (resp && resp.data ? resp.data : 'unknown'));
             }
         });
@@ -960,52 +911,4 @@ jQuery(document).ready(function($) {
         }).fail(function(){ $modal.html('<div style="padding:16px;color:red;">Failed to fetch sync preview.</div>'); });
     });
 
-    // small helper to provide a link to the Widgets admin (can't access PHP here). Build link to Appearance -> Widgets.
-    function admin_url_placeholder() {
-        try {
-            return window.location.origin + '/wp-admin/widgets.php';
-        } catch(e) {
-            return '/wp-admin/widgets.php';
-        }
-    }
-    
-    // FIX: Final check - ensure form submission is not blocked
-    console.log('Footer options JS initialized. Form submission enabled.');
-    
-    // Debug: Log any form submit events
-    $('form.ross-settings-form').on('submit', function(e) {
-        console.log('Form submitting...', e);
-        console.log('Form action:', $(this).attr('action'));
-        console.log('Form method:', $(this).attr('method'));
-        
-        // Count form fields
-        var fieldCount = $(this).find('input, select, textarea').length;
-        console.log('Total form fields:', fieldCount);
-        
-        // Check for required hidden fields
-        var optionPage = $(this).find('input[name="option_page"]');
-        var action = $(this).find('input[name="action"]');
-        var nonceField = $(this).find('input[name="_wpnonce"]');
-        
-        console.log('option_page field:', optionPage.length > 0 ? optionPage.val() : 'MISSING');
-        console.log('action field:', action.length > 0 ? action.val() : 'MISSING');
-        console.log('nonce field:', nonceField.length > 0 ? 'present' : 'MISSING');
-        
-        // Do NOT prevent default - let WordPress handle it
-        return true;
-    });
-    
-    // Monitor settings updates via AJAX (if WordPress uses it)
-    $(document).ajaxSuccess(function(event, xhr, settings) {
-        if (settings.url && settings.url.indexOf('options.php') !== -1) {
-            console.log('Settings update AJAX completed');
-        }
-    });
-    
-    $(document).ajaxError(function(event, xhr, settings, error) {
-        if (settings.url && settings.url.indexOf('options.php') !== -1) {
-            console.error('Settings update AJAX error:', error);
-            console.error('Response:', xhr.responseText);
-        }
-    });
 });
