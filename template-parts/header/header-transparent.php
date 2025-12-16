@@ -33,7 +33,13 @@ $inline_style = ross_theme_get_header_inline_style();
             </div>
 
             <!-- Navigation -->
-            <button class="menu-toggle" aria-expanded="false" aria-controls="primary-menu">☰ Menu</button>
+            <button class="menu-toggle" aria-expanded="false" aria-controls="primary-menu" aria-label="Toggle navigation menu">
+                <span class="hamburger">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </span>
+            </button>
             <nav class="header-navigation" id="primary-menu">
                 <?php
                 if (has_nav_menu('primary')) {

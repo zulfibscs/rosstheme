@@ -18,6 +18,10 @@ class RossHeaderOptions {
         add_action('wp_ajax_ross_preview_header_template', array($this, 'ajax_preview_header_template'));
         add_action('wp_ajax_ross_restore_header_backup', array($this, 'ajax_restore_header_backup'));
         add_action('wp_ajax_ross_delete_header_backup', array($this, 'ajax_delete_header_backup'));
+
+            // Show custom success notice after saving
+            add_action('admin_notices', array($this, 'show_settings_saved_notice'));
+            add_action('update_option_ross_theme_header_options', array($this, 'on_header_options_updated'), 10, 3);
     }
     
     public function enqueue_header_scripts($hook) {
@@ -71,7 +75,7 @@ class RossHeaderOptions {
         
         add_settings_field(
             'header_style',
-            'Header Style',
+            'Header Style (Legacy)',
             array($this, 'header_style_callback'),
             'ross-theme-header-layout',
             'ross_header_layout_section'
@@ -201,6 +205,14 @@ class RossHeaderOptions {
             'mobile_logo_width',
             'Mobile Logo Max Width (px)',
             array($this, 'mobile_logo_width_callback'),
+            'ross-theme-header-logo',
+            'ross_header_logo_section'
+        );
+        
+        add_settings_field(
+            'logo_padding',
+            'Logo Padding (px)',
+            array($this, 'logo_padding_callback'),
             'ross-theme-header-logo',
             'ross_header_logo_section'
         );
@@ -372,6 +384,70 @@ class RossHeaderOptions {
             'social_links',
             'Social Links (custom)',
             array($this, 'social_links_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_size',
+            'Social Icon Size',
+            array($this, 'social_icon_size_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_shape',
+            'Social Icon Shape',
+            array($this, 'social_icon_shape_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_color',
+            'Social Icon Color',
+            array($this, 'social_icon_color_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_bg_color',
+            'Social Icon Background',
+            array($this, 'social_icon_bg_color_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_effect',
+            'Social Icon Effect',
+            array($this, 'social_icon_effect_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_border_color',
+            'Social Icon Border Color',
+            array($this, 'social_icon_border_color_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_border_size',
+            'Social Icon Border Size',
+            array($this, 'social_icon_border_size_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
+            'social_icon_width',
+            'Social Icon Width',
+            array($this, 'social_icon_width_callback'),
             'ross-theme-header-topbar',
             'ross_header_topbar_section'
         );
@@ -749,6 +825,14 @@ class RossHeaderOptions {
         );
 
         add_settings_field(
+            'cta_button_hover_text_color',
+            'Button Hover Text Color',
+            array($this, 'cta_button_hover_text_color_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+
+        add_settings_field(
             'cta_button_url',
             'Button Link (URL)',
             array($this, 'cta_button_url_callback'),
@@ -760,6 +844,46 @@ class RossHeaderOptions {
             'cta_button_style',
             'Button Style',
             array($this, 'cta_button_style_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_size',
+            'Button Size',
+            array($this, 'cta_button_size_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_font_size',
+            'Button Font Size',
+            array($this, 'cta_button_font_size_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_border_radius',
+            'Button Border Radius',
+            array($this, 'cta_button_border_radius_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_hover_effect',
+            'Button Hover Effect',
+            array($this, 'cta_button_hover_effect_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_text_hover_effect',
+            'Button Text Hover Effect',
+            array($this, 'cta_button_text_hover_effect_callback'),
             'ross-theme-header-cta',
             'ross_header_cta_section'
         );
@@ -920,16 +1044,16 @@ class RossHeaderOptions {
         echo '<p>Control colors and visual appearance of the header.</p>';
     }
     
-    // Field Callbacks - Layout Section
     public function header_style_callback() {
         $value = isset($this->options['header_style']) ? $this->options['header_style'] : 'default';
         ?>
         <select name="ross_theme_header_options[header_style]" id="header_style">
-            <option value="default" <?php selected($value, 'default'); ?>>Default</option>
-            <option value="centered" <?php selected($value, 'centered'); ?>>Centered</option>
-            <option value="transparent" <?php selected($value, 'transparent'); ?>>Transparent</option>
-            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal</option>
+            <option value="default" <?php selected($value, 'default'); ?>>Default (Logo Left, Menu Center)</option>
+            <option value="centered" <?php selected($value, 'centered'); ?>>Centered (Logo Center, Menu Below)</option>
+            <option value="transparent" <?php selected($value, 'transparent'); ?>>Transparent (For Hero Sections)</option>
+            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal (Clean & Simple)</option>
         </select>
+        <p class="description">Choose a header layout style. For advanced features, use the Template System above.</p>
         <?php
     }
     
@@ -1093,6 +1217,14 @@ class RossHeaderOptions {
         <?php
     }
     
+    public function logo_padding_callback() {
+        $value = isset($this->options['logo_padding']) ? $this->options['logo_padding'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[logo_padding]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" /> px
+        <p class="description">Add padding around the logo (default: 0px).</p>
+        <?php
+    }
+    
     public function show_site_title_callback() {
         $value = isset($this->options['show_site_title']) ? $this->options['show_site_title'] : 1;
         ?>
@@ -1252,6 +1384,89 @@ class RossHeaderOptions {
             <button id="ross-social-add" class="button">Add Social Link</button>
             <span class="description">Add icon and URL pairs. Icons can be emojis or CSS classes (e.g., fa-facebook) if your site includes icon fonts.</span>
         </p>
+        <?php
+    }
+
+    public function social_icon_size_callback() {
+        $value = isset($this->options['social_icon_size']) ? $this->options['social_icon_size'] : 'medium';
+        ?>
+        <select name="ross_theme_header_options[social_icon_size]">
+            <option value="small" <?php selected($value, 'small'); ?>>Small</option>
+            <option value="medium" <?php selected($value, 'medium'); ?>>Medium</option>
+            <option value="large" <?php selected($value, 'large'); ?>>Large</option>
+        </select>
+        <p class="description">Choose the size of social icons in the top bar.</p>
+        <?php
+    }
+
+    public function social_icon_shape_callback() {
+        $value = isset($this->options['social_icon_shape']) ? $this->options['social_icon_shape'] : 'circle';
+        ?>
+        <select name="ross_theme_header_options[social_icon_shape]">
+            <option value="circle" <?php selected($value, 'circle'); ?>>Circle</option>
+            <option value="square" <?php selected($value, 'square'); ?>>Square</option>
+            <option value="rounded" <?php selected($value, 'rounded'); ?>>Rounded</option>
+        </select>
+        <p class="description">Choose the shape of social icons in the top bar.</p>
+        <?php
+    }
+
+    public function social_icon_color_callback() {
+        $value = isset($this->options['social_icon_color']) ? $this->options['social_icon_color'] : '#ffffff';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
+        <p class="description">Choose the color of social icons.</p>
+        <?php
+    }
+
+    public function social_icon_bg_color_callback() {
+        $value = isset($this->options['social_icon_bg_color']) ? $this->options['social_icon_bg_color'] : 'transparent';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="transparent" />
+        <p class="description">Choose the background color of social icons. Use 'transparent' for no background.</p>
+        <?php
+    }
+
+    public function social_icon_effect_callback() {
+        $value = isset($this->options['social_icon_effect']) ? $this->options['social_icon_effect'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[social_icon_effect]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Effect</option>
+            <option value="bounce" <?php selected($value, 'bounce'); ?>>Bounce</option>
+            <option value="pulse" <?php selected($value, 'pulse'); ?>>Pulse</option>
+            <option value="rotate" <?php selected($value, 'rotate'); ?>>Rotate</option>
+            <option value="scale" <?php selected($value, 'scale'); ?>>Scale</option>
+        </select>
+        <p class="description">Choose a hover effect for social icons.</p>
+        <?php
+    }
+
+    public function social_icon_border_color_callback() {
+        $value = isset($this->options['social_icon_border_color']) ? $this->options['social_icon_border_color'] : 'transparent';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_border_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="transparent" />
+        <p class="description">Choose the border color of social icons. Use 'transparent' for no border.</p>
+        <?php
+    }
+
+    public function social_icon_border_size_callback() {
+        $value = isset($this->options['social_icon_border_size']) ? $this->options['social_icon_border_size'] : '0';
+        ?>
+        <select name="ross_theme_header_options[social_icon_border_size]">
+            <option value="0" <?php selected($value, '0'); ?>>No Border</option>
+            <option value="1" <?php selected($value, '1'); ?>>1px</option>
+            <option value="2" <?php selected($value, '2'); ?>>2px</option>
+            <option value="3" <?php selected($value, '3'); ?>>3px</option>
+        </select>
+        <p class="description">Choose the border thickness for social icons.</p>
+        <?php
+    }
+
+    public function social_icon_width_callback() {
+        $value = isset($this->options['social_icon_width']) ? $this->options['social_icon_width'] : '32';
+        ?>
+        <input type="number" name="ross_theme_header_options[social_icon_width]" value="<?php echo esc_attr($value); ?>" min="20" max="100" step="1" />
+        <p class="description">Set the width of social icons in pixels (20-100px). Height will match width for square icons.</p>
         <?php
     }
 
@@ -1672,7 +1887,7 @@ class RossHeaderOptions {
     public function cta_button_url_callback() {
         $value = isset($this->options['cta_button_url']) ? $this->options['cta_button_url'] : '/contact';
         ?>
-        <input type="url" name="ross_theme_header_options[cta_button_url]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="https://example.com/contact" />
+        <input type="text" name="ross_theme_header_options[cta_button_url]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="https://example.com/contact or #anchor" />
         <p class="description">Full URL for the CTA button (e.g., https://example.com/contact). Leave empty to use site contact page.</p>
         <?php
     }
@@ -1682,6 +1897,14 @@ class RossHeaderOptions {
         ?>
         <input type="text" name="ross_theme_header_options[cta_button_text_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
         <p class="description">Text color for CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_hover_text_color_callback() {
+        $value = isset($this->options['cta_button_hover_text_color']) ? $this->options['cta_button_hover_text_color'] : '#ffffff';
+        ?>
+        <input type="text" name="ross_theme_header_options[cta_button_hover_text_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
+        <p class="description">Text color for CTA button on hover</p>
         <?php
     }
     
@@ -1695,6 +1918,65 @@ class RossHeaderOptions {
             <option value="gradient" <?php selected($value, 'gradient'); ?>>Gradient</option>
         </select>
         <p class="description">Visual style for CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_size_callback() {
+        $value = isset($this->options['cta_button_size']) ? $this->options['cta_button_size'] : 'medium';
+        ?>
+        <select name="ross_theme_header_options[cta_button_size]">
+            <option value="small" <?php selected($value, 'small'); ?>>Small</option>
+            <option value="medium" <?php selected($value, 'medium'); ?>>Medium</option>
+            <option value="large" <?php selected($value, 'large'); ?>>Large</option>
+        </select>
+        <p class="description">Size of the CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_font_size_callback() {
+        $value = isset($this->options['cta_button_font_size']) ? $this->options['cta_button_font_size'] : '16';
+        ?>
+        <input type="number" name="ross_theme_header_options[cta_button_font_size]" value="<?php echo esc_attr($value); ?>" min="10" max="32" step="1" />
+        <span>px</span>
+        <p class="description">Font size for CTA button text (10-32px)</p>
+        <?php
+    }
+    
+    public function cta_button_border_radius_callback() {
+        $value = isset($this->options['cta_button_border_radius']) ? $this->options['cta_button_border_radius'] : '8';
+        ?>
+        <input type="number" name="ross_theme_header_options[cta_button_border_radius]" value="<?php echo esc_attr($value); ?>" min="0" max="50" step="1" />
+        <span>px</span>
+        <p class="description">Border radius for rounded corners (0-50px)</p>
+        <?php
+    }
+    
+    public function cta_button_hover_effect_callback() {
+        $value = isset($this->options['cta_button_hover_effect']) ? $this->options['cta_button_hover_effect'] : 'scale';
+        ?>
+        <select name="ross_theme_header_options[cta_button_hover_effect]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Effect</option>
+            <option value="scale" <?php selected($value, 'scale'); ?>>Scale Up</option>
+            <option value="glow" <?php selected($value, 'glow'); ?>>Glow</option>
+            <option value="slide" <?php selected($value, 'slide'); ?>>Slide</option>
+            <option value="bounce" <?php selected($value, 'bounce'); ?>>Bounce</option>
+        </select>
+        <p class="description">Animation effect when hovering over CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_text_hover_effect_callback() {
+        $value = isset($this->options['cta_button_text_hover_effect']) ? $this->options['cta_button_text_hover_effect'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[cta_button_text_hover_effect]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Effect</option>
+            <option value="fade" <?php selected($value, 'fade'); ?>>Fade In/Out</option>
+            <option value="slide-up" <?php selected($value, 'slide-up'); ?>>Slide Up</option>
+            <option value="slide-down" <?php selected($value, 'slide-down'); ?>>Slide Down</option>
+            <option value="scale-text" <?php selected($value, 'scale-text'); ?>>Scale Text</option>
+            <option value="glow-text" <?php selected($value, 'glow-text'); ?>>Text Glow</option>
+        </select>
+        <p class="description">Animation effect for CTA button text on hover</p>
         <?php
     }
     
@@ -1842,6 +2124,10 @@ class RossHeaderOptions {
     
     // Field Callbacks - Layout Section (Sticky Behavior)
     public function sanitize_header_options($input) {
+        // Debug: log input for admins
+        if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[ross_theme_sanitize_header_options] Input: ' . json_encode($input));
+        }
         $sanitized = array();
         
         // Layout
@@ -1872,6 +2158,7 @@ class RossHeaderOptions {
         $sanitized['logo_dark'] = esc_url_raw($input['logo_dark']);
         $sanitized['mobile_logo'] = isset($input['mobile_logo']) ? esc_url_raw($input['mobile_logo']) : '';
         $sanitized['logo_width'] = absint($input['logo_width']);
+        $sanitized['logo_padding'] = isset($input['logo_padding']) ? absint($input['logo_padding']) : 0;
         $sanitized['mobile_logo_width'] = isset($input['mobile_logo_width']) ? absint($input['mobile_logo_width']) : 120;
         $sanitized['show_site_title'] = isset($input['show_site_title']) ? 1 : 0;
         
@@ -1886,6 +2173,8 @@ class RossHeaderOptions {
     $sanitized['social_facebook'] = isset($input['social_facebook']) ? esc_url_raw($input['social_facebook']) : '';
     $sanitized['social_twitter'] = isset($input['social_twitter']) ? esc_url_raw($input['social_twitter']) : '';
     $sanitized['social_linkedin'] = isset($input['social_linkedin']) ? esc_url_raw($input['social_linkedin']) : '';
+    $sanitized['social_instagram'] = isset($input['social_instagram']) ? esc_url_raw($input['social_instagram']) : '';
+    $sanitized['social_youtube'] = isset($input['social_youtube']) ? esc_url_raw($input['social_youtube']) : '';
     $sanitized['phone_number'] = isset($input['phone_number']) ? sanitize_text_field($input['phone_number']) : '';
         $sanitized['topbar_email'] = isset($input['topbar_email']) ? sanitize_email($input['topbar_email']) : '';
         $sanitized['enable_announcement'] = isset($input['enable_announcement']) ? 1 : 0;
@@ -1911,6 +2200,19 @@ class RossHeaderOptions {
             $sanitized['social_links'][] = array('icon' => $icon, 'url' => $url);
         }
     }
+    
+    // Social icon styling
+    $sanitized['social_icon_size'] = isset($input['social_icon_size']) ? sanitize_text_field($input['social_icon_size']) : 'medium';
+    $sanitized['social_icon_shape'] = isset($input['social_icon_shape']) ? sanitize_text_field($input['social_icon_shape']) : 'circle';
+    $sanitized['social_icon_color'] = isset($input['social_icon_color']) ? sanitize_hex_color($input['social_icon_color']) : '#ffffff';
+    $sanitized['social_icon_bg_color'] = isset($input['social_icon_bg_color']) ? sanitize_text_field($input['social_icon_bg_color']) : 'transparent';
+    $allowed_effects = array('none', 'bounce', 'pulse', 'rotate', 'scale');
+    $sanitized['social_icon_effect'] = isset($input['social_icon_effect']) && in_array($input['social_icon_effect'], $allowed_effects) ? sanitize_text_field($input['social_icon_effect']) : 'none';
+    $sanitized['social_icon_border_color'] = isset($input['social_icon_border_color']) ? sanitize_text_field($input['social_icon_border_color']) : 'transparent';
+    $allowed_border_sizes = array('0', '1', '2', '3');
+    $sanitized['social_icon_border_size'] = isset($input['social_icon_border_size']) && in_array($input['social_icon_border_size'], $allowed_border_sizes) ? sanitize_text_field($input['social_icon_border_size']) : '0';
+    $sanitized['social_icon_width'] = isset($input['social_icon_width']) ? absint($input['social_icon_width']) : 32;
+    
     $sanitized['color_palette'] = isset($input['color_palette']) ? sanitize_text_field($input['color_palette']) : 'professional';
         
         // Top Bar - Style Enhancements
@@ -1965,8 +2267,16 @@ class RossHeaderOptions {
         $sanitized['cta_button_text'] = sanitize_text_field($input['cta_button_text']);
         $sanitized['cta_button_color'] = sanitize_hex_color($input['cta_button_color']);
         $sanitized['cta_button_text_color'] = isset($input['cta_button_text_color']) ? sanitize_hex_color($input['cta_button_text_color']) : '#ffffff';
+        $sanitized['cta_button_hover_text_color'] = isset($input['cta_button_hover_text_color']) ? sanitize_hex_color($input['cta_button_hover_text_color']) : '#ffffff';
         $sanitized['cta_button_style'] = isset($input['cta_button_style']) ? sanitize_text_field($input['cta_button_style']) : 'solid';
         $sanitized['cta_button_url'] = isset($input['cta_button_url']) && ! empty($input['cta_button_url']) ? esc_url_raw($input['cta_button_url']) : home_url('/contact');
+        $sanitized['cta_button_size'] = isset($input['cta_button_size']) ? sanitize_text_field($input['cta_button_size']) : 'medium';
+        $sanitized['cta_button_font_size'] = isset($input['cta_button_font_size']) ? absint($input['cta_button_font_size']) : 16;
+        $sanitized['cta_button_border_radius'] = isset($input['cta_button_border_radius']) ? absint($input['cta_button_border_radius']) : 8;
+        $allowed_hover_effects = array('none', 'scale', 'glow', 'slide', 'bounce');
+        $sanitized['cta_button_hover_effect'] = isset($input['cta_button_hover_effect']) && in_array($input['cta_button_hover_effect'], $allowed_hover_effects) ? sanitize_text_field($input['cta_button_hover_effect']) : 'scale';
+        $allowed_text_hover_effects = array('none', 'fade', 'slide-up', 'slide-down', 'scale-text', 'glow-text');
+        $sanitized['cta_button_text_hover_effect'] = isset($input['cta_button_text_hover_effect']) && in_array($input['cta_button_text_hover_effect'], $allowed_text_hover_effects) ? sanitize_text_field($input['cta_button_text_hover_effect']) : 'none';
         
         // Appearance
         $sanitized['header_bg_color'] = sanitize_hex_color($input['header_bg_color']);
@@ -1990,6 +2300,25 @@ class RossHeaderOptions {
         // Appearance - Typography
         $sanitized['header_font_family'] = isset($input['header_font_family']) ? sanitize_text_field($input['header_font_family']) : 'inherit';
         $sanitized['header_font_weight'] = isset($input['header_font_weight']) ? sanitize_text_field($input['header_font_weight']) : '400';
+        $sanitized['header_font_size'] = isset($input['header_font_size']) ? absint($input['header_font_size']) : 15;
+        $sanitized['header_letter_spacing'] = isset($input['header_letter_spacing']) ? sanitize_text_field($input['header_letter_spacing']) : '1.2px';
+        $sanitized['header_text_transform'] = isset($input['header_text_transform']) ? sanitize_text_field($input['header_text_transform']) : 'uppercase';
+        // Spacing defaults
+        $sanitized['header_padding_top'] = isset($input['header_padding_top']) ? absint($input['header_padding_top']) : 30;
+        $sanitized['header_padding_bottom'] = isset($input['header_padding_bottom']) ? absint($input['header_padding_bottom']) : 30;
+
+        // CTA additional controls
+        $sanitized['cta_button_padding'] = isset($input['cta_button_padding']) ? sanitize_text_field($input['cta_button_padding']) : (isset($sanitized['cta_button_padding']) ? $sanitized['cta_button_padding'] : '10px 30px');
+        $sanitized['cta_button_border_radius'] = isset($input['cta_button_border_radius']) ? sanitize_text_field($input['cta_button_border_radius']) : (isset($sanitized['cta_button_border_radius']) ? $sanitized['cta_button_border_radius'] : '30px');
+        $sanitized['cta_button_hover_color'] = isset($input['cta_button_hover_color']) ? sanitize_hex_color($input['cta_button_hover_color']) : (isset($sanitized['cta_button_hover_color']) ? $sanitized['cta_button_hover_color'] : '');
+
+        // Animation / behavior
+        $sanitized['header_logo_scale'] = isset($input['header_logo_scale']) ? floatval($input['header_logo_scale']) : 0.92;
+        
+        // Debug: log sanitized output for admins
+        if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[ross_theme_sanitize_header_options] Sanitized: ' . json_encode($sanitized));
+        }
         
         return $sanitized;
     }
@@ -2005,11 +2334,12 @@ class RossHeaderOptions {
         }
         
         $template_id = sanitize_text_field($_POST['template_id']);
+        $force = isset($_POST['force']) ? (bool) $_POST['force'] : false;
         
         // Load template manager
         require_once get_template_directory() . '/inc/features/header/header-template-manager.php';
         
-        $success = ross_theme_apply_header_template($template_id);
+        $success = ross_theme_apply_header_template($template_id, $force);
         
         if ($success) {
             wp_send_json_success('Template applied successfully');
@@ -2124,9 +2454,34 @@ class RossHeaderOptions {
             wp_send_json_error('Failed to delete backup');
         }
     }
-}
+    /**
+     * Set transient when header options are updated
+     */
+    public function on_header_options_updated($old_value, $new_value, $option_name) {
+        // Debug: log update
+        if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('[ross_theme_on_header_options_updated] Old: ' . json_encode($old_value) . ' New: ' . json_encode($new_value));
+        }
+        set_transient('ross_header_settings_saved', 1, 30);
+    }
 
-// Initialize
+    /**
+     * Show custom success notice after saving header settings
+     */
+    public function show_settings_saved_notice() {
+        if (!isset($_GET['page']) || $_GET['page'] !== 'ross-theme-header') {
+            return;
+        }
+        $settings_updated = isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true';
+        $transient_set = get_transient('ross_header_settings_saved');
+        if ($transient_set) {
+            delete_transient('ross_header_settings_saved');
+        }
+        if ($settings_updated || $transient_set) {
+            echo '<div class="notice notice-success is-dismissible" style="background:#ecfdf3;border-left:4px solid #22c55e;color:#14532d;"><p><strong>✅ Header settings saved successfully!</strong> Your changes have been applied. <a href="' . home_url('/') . '" target="_blank">View your site →</a></p></div>';
+        }
+    }
+}
 if (is_admin()) {
     new RossHeaderOptions();
 }

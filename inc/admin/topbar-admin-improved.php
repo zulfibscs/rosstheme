@@ -127,6 +127,53 @@ function ross_theme_render_topbar_admin_improved() {
                                     <option value="circle" <?php selected($get('social_icon_shape', 'circle'), 'circle'); ?>>Circle</option>
                                     <option value="square" <?php selected($get('social_icon_shape', 'circle'), 'square'); ?>>Square</option>
                                     <option value="rounded" <?php selected($get('social_icon_shape', 'circle'), 'rounded'); ?>>Rounded</option>
+                                    <option value="plain" <?php selected($get('social_icon_shape', 'circle'), 'plain'); ?>>Plain</option>
+                                </select>
+                            </div>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Icon Width (px)</label>
+                                <input type="number" name="ross_theme_header_options[social_icon_width]" value="<?php echo esc_attr($get('social_icon_width', '32')); ?>" min="20" max="100" step="1" class="ross-input" />
+                                <p class="ross-field-description">Custom width for social icons (20-100px)</p>
+                            </div>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Icon Effect</label>
+                                <select name="ross_theme_header_options[social_icon_effect]" class="ross-select">
+                                    <option value="none" <?php selected($get('social_icon_effect', 'none'), 'none'); ?>>No Effect</option>
+                                    <option value="bounce" <?php selected($get('social_icon_effect', 'none'), 'bounce'); ?>>Bounce</option>
+                                    <option value="pulse" <?php selected($get('social_icon_effect', 'none'), 'pulse'); ?>>Pulse</option>
+                                    <option value="rotate" <?php selected($get('social_icon_effect', 'none'), 'rotate'); ?>>Rotate</option>
+                                    <option value="scale" <?php selected($get('social_icon_effect', 'none'), 'scale'); ?>>Scale</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="ross-admin-subsection">
+                            <h4>🎨 Advanced Styling</h4>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Icon Color</label>
+                                <input type="text" name="ross_theme_header_options[social_icon_color]" value="<?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>" class="ross-color-input" data-default-color="#ffffff" />
+                            </div>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Background Color</label>
+                                <input type="text" name="ross_theme_header_options[social_icon_bg_color]" value="<?php echo esc_attr($get('social_icon_bg_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
+                            </div>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Border Color</label>
+                                <input type="text" name="ross_theme_header_options[social_icon_border_color]" value="<?php echo esc_attr($get('social_icon_border_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
+                            </div>
+                            
+                            <div class="ross-field-group">
+                                <label class="ross-field-label">Border Size</label>
+                                <select name="ross_theme_header_options[social_icon_border_size]" class="ross-select">
+                                    <option value="0" <?php selected($get('social_icon_border_size', '0'), '0'); ?>>No Border</option>
+                                    <option value="1" <?php selected($get('social_icon_border_size', '0'), '1'); ?>>1px</option>
+                                    <option value="2" <?php selected($get('social_icon_border_size', '0'), '2'); ?>>2px</option>
+                                    <option value="3" <?php selected($get('social_icon_border_size', '0'), '3'); ?>>3px</option>
                                 </select>
                             </div>
                         </div>

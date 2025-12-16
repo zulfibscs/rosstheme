@@ -106,6 +106,13 @@
         var leftContent = getEditorContent('ross_left_content_editor') || 'Left Content';
         var socialEnabled = $('input[name="ross_theme_header_options[enable_social]"]').is(':checked');
         var iconSize = $('select[name="ross_theme_header_options[social_icon_size]"]').val() || 'medium';
+        var iconShape = $('select[name="ross_theme_header_options[social_icon_shape]"]').val() || 'circle';
+        var iconWidth = $('input[name="ross_theme_header_options[social_icon_width]"]').val() || '32';
+        var iconColor = $('input[name="ross_theme_header_options[social_icon_color]"]').val() || '#ffffff';
+        var iconBgColor = $('input[name="ross_theme_header_options[social_icon_bg_color]"]').val() || 'transparent';
+        var iconBorderColor = $('input[name="ross_theme_header_options[social_icon_border_color]"]').val() || 'transparent';
+        var iconBorderSize = $('select[name="ross_theme_header_options[social_icon_border_size]"]').val() || '0';
+        var iconEffect = $('select[name="ross_theme_header_options[social_icon_effect]"]').val() || 'none';
 
         // Apply background
         if (gradientEnabled) {
@@ -163,7 +170,20 @@
                 var platform = $item.data('platform');
                 
                 if (enabled && url) {
-                    iconHtml += '<span class="preview-icon" style="font-size: ' + (iconSizeMap[iconSize] || '14px') + '; color: ' + iconColor + ';">';
+                    var iconStyle = 'width: ' + iconWidth + 'px; height: ' + iconWidth + 'px; font-size: ' + (iconSizeMap[iconSize] || '14px') + '; color: ' + iconColor + ';';
+                    
+                    if (iconBgColor !== 'transparent') {
+                        iconStyle += ' background-color: ' + iconBgColor + ';';
+                    }
+                    
+                    if (iconBorderColor !== 'transparent' && iconBorderSize !== '0') {
+                        iconStyle += ' border: ' + iconBorderSize + 'px solid ' + iconBorderColor + ';';
+                    }
+                    
+                    // Add shape class
+                    var shapeClass = 'preview-icon-shape-' + iconShape;
+                    
+                    iconHtml += '<span class="preview-icon ' + shapeClass + '" style="' + iconStyle + '">';
                     
                     // Use platform-specific icons
                     var iconMap = {
@@ -233,7 +253,7 @@
         });
 
         // Icon size and shape changes
-        $('select[name="ross_theme_header_options[social_icon_size]"], select[name="ross_theme_header_options[social_icon_shape]"]').on('change', function() {
+        $('select[name="ross_theme_header_options[social_icon_size]"], select[name="ross_theme_header_options[social_icon_shape]"], input[name="ross_theme_header_options[social_icon_width]"], input[name="ross_theme_header_options[social_icon_color]"], input[name="ross_theme_header_options[social_icon_bg_color]"], input[name="ross_theme_header_options[social_icon_border_color]"], select[name="ross_theme_header_options[social_icon_border_size]"], select[name="ross_theme_header_options[social_icon_effect]"]').on('change input', function() {
             updateLivePreview();
         });
     }

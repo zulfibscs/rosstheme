@@ -74,17 +74,37 @@
 .topbar-phone { margin-right:0.5rem; color: inherit; text-decoration:none; font-weight:600; }
 
 /* Social icon shapes and sizes */
-.social-link { display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
-.social-link i { font-size: 1rem; }
+.social-link { display:inline-flex; align-items:center; justify-content:center; text-decoration:none; transition: all 0.3s ease; }
+.social-link i { font-size: 1rem; transition: all 0.3s ease; }
 .social-link--small i { font-size: 0.85rem; }
 .social-link--medium i { font-size: 1rem; }
 .social-link--large i { font-size: 1.25rem; }
-.social-link--circle { width: 34px; height: 34px; border-radius: 50%; background: transparent; display:inline-flex; align-items:center; justify-content:center; }
-.social-link--square { width: 34px; height: 34px; border-radius: 6px; display:inline-flex; align-items:center; justify-content:center; }
-.social-link--rounded { width: 34px; height: 34px; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; }
+.social-link--circle { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display:inline-flex; align-items:center; justify-content:center; }
+.social-link--square { width: 34px; height: 34px; border-radius: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display:inline-flex; align-items:center; justify-content:center; }
+.social-link--rounded { width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display:inline-flex; align-items:center; justify-content:center; }
 .social-link--small.social-link--circle, .social-link--small.social-link--square, .social-link--small.social-link--rounded { width: 28px; height: 28px; }
 .social-link--large.social-link--circle, .social-link--large.social-link--square, .social-link--large.social-link--rounded { width: 40px; height: 40px; }
+
+/* Social icon effects */
+.social-link--bounce:hover { animation: social-bounce 0.6s ease; }
+.social-link--pulse:hover { animation: social-pulse 1s infinite; }
+.social-link--rotate:hover { transform: rotate(360deg); }
+.social-link--scale:hover { transform: scale(1.1); }
+
 .social-link:hover { opacity: 0.9; }
+
+/* Keyframes for effects */
+@keyframes social-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+    60% { transform: translateY(-3px); }
+}
+
+@keyframes social-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 
 @media (max-width:768px){
 	.site-topbar .topbar-center { display: none; }
@@ -227,6 +247,97 @@
 	.header-navigation ul { flex-direction: column; gap: 1rem; }
 }
 
+/* Topbar Social Icons */
+.site-topbar .ross-social-icons {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.site-topbar .ross-social-icons .social-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.1);
+	color: inherit;
+	text-decoration: none;
+	transition: all 0.3s ease;
+	border: none;
+	cursor: pointer;
+	border-radius: 50%;
+	box-sizing: border-box;
+}
+
+.site-topbar .ross-social-icons .social-icon i {
+	font-size: 14px;
+	line-height: 1;
+}
+
+.site-topbar .ross-social-icons .social-icon:hover {
+	transform: translateY(-2px);
+	background: rgba(255, 255, 255, 0.2);
+}
+
+/* Shape variations for topbar social icons */
+.site-topbar .ross-social-icons .social-icon--square {
+	border-radius: 0;
+}
+
+.site-topbar .ross-social-icons .social-icon--rounded {
+	border-radius: 6px;
+}
+
+.site-topbar .ross-social-icons .social-icon--plain {
+	background: transparent;
+}
+
+.site-topbar .ross-social-icons .social-icon--plain:hover {
+	background: transparent;
+	opacity: 0.7;
+	transform: scale(1.1);
+}
+
+/* Social Icon Effects for Topbar */
+.site-topbar .ross-social-icons .social-icon--bounce:hover {
+    animation: social-bounce 0.6s ease;
+}
+
+.site-topbar .ross-social-icons .social-icon--pulse:hover {
+    animation: social-pulse 1s ease infinite;
+}
+
+.site-topbar .ross-social-icons .social-icon--rotate:hover {
+    animation: social-rotate 0.5s ease;
+}
+
+.site-topbar .ross-social-icons .social-icon--scale:hover {
+    animation: social-scale 0.3s ease;
+}
+
+/* Social Icon Keyframe Animations */
+@keyframes social-bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+@keyframes social-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes social-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes social-scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
 /* Search overlay styles */
 .search-overlay {
 	position: fixed;
@@ -247,6 +358,184 @@
 .search-overlay-form input[type="search"], .search-overlay-form input[name="s"] { flex: 1; padding: .75rem 1rem; font-size: 1rem; border: 1px solid #ddd; border-radius: 6px; }
 .search-overlay-form button[type="submit"] { padding: .75rem 1rem; background: #001946; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
 
+/* Enhanced CTA Button Styles */
+.cta-button,
+.header-cta-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	font-weight: 600;
+	transition: all 0.3s ease;
+	cursor: pointer;
+	border: none;
+	outline: none;
+	position: relative;
+	overflow: hidden;
+	color: var(--cta-text-color);
+}
+
+.cta-button::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+	transition: left 0.5s;
+}
+
+.cta-button:hover::before {
+	left: 100%;
+}
+
+/* CTA Button Sizes */
+.cta-size-small {
+	padding: 0.5rem 1rem;
+	font-size: 0.85rem;
+}
+
+.cta-size-medium {
+	padding: 0.75rem 1.5rem;
+	font-size: 0.95rem;
+}
+
+.cta-size-large {
+	padding: 1rem 2rem;
+	font-size: 1.1rem;
+}
+
+/* CTA Button Hover Effects */
+.cta-hover-scale:hover {
+	transform: scale(1.05);
+}
+
+.cta-hover-glow:hover {
+	box-shadow: 0 0 20px rgba(229, 201, 2, 0.4);
+}
+
+.cta-hover-slide:hover {
+	transform: translateX(5px);
+}
+
+.cta-hover-bounce:hover {
+	animation: cta-bounce 0.6s ease;
+}
+
+@keyframes cta-bounce {
+	0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+	40% { transform: translateY(-5px); }
+	60% { transform: translateY(-3px); }
+}
+
+/* CTA Button Text Hover Effects */
+.cta-text-hover-fade:hover {
+	opacity: 0.8;
+	transition: opacity 0.3s ease;
+}
+
+.cta-text-hover-slide-up:hover {
+	transform: translateY(-2px);
+	transition: transform 0.3s ease;
+}
+
+.cta-text-hover-slide-down:hover {
+	transform: translateY(2px);
+	transition: transform 0.3s ease;
+}
+
+.cta-text-hover-scale-text:hover {
+	transform: scale(1.05);
+	transition: transform 0.3s ease;
+}
+
+.cta-text-hover-glow-text:hover {
+	text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+	transition: text-shadow 0.3s ease;
+}
+
+/* CTA Button Style Variants */
+.cta-style-solid {
+	background: var(--cta-bg-color);
+	color: var(--cta-text-color);
+}
+
+.cta-style-outline {
+	border: 2px solid var(--cta-bg-color);
+	color: var(--cta-bg-color);
+	background: transparent;
+}
+
+.cta-style-outline:hover {
+	background: var(--cta-bg-color) !important;
+	color: var(--cta-hover-text-color) !important;
+}
+
+.cta-style-ghost {
+	color: var(--cta-bg-color);
+	background: transparent;
+}
+
+.cta-style-ghost:hover {
+	background: var(--cta-bg-color) !important;
+	color: var(--cta-hover-text-color) !important;
+}
+
+.cta-style-gradient {
+	background: linear-gradient(135deg, var(--cta-bg-color), var(--cta-bg-color)dd);
+	color: var(--cta-text-color);
+	position: relative;
+}
+
+.cta-style-gradient::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.cta-style-gradient:hover::after {
+	opacity: 1;
+}
+
+.cta-style-gradient:hover {
+	color: var(--cta-hover-text-color) !important;
+}
+
+/* CTA Button Hover Text Color */
+.cta-button:hover,
+.header-cta-button:hover {
+	color: var(--cta-hover-text-color) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.header-actions {
+		gap: 0.5rem;
+	}
+	
+	.account-dropdown {
+		min-width: 180px;
+		right: -20px;
+	}
+	
+	.cta-button,
+	.header-cta-button {
+		font-size: 0.9rem !important;
+		padding: 0.6rem 1.2rem !important;
+	}
+	
+	.account-toggle {
+		padding: 0.4rem 0.6rem;
+		font-size: 0.85rem;
+	}
+}
 
 /* Front page hero (public) */
 .front-hero { background: linear-gradient(180deg,#001946 0%, #0b2340 100%); color: #fff; padding: 3.5rem 0; }

@@ -15,6 +15,11 @@ function ross_theme_dynamic_css() {
         error_log('[ross_theme_dynamic_css] invoked at ' . date('c'));
     }
     
+    // Debug: output header options as comment for admins
+    if (current_user_can('manage_options')) {
+        echo '/* ROSS THEME DEBUG - Header Options: ' . esc_html(json_encode($header_options)) . ' */';
+    }
+    
     // Force apply header styles
     if (!empty($header_options['header_bg_color'])) {
         echo '.site-header { background-color: ' . esc_attr($header_options['header_bg_color']) . ' !important; }';
@@ -83,6 +88,12 @@ function ross_theme_dynamic_css() {
         echo '}';
     }
     
+    // Logo Padding
+    if (isset($header_options['logo_padding']) && $header_options['logo_padding'] !== '' && $header_options['logo_padding'] != 0) {
+        $padding = absint($header_options['logo_padding']);
+        echo '.site-logo, .brand-link { padding-top: ' . $padding . 'px !important; padding-right: ' . $padding . 'px !important; padding-bottom: ' . $padding . 'px !important; padding-left: ' . $padding . 'px !important; }';
+    }
+    
     // Header Opacity
     if (isset($header_options['header_opacity']) && $header_options['header_opacity'] !== '' && $header_options['header_opacity'] != 1) {
         $opacity = floatval($header_options['header_opacity']);
@@ -141,6 +152,19 @@ function ross_theme_dynamic_css() {
         $font_weight = esc_attr($header_options['header_font_weight']);
         echo '.primary-menu a { font-weight: ' . $font_weight . ' !important; }';
     }
+
+    if (!empty($header_options['header_font_size'])) {
+        $size = absint($header_options['header_font_size']);
+        echo '.primary-menu a { font-size: ' . $size . 'px !important; }';
+    }
+
+    if (!empty($header_options['header_letter_spacing'])) {
+        echo '.primary-menu a { letter-spacing: ' . esc_attr($header_options['header_letter_spacing']) . ' !important; }';
+    }
+
+    if (!empty($header_options['header_text_transform'])) {
+        echo '.primary-menu a { text-transform: ' . esc_attr($header_options['header_text_transform']) . ' !important; }';
+    }
     
     // Menu Hover Effects
     if (!empty($header_options['menu_hover_effect'])) {
@@ -185,13 +209,38 @@ function ross_theme_dynamic_css() {
     }
     
     // Sticky Header Behavior
-    if (!empty($header_options['sticky_shrink_header'])) {
-        $normal_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
-        $sticky_height = isset($header_options['sticky_header_height']) ? absint($header_options['sticky_header_height']) : 60;
-        
+    if (!empty($header_options['sticky_header'])) {
         echo '.site-header { transition: all 0.3s ease !important; }';
-        echo '.site-header.is-sticky.shrink { height: ' . $sticky_height . 'px !important; padding-top: 10px !important; padding-bottom: 10px !important; }';
-        echo '.site-header.is-sticky.shrink .site-logo img { max-height: ' . ($sticky_height - 20) . 'px !important; transition: max-height 0.3s ease !important; }';
+        
+        // Basic sticky header (no shrink)
+        echo '.site-header.is-sticky { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1000 !important; box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important; }';
+        
+        // Add body padding to prevent content jump
+        $header_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
+        echo 'body.has-sticky-header { padding-top: ' . $header_height . 'px !important; }';
+        
+        if (!empty($header_options['sticky_shrink_header'])) {
+            $normal_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
+            $sticky_height = isset($header_options['sticky_header_height']) ? absint($header_options['sticky_header_height']) : 60;
+            
+            // Calculate appropriate padding for sticky state (maintain visual balance)
+            $normal_padding_top = isset($header_options['header_padding_top']) ? absint($header_options['header_padding_top']) : 20;
+            $normal_padding_bottom = isset($header_options['header_padding_bottom']) ? absint($header_options['header_padding_bottom']) : 20;
+            
+            // Reduce padding proportionally but keep it reasonable (minimum 8px)
+            $sticky_padding_top = max(8, round($normal_padding_top * 0.6));
+            $sticky_padding_bottom = max(8, round($normal_padding_bottom * 0.6));
+            
+            echo '.site-header.is-sticky.shrink { height: ' . $sticky_height . 'px !important; padding-top: ' . $sticky_padding_top . 'px !important; padding-bottom: ' . $sticky_padding_bottom . 'px !important; }';
+            
+            // Calculate logo max height accounting for logo padding
+            $logo_padding = isset($header_options['logo_padding']) ? absint($header_options['logo_padding']) : 0;
+            $logo_max_height = $sticky_height - ($sticky_padding_top + $sticky_padding_bottom + ($logo_padding * 2));
+            echo '.site-header.is-sticky.shrink .site-logo img { max-height: ' . max(20, $logo_max_height) . 'px !important; transition: max-height 0.3s ease !important; }';
+            
+            // Update body padding for shrunk header
+            echo 'body.has-sticky-header.is-sticky.shrink { padding-top: ' . $sticky_height . 'px !important; }';
+        }
     }
     
     // Search Type Styling
@@ -216,13 +265,18 @@ function ross_theme_dynamic_css() {
         $style = $header_options['cta_button_style'];
         $bg_color = isset($header_options['cta_button_color']) ? $header_options['cta_button_color'] : '#E5C902';
         $text_color = isset($header_options['cta_button_text_color']) ? $header_options['cta_button_text_color'] : '#ffffff';
+        $hover_text_color = isset($header_options['cta_button_hover_text_color']) ? $header_options['cta_button_hover_text_color'] : $text_color;
         
-        if ($style === 'outline') {
+        if ($style === 'solid') {
+            echo '.header-cta-button { background: ' . esc_attr($bg_color) . ' !important; color: ' . esc_attr($text_color) . ' !important; }';
+            echo '.header-cta-button:hover { color: ' . esc_attr($hover_text_color) . ' !important; }';
+        } elseif ($style === 'outline') {
+            $hover_text_color = isset($header_options['cta_button_hover_text_color']) ? esc_attr($header_options['cta_button_hover_text_color']) : '#ffffff';
             echo '.header-cta-button { background: transparent !important; border: 2px solid ' . esc_attr($bg_color) . ' !important; color: ' . esc_attr($bg_color) . ' !important; }';
-            echo '.header-cta-button:hover { background: ' . esc_attr($bg_color) . ' !important; color: ' . esc_attr($text_color) . ' !important; }';
+            echo '.header-cta-button:hover { background: ' . esc_attr($bg_color) . ' !important; color: ' . $hover_text_color . ' !important; }';
         } elseif ($style === 'ghost') {
-            echo '.header-cta-button { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.3) !important; backdrop-filter: blur(10px) !important; }';
-            echo '.header-cta-button:hover { background: rgba(255,255,255,0.2) !important; }';
+            echo '.header-cta-button { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.3) !important; backdrop-filter: blur(10px) !important; color: ' . esc_attr($text_color) . ' !important; }';
+            echo '.header-cta-button:hover { background: rgba(255,255,255,0.2) !important; color: ' . esc_attr($hover_text_color) . ' !important; }';
         } elseif ($style === 'gradient') {
             // Create gradient from button color
             $hex = ltrim($bg_color, '#');
@@ -240,7 +294,8 @@ function ross_theme_dynamic_css() {
             $g2 = max(0, $g - 30);
             $b2 = max(0, $b - 30);
             $color2 = sprintf('#%02x%02x%02x', $r2, $g2, $b2);
-            echo '.header-cta-button { background: linear-gradient(135deg, ' . esc_attr($bg_color) . ' 0%, ' . $color2 . ' 100%) !important; }';
+            echo '.header-cta-button { background: linear-gradient(135deg, ' . esc_attr($bg_color) . ' 0%, ' . $color2 . ' 100%) !important; color: ' . esc_attr($text_color) . ' !important; }';
+            echo '.header-cta-button:hover { color: ' . esc_attr($hover_text_color) . ' !important; }';
         }
         // 'solid' is default, already handled
     }

@@ -61,16 +61,17 @@ function ross_theme_get_header_template($template_id) {
  */
 function ross_theme_get_active_header_template() {
     $options = get_option('ross_theme_header_options', array());
-    return isset($options['header_template']) ? $options['header_template'] : 'business-classic';
+    return isset($options['header_template']) ? $options['header_template'] : 'creative-agency';
 }
 
 /**
  * Apply a header template (backup current settings first)
  * 
  * @param string $template_id Template to apply
+ * @param bool $force Whether to force apply (overwrite existing settings)
  * @return bool Success status
  */
-function ross_theme_apply_header_template($template_id) {
+function ross_theme_apply_header_template($template_id, $force = false) {
     $template = ross_theme_get_header_template($template_id);
     
     if (!$template) {
@@ -96,9 +97,17 @@ function ross_theme_apply_header_template($template_id) {
     
     update_option('ross_theme_header_backups', $backups);
     
+    // Determine if we should overwrite or merge
+    $current_template = isset($current_options['header_template']) ? $current_options['header_template'] : '';
+    $is_switching = ($current_template !== $template_id);
+    $should_overwrite = $force || $is_switching;
+    
     // Merge template settings with current options
-    $new_options = array_merge($current_options, array(
-        'header_template' => $template_id,
+    $new_options = $current_options;
+    $new_options['header_template'] = $template_id;
+    
+    // Template defaults to apply
+    $template_defaults = array(
         'header_bg_color' => $template['bg'],
         'header_text_color' => $template['text'],
         'header_link_hover_color' => $template['hover'],
@@ -114,7 +123,21 @@ function ross_theme_apply_header_template($template_id) {
         'header_width' => $template['container_width'],
         'header_font_size' => $template['font_size'],
         'header_font_weight' => $template['font_weight'],
-    ));
+    );
+    
+    if ($should_overwrite) {
+        // Overwrite: apply all template defaults
+        foreach ($template_defaults as $key => $value) {
+            $new_options[$key] = $value;
+        }
+    } else {
+        // Merge: only set template defaults for keys that are not set or empty
+        foreach ($template_defaults as $key => $value) {
+            if (!isset($new_options[$key]) || empty($new_options[$key])) {
+                $new_options[$key] = $value;
+            }
+        }
+    }
     
     update_option('ross_theme_header_options', $new_options);
     

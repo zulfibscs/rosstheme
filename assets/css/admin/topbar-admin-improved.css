@@ -382,6 +382,29 @@
 .preview-icon {
     font-size: 14px;
     color: #E5C902;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.preview-icon-shape-circle {
+    border-radius: 50%;
+}
+
+.preview-icon-shape-square {
+    border-radius: 0;
+}
+
+.preview-icon-shape-rounded {
+    border-radius: 6px;
+}
+
+.preview-icon-shape-plain {
+    border-radius: 0;
+    background: transparent !important;
 }
 
 .ross-preview-note {

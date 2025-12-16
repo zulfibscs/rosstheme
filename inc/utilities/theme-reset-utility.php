@@ -222,6 +222,7 @@ class RossThemeResetUtility {
             'logo_upload' => '',
             'logo_dark' => '',
             'logo_width' => '200',
+            'logo_padding' => '0',
             'show_site_title' => 1,
             'enable_topbar' => 0,
             'topbar_left_content' => '',

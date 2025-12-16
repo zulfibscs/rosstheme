@@ -42,7 +42,13 @@ $inline_style = ross_theme_get_header_inline_style();
             </div>
 
             <!-- Navigation Center -->
-            <button class="menu-toggle" aria-expanded="false" aria-controls="primary-menu">☰ Menu</button>
+            <button class="menu-toggle" aria-expanded="false" aria-controls="primary-menu" aria-label="Toggle navigation menu">
+                <span class="hamburger">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </span>
+            </button>
             <nav class="header-navigation" id="primary-menu">
                 <?php
                 if (has_nav_menu('primary')) {
@@ -66,7 +72,7 @@ $inline_style = ross_theme_get_header_inline_style();
             <div class="header-actions">
                 <?php if (ross_theme_header_feature_enabled('search')): ?>
                     <div class="header-search">
-                        <button class="search-toggle">
+                        <button class="search-toggle" aria-label="Open search">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <path d="m21 21-4.35-4.35"></path>
@@ -77,8 +83,29 @@ $inline_style = ross_theme_get_header_inline_style();
 
                 <?php if (ross_theme_header_feature_enabled('cta_button')):
                     $cta_url = ! empty($options['cta_button_url']) ? $options['cta_button_url'] : home_url('/contact');
+                    $cta_style = isset($options['cta_button_style']) ? $options['cta_button_style'] : 'solid';
+                    $cta_size = isset($options['cta_button_size']) ? $options['cta_button_size'] : 'medium';
+                    $cta_border_radius = isset($options['cta_button_border_radius']) ? $options['cta_button_border_radius'] : '8';
+                    $cta_hover_effect = isset($options['cta_button_hover_effect']) ? $options['cta_button_hover_effect'] : 'scale';
+                    $cta_text_hover_effect = isset($options['cta_button_text_hover_effect']) ? $options['cta_button_text_hover_effect'] : 'none';
+                    $cta_text_color = isset($options['cta_button_text_color']) ? $options['cta_button_text_color'] : '#ffffff';
+                    $cta_hover_text_color = isset($options['cta_button_hover_text_color']) ? $options['cta_button_hover_text_color'] : '#ffffff';
+                    $cta_font_size = isset($options['cta_button_font_size']) ? $options['cta_button_font_size'] : '16';
+                    
+                    $button_classes = 'header-cta-button cta-style-' . esc_attr($cta_style) . ' cta-size-' . esc_attr($cta_size) . ' cta-hover-' . esc_attr($cta_hover_effect) . ' cta-text-hover-' . esc_attr($cta_text_hover_effect);
+                    $button_styles = 'border-radius: ' . esc_attr($cta_border_radius) . 'px; font-size: ' . esc_attr($cta_font_size) . 'px; --cta-text-color: ' . esc_attr($cta_text_color) . '; --cta-hover-text-color: ' . esc_attr($cta_hover_text_color) . '; --cta-bg-color: ' . esc_attr($options['cta_button_color']) . ';';
+                    
+                    if ($cta_style === 'solid') {
+                        $button_styles .= 'background: ' . esc_attr($options['cta_button_color']) . ';';
+                    } elseif ($cta_style === 'outline') {
+                        $button_styles .= 'border: 2px solid ' . esc_attr($options['cta_button_color']) . '; background: transparent;';
+                    } elseif ($cta_style === 'ghost') {
+                        $button_styles .= 'background: transparent;';
+                    } elseif ($cta_style === 'gradient') {
+                        $button_styles .= 'background: linear-gradient(135deg, ' . esc_attr($options['cta_button_color']) . ', ' . esc_attr($options['cta_button_color']) . 'dd);';
+                    }
                 ?>
-                    <a href="<?php echo esc_url($cta_url); ?>" class="cta-button" style="background: <?php echo esc_attr($options['cta_button_color']); ?>;">
+                    <a href="<?php echo esc_url($cta_url); ?>" class="<?php echo esc_attr($button_classes); ?>" style="<?php echo esc_attr($button_styles); ?>">
                         <?php echo esc_html($options['cta_button_text']); ?>
                     </a>
                 <?php endif; ?>
@@ -90,4 +117,39 @@ $inline_style = ross_theme_get_header_inline_style();
     <?php else : ?>
         </div>
     <?php endif; ?>
+
+    <!-- Mobile Menu JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navigation = document.querySelector('.header-navigation');
+
+        if (menuToggle && navigation) {
+            menuToggle.addEventListener('click', function() {
+                const isOpen = navigation.classList.contains('open');
+                navigation.classList.toggle('open');
+                menuToggle.classList.toggle('open');
+                menuToggle.setAttribute('aria-expanded', !isOpen);
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!menuToggle.contains(event.target) && !navigation.contains(event.target)) {
+                    navigation.classList.remove('open');
+                    menuToggle.classList.remove('open');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close menu on escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && navigation.classList.contains('open')) {
+                    navigation.classList.remove('open');
+                    menuToggle.classList.remove('open');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+    });
+    </script>
 </header>

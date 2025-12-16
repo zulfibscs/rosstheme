@@ -76,13 +76,21 @@ function ross_theme_render_header_templates_admin() {
                         <p style="margin: 0 0 15px; color: #6b7280; font-size: 13px; line-height: 1.5;"><?php echo esc_html($template['description']); ?></p>
                         
                         <!-- Action Buttons -->
-                        <div style="display: flex; gap: 8px;">
-                            <?php if ($current_template === $template_id): ?>
-                                <button type="button" class="button button-secondary" disabled style="flex: 1;">Currently Active</button>
-                            <?php else: ?>
-                                <button type="button" class="button button-primary ross-apply-header-template" data-template-id="<?php echo esc_attr($template_id); ?>" style="flex: 1;">Apply Template</button>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <?php if ($current_template !== $template_id): ?>
+                                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; color: #6b7280;">
+                                    <input type="checkbox" class="ross-force-apply-checkbox" data-template-id="<?php echo esc_attr($template_id); ?>">
+                                    Force apply (overwrite existing settings)
+                                </label>
                             <?php endif; ?>
-                            <button type="button" class="button ross-preview-header-template" data-template-id="<?php echo esc_attr($template_id); ?>">Preview</button>
+                            <div style="display: flex; gap: 8px;">
+                                <?php if ($current_template === $template_id): ?>
+                                    <button type="button" class="button button-secondary" disabled style="flex: 1;">Currently Active</button>
+                                <?php else: ?>
+                                    <button type="button" class="button button-primary ross-apply-header-template" data-template-id="<?php echo esc_attr($template_id); ?>" style="flex: 1;">Apply Template</button>
+                                <?php endif; ?>
+                                <button type="button" class="button ross-preview-header-template" data-template-id="<?php echo esc_attr($template_id); ?>">Preview</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,8 +159,13 @@ function ross_theme_render_header_templates_admin() {
         // Apply Template
         $('.ross-apply-header-template').on('click', function() {
             var templateId = $(this).data('template-id');
+            var forceApply = $('.ross-force-apply-checkbox[data-template-id="' + templateId + '"]').is(':checked');
             
-            if (!confirm('Apply this header template? Your current header settings will be backed up.')) {
+            var confirmMessage = forceApply 
+                ? 'Force apply this header template? This will overwrite all your current header settings. Your settings will be backed up.'
+                : 'Apply this header template? Your current header settings will be backed up.';
+            
+            if (!confirm(confirmMessage)) {
                 return;
             }
             
@@ -162,6 +175,7 @@ function ross_theme_render_header_templates_admin() {
                 data: {
                     action: 'ross_apply_header_template',
                     template_id: templateId,
+                    force: forceApply ? 1 : 0,
                     nonce: '<?php echo wp_create_nonce('ross_header_templates'); ?>'
                 },
                 success: function(response) {

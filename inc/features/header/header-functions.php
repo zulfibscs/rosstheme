@@ -40,6 +40,16 @@ function ross_theme_get_header_options() {
         'social_facebook' => '',
         'social_twitter' => '',
         'social_linkedin' => '',
+        'social_instagram' => '',
+        'social_youtube' => '',
+        'social_icon_size' => 'medium',
+        'social_icon_shape' => 'circle',
+        'social_icon_color' => '#ffffff',
+        'social_icon_bg_color' => 'transparent',
+        'social_icon_effect' => 'none',
+        'social_icon_border_color' => 'transparent',
+        'social_icon_border_size' => '0',
+        'social_icon_width' => 32,
         'phone_number' => '',
         'topbar_email' => '',
         'enable_announcement' => 0,
@@ -55,6 +65,15 @@ function ross_theme_get_header_options() {
         'enable_cta_button' => 1,
         'cta_button_text' => 'Get Free Consultation',
         'cta_button_color' => '#E5C902',
+        'cta_button_text_color' => '#001946',
+        'cta_button_hover_text_color' => '#001946',
+        'cta_button_url' => '',
+        'cta_button_style' => 'solid',
+        'cta_button_size' => 'medium',
+        'cta_button_font_size' => '16',
+        'cta_button_border_radius' => '8',
+        'cta_button_hover_effect' => 'scale',
+        'cta_button_text_hover_effect' => 'none',
         'header_bg_color' => '#ffffff',
         'header_text_color' => '#333333',
         'header_link_hover_color' => '#E5C902',
@@ -102,11 +121,7 @@ function ross_theme_display_header() {
         
         // Map template IDs to template part names
         $template_map = array(
-            'business-classic' => 'business-classic',
-            'creative-agency' => 'creative-agency',
-            'ecommerce-shop' => 'ecommerce-shop',
-            'minimal-modern' => 'minimal-modern',
-            'transparent-hero' => 'transparent-hero'
+            'creative-agency' => 'creative-agency'
         );
         
         if (isset($template_map[$template_id])) {
@@ -223,6 +238,12 @@ function ross_theme_render_topbar() {
         return;
     }
 
+    // Check if advanced topbar is enabled - prevent duplication
+    $advanced_options = get_option('ross_advanced_topbar_options', array());
+    if (!empty($advanced_options['enable_topbar'])) {
+        return; // Advanced topbar is active, skip main topbar
+    }
+
     $bg = isset($options['topbar_bg_color']) ? esc_attr($options['topbar_bg_color']) : '#001946';
     $color = isset($options['topbar_text_color']) ? esc_attr($options['topbar_text_color']) : '#ffffff';
 
@@ -289,7 +310,15 @@ function ross_theme_render_topbar() {
         $icon_color = isset($options['topbar_icon_color']) ? esc_attr($options['topbar_icon_color']) : $color;
         $icon_size = isset($options['social_icon_size']) ? $options['social_icon_size'] : 'medium';
         $icon_shape = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
+        $icon_bg_color = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
+        $icon_effect = isset($options['social_icon_effect']) ? $options['social_icon_effect'] : 'none';
+        $icon_border_color = isset($options['social_icon_border_color']) ? $options['social_icon_border_color'] : 'transparent';
+        $icon_border_size = isset($options['social_icon_border_size']) ? $options['social_icon_border_size'] : '0';
+        $icon_width = isset($options['social_icon_width']) ? intval($options['social_icon_width']) : 32;
         $link_extra_classes = 'social-link--' . esc_attr($icon_size) . ' social-link--' . esc_attr($icon_shape);
+        if ($icon_effect !== 'none') {
+            $link_extra_classes .= ' social-link--' . esc_attr($icon_effect);
+        }
 
         echo '<div class="topbar-social">';
         foreach ($social_links as $s) {
@@ -306,7 +335,20 @@ function ross_theme_render_topbar() {
                 $icon_output = '&#9679;';
             }
 
-            echo '<a class="social-link ' . $link_extra_classes . '" href="' . esc_url($s['url']) . '" target="_blank" rel="noopener noreferrer">' . $icon_output . '</a>';
+            $inline_style = '';
+            $inline_style .= 'width: ' . esc_attr($icon_width) . 'px !important; ';
+            $inline_style .= 'height: ' . esc_attr($icon_width) . 'px !important; ';
+            if ($icon_bg_color !== 'transparent') {
+                $inline_style .= 'background-color: ' . esc_attr($icon_bg_color) . ' !important; ';
+            }
+            if (isset($options['social_icon_color'])) {
+                $inline_style .= 'color: ' . esc_attr($options['social_icon_color']) . ' !important; ';
+            }
+            if ($icon_border_color !== 'transparent' && $icon_border_size !== '0') {
+                $inline_style .= 'border: ' . esc_attr($icon_border_size) . 'px solid ' . esc_attr($icon_border_color) . ' !important; ';
+            }
+
+            echo '<a class="social-link ' . $link_extra_classes . '" href="' . esc_url($s['url']) . '" target="_blank" rel="noopener noreferrer"' . ($inline_style ? ' style="' . $inline_style . '"' : '') . '>' . $icon_output . '</a>';
         }
         echo '</div>';
     }
@@ -473,4 +515,31 @@ function ross_theme_topbar_dynamic_css() {
 
     echo '</style>';
 }
+
+/**
+ * Adjust color brightness
+ */
+function adjust_brightness($hex, $steps) {
+    // Steps should be between -255 and 255. Negative = darker, positive = lighter
+    $steps = max(-255, min(255, $steps));
+
+    // Normalize into a six character long hex string
+    $hex = str_replace('#', '', $hex);
+    if (strlen($hex) == 3) {
+        $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
+    }
+
+    // Split into three parts: R, G and B
+    $color_parts = str_split($hex, 2);
+    $return = '#';
+
+    foreach ($color_parts as $color) {
+        $color = hexdec($color); // Convert to decimal
+        $color = max(0, min(255, $color + $steps)); // Adjust color
+        $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+    }
+
+    return $return;
+}
+
 add_action('wp_head', 'ross_theme_topbar_dynamic_css', 999);

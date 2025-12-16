@@ -258,18 +258,13 @@ function ross_theme_header_page() {
     document.addEventListener('DOMContentLoaded', function() {
         var headerForm = document.querySelector('.ross-form-tabbed');
         var submitBtn = document.getElementById('ross-header-submit');
-        
         if (headerForm && submitBtn) {
-            // Ensure submit button always works
+            submitBtn.disabled = false;
+            submitBtn.removeAttribute('aria-disabled');
+            // Add click handler to ensure submission
             submitBtn.addEventListener('click', function(e) {
-                // Don't prevent default - let form submit naturally
-                // This ensures WordPress Settings API processes the form
-            });
-            
-            // Add form validation
-            headerForm.addEventListener('submit', function(e) {
-                // Allow submission - WordPress handles validation
-                return true;
+                // Allow default submit
+                headerForm.submit();
             });
         }
     });
