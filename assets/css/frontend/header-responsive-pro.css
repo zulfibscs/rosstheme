@@ -1,0 +1,385 @@
+/**
+ * Responsive Pro Header Styles
+ * Mobile-first, flexible header with separate desktop/mobile controls
+ */
+
+/* Base Header Styles */
+.header-responsive-pro {
+    position: relative;
+    z-index: 1000;
+}
+
+/* CSS Custom Properties for Responsive Values */
+.header-responsive-pro {
+    --mobile-breakpoint: 768px;
+    --desktop-header-height: 80px;
+    --mobile-header-height: 60px;
+    --desktop-logo-width: 200px;
+    --mobile-logo-width: 120px;
+}
+
+/* Desktop Header Layout (Above breakpoint) */
+@media (min-width: 768px) {
+    .header-responsive-pro .header-desktop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: var(--desktop-header-height);
+        padding: var(--desktop-padding-top, 20px) var(--desktop-padding-right, 0px) var(--desktop-padding-bottom, 20px) var(--desktop-padding-left, 0px);
+    }
+
+    /* Desktop Logo */
+    .header-responsive-pro .header-desktop .header-logo {
+        flex-shrink: 0;
+    }
+
+    .header-responsive-pro .header-desktop .header-logo img {
+        max-width: var(--desktop-logo-width);
+        height: auto;
+    }
+
+    /* Desktop Navigation */
+    .header-responsive-pro .header-desktop .header-navigation {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        margin: 0 2rem;
+    }
+
+    .header-responsive-pro .header-desktop[data-menu-align="left"] .header-navigation {
+        justify-content: flex-start;
+        margin: 0 2rem 0 0;
+    }
+
+    .header-responsive-pro .header-desktop[data-menu-align="right"] .header-navigation {
+        justify-content: flex-end;
+        margin: 0 0 0 2rem;
+    }
+
+    .header-responsive-pro .header-desktop .primary-menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 1.5rem;
+    }
+
+    .header-responsive-pro .header-desktop .primary-menu li {
+        position: relative;
+    }
+
+    .header-responsive-pro .header-desktop .primary-menu a {
+        text-decoration: none;
+        color: inherit;
+        padding: 0.5rem 0;
+        transition: color 0.3s ease;
+    }
+
+    /* Desktop Actions (Search + CTA) */
+    .header-responsive-pro .header-desktop .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+
+    /* Desktop Search */
+    .header-responsive-pro .header-desktop .header-search-inline {
+        position: relative;
+    }
+
+    .header-responsive-pro .header-desktop .header-search-inline .search-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        color: inherit;
+    }
+
+    .header-responsive-pro .header-desktop .header-search-inline .search-form {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 4px;
+        min-width: 300px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+    .header-responsive-pro .header-desktop .header-search-inline.active .search-form {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .header-responsive-pro .header-desktop .header-search-inline .search-form input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .header-responsive-pro .header-desktop .header-search-inline .search-submit {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+    }
+}
+
+/* Mobile Header Layout (Below breakpoint) */
+@media (max-width: 767px) {
+    .header-responsive-pro .header-mobile {
+        min-height: var(--mobile-header-height);
+        padding: var(--mobile-padding-top, 15px) var(--mobile-padding-right, 15px) var(--mobile-padding-bottom, 15px) var(--mobile-padding-left, 15px);
+    }
+
+    /* Mobile Header Top Row */
+    .header-responsive-pro .header-mobile .mobile-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: var(--mobile-header-height);
+    }
+
+    /* Mobile Logo */
+    .header-responsive-pro .header-mobile .mobile-logo-section {
+        flex-shrink: 0;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-logo-section img {
+        max-width: var(--mobile-logo-width);
+        height: auto;
+    }
+
+    /* Mobile Actions */
+    .header-responsive-pro .header-mobile .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+
+    .header-responsive-pro .header-mobile[data-menu-position="left"] .mobile-actions {
+        order: -1;
+    }
+
+    /* Mobile Search Bar (Expandable) */
+    .header-responsive-pro .header-mobile .mobile-search-bar {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.3s ease;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-search-bar.active {
+        max-height: 60px;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-search-bar .search-form {
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem 0;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-search-bar input {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-search-bar .search-submit {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    /* Mobile Menu Toggle */
+    .header-responsive-pro .header-mobile .mobile-menu-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .header-responsive-pro .header-mobile .hamburger-line {
+        width: 20px;
+        height: 2px;
+        background: currentColor;
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu-toggle[aria-expanded="true"] .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    /* Mobile Navigation Menu */
+    .header-responsive-pro .header-mobile .mobile-navigation {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.3s ease;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-navigation.active {
+        max-height: 500px;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu {
+        list-style: none;
+        margin: 0;
+        padding: 1rem 0;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu li {
+        border-bottom: 1px solid #eee;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu a {
+        display: block;
+        padding: 1rem;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color 0.3s ease;
+    }
+
+    .header-responsive-pro .header-mobile .mobile-menu a:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Mobile CTA in Menu */
+    .header-responsive-pro .header-mobile .mobile-cta-section {
+        padding: 1rem;
+        text-align: center;
+        border-top: 1px solid #eee;
+        margin-top: 1rem;
+    }
+}
+
+/* Hide desktop layout on mobile */
+@media (max-width: 767px) {
+    .header-responsive-pro .header-desktop {
+        display: none !important;
+    }
+}
+
+/* Hide mobile layout on desktop */
+@media (min-width: 768px) {
+    .header-responsive-pro .header-mobile {
+        display: none !important;
+    }
+}
+
+/* Menu Hover Effects (Desktop only) */
+@media (min-width: 768px) {
+    .header-responsive-pro .primary-menu a:hover {
+        color: var(--menu-hover-color, #007cba);
+    }
+
+    .header-responsive-pro .primary-menu a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--menu-hover-color, #007cba);
+        transition: width 0.3s ease;
+    }
+
+    .header-responsive-pro .primary-menu a:hover::after,
+    .header-responsive-pro .primary-menu .current-menu-item a::after {
+        width: 100%;
+    }
+}
+
+/* Sticky Header Support */
+.header-responsive-pro.header-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+/* Logo Text Fallback */
+.header-responsive-pro .logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Search Toggle Button */
+.header-responsive-pro .search-toggle,
+.header-responsive-pro .mobile-search-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-responsive-pro .search-toggle svg,
+.header-responsive-pro .mobile-search-toggle svg,
+.header-responsive-pro .search-submit svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* CTA Button Styles */
+.header-responsive-pro .header-cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--cta-padding, 10px 30px);
+    background: var(--cta-bg-color, #007cba);
+    color: var(--cta-text-color, #ffffff) !important;
+    text-decoration: none;
+    border-radius: var(--cta-border-radius, 30px);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.header-responsive-pro .header-cta-button:hover {
+    background: var(--cta-hover-bg, #005a87);
+    color: var(--cta-hover-text-color, #ffffff) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Utility Classes */
+.header-responsive-pro .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

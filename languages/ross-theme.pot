@@ -1,0 +1,282 @@
+# Ross Theme - Translation Template
+# Copyright (C) 2025 Ross Theme
+# This file is distributed under the same license as the Ross Theme package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ross Theme 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-17 12:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_attr_e;esc_html_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+# Admin Menu Items
+msgid "Ross Theme Settings"
+msgstr ""
+
+msgid "Ross Theme"
+msgstr ""
+
+msgid "Header Options"
+msgstr ""
+
+msgid "Footer Options"
+msgstr ""
+
+msgid "General Settings"
+msgstr ""
+
+msgid "Top Bar Settings"
+msgstr ""
+
+msgid "Reset Settings"
+msgstr ""
+
+# Main Page
+msgid "Welcome to Ross Theme"
+msgstr ""
+
+msgid "Use the submenus to configure different aspects of your theme:"
+msgstr ""
+
+msgid "🏠 Homepage Templates"
+msgstr ""
+
+msgid "Choose pre-designed homepage templates"
+msgstr ""
+
+msgid "Configure logo, navigation, and header layout"
+msgstr ""
+
+msgid "Setup footer layout, widgets, and copyright"
+msgstr ""
+
+msgid "Customize colors, typography, and global settings"
+msgstr ""
+
+msgid "Configure top bar in WordPress Customizer"
+msgstr ""
+
+msgid "Reset all settings to defaults"
+msgstr ""
+
+# Header Page
+msgid "📐 Templates"
+msgstr ""
+
+msgid "🧱 Layout & Structure"
+msgstr ""
+
+msgid "🧭 Logo & Branding"
+msgstr ""
+
+msgid "☎️ Top Bar"
+msgstr ""
+
+msgid "📣 Announcement"
+msgstr ""
+
+msgid "🔗 Navigation"
+msgstr ""
+
+msgid "🔍 CTA & Search"
+msgstr ""
+
+msgid "🌗 Appearance"
+msgstr ""
+
+msgid "📱 Responsive"
+msgstr ""
+
+# Footer Page
+msgid "⚙️ Footer Customization"
+msgstr ""
+
+msgid "Design and customize your website footer with powerful controls"
+msgstr ""
+
+msgid "Reset All Settings"
+msgstr ""
+
+msgid "View Site"
+msgstr ""
+
+msgid "Layout & Templates"
+msgstr ""
+
+msgid "Styling"
+msgstr ""
+
+msgid "Call to Action"
+msgstr ""
+
+msgid "Social Icons"
+msgstr ""
+
+msgid "Copyright"
+msgstr ""
+
+# General Settings Sections
+msgid "🧱 Site Layout"
+msgstr ""
+
+msgid "Layout Style"
+msgstr ""
+
+msgid "Container Width (px)"
+msgstr ""
+
+msgid "Content Spacing (px)"
+msgstr ""
+
+msgid "Global Border Radius (px)"
+msgstr ""
+
+msgid "Enable Page Preloader"
+msgstr ""
+
+msgid "🎨 Colors"
+msgstr ""
+
+msgid "Primary Color"
+msgstr ""
+
+msgid "Secondary Color"
+msgstr ""
+
+msgid "Accent Color"
+msgstr ""
+
+msgid "Background Color"
+msgstr ""
+
+msgid "Heading Color"
+msgstr ""
+
+msgid "Text Color"
+msgstr ""
+
+msgid "✍️ Typography"
+msgstr ""
+
+msgid "Base Font Family"
+msgstr ""
+
+msgid "Base Font Size (px)"
+msgstr ""
+
+msgid "Base Line Height"
+msgstr ""
+
+msgid "Heading Font Family"
+msgstr ""
+
+msgid "Heading Font Weight"
+msgstr ""
+
+msgid "🔘 Buttons"
+msgstr ""
+
+msgid "Button Shape"
+msgstr ""
+
+msgid "Button Padding (px)"
+msgstr ""
+
+msgid "Button Background Color"
+msgstr ""
+
+msgid "Button Text Color"
+msgstr ""
+
+msgid "Button Border Radius (px)"
+msgstr ""
+
+msgid "📸 Logo & Media"
+msgstr ""
+
+msgid "Upload Favicon"
+msgstr ""
+
+msgid "Upload Default Logo"
+msgstr ""
+
+msgid "Upload Dark Mode Logo"
+msgstr ""
+
+msgid "Lazy Load Images"
+msgstr ""
+
+msgid "📰 Blog Settings"
+msgstr ""
+
+msgid "Blog Layout"
+msgstr ""
+
+msgid "Excerpt Length (words)"
+msgstr ""
+
+msgid "Show Post Meta"
+msgstr ""
+
+msgid "Read More Text"
+msgstr ""
+
+msgid "⚡ Performance"
+msgstr ""
+
+msgid "Minify CSS/JS"
+msgstr ""
+
+msgid "Remove Emojis"
+msgstr ""
+
+msgid "Defer JS Loading"
+msgstr ""
+
+msgid "🧰 Custom Uploads / Scripts"
+msgstr ""
+
+msgid "Custom CSS"
+msgstr ""
+
+msgid "Custom JavaScript"
+msgstr ""
+
+msgid "Google Analytics Code"
+msgstr ""
+
+msgid "Save General Settings"
+msgstr ""
+
+# Template Strings
+msgid "Transform Your Business Today"
+msgstr ""
+
+msgid "Professional solutions tailored to your needs. We help businesses grow and succeed in the digital age."
+msgstr ""
+
+msgid "Get Started"
+msgstr ""
+
+msgid "Learn More"
+msgstr ""
+
+# Navigation
+msgid "Primary Menu"
+msgstr ""
+
+msgid "Footer Menu"
+msgstr ""
+
+# Top Bar
+msgid "Top Bar Information"
+msgstr ""

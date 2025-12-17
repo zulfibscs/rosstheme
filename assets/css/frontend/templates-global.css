@@ -1,0 +1,522 @@
+/**
+ * Ross Theme - Global Template Styles
+ * Shared styles for all homepage templates
+ * 
+ * @package RossTheme
+ * @version 1.0.0
+ */
+
+/* ====================================
+   GLOBAL TEMPLATE FOUNDATIONS
+==================================== */
+
+.ross-homepage-template {
+    font-family: var(--ross-body-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    color: var(--ross-text-color, #333333);
+    line-height: 1.6;
+}
+
+/* Container System */
+.ross-container {
+    max-width: var(--ross-container-width, 1200px);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.ross-container-narrow {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Section Spacing */
+section {
+    padding: 80px 0;
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 60px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    section {
+        padding: 40px 0;
+    }
+}
+
+/* ====================================
+   TYPOGRAPHY
+==================================== */
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--ross-heading-font, inherit);
+    color: var(--ross-heading-color, #1a1a1a);
+    line-height: 1.2;
+    margin: 0 0 1rem;
+    font-weight: 700;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+
+p {
+    margin: 0 0 1rem;
+}
+
+/* ====================================
+   BUTTONS
+==================================== */
+
+.ross-btn,
+.ross-btn-primary,
+.ross-btn-secondary {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--ross-border-radius, 4px);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.ross-btn-primary {
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+}
+
+.ross-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.ross-btn-secondary {
+    background: transparent;
+    color: var(--ross-primary-color, #001946);
+    border: 2px solid var(--ross-primary-color, #001946);
+}
+
+.ross-btn-secondary:hover {
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+}
+
+.ross-btn-white {
+    background: #ffffff;
+    color: var(--ross-primary-color, #001946);
+}
+
+.ross-btn-white-outline {
+    background: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+.ross-btn-white-outline:hover {
+    background: #ffffff;
+    color: var(--ross-primary-color, #001946);
+}
+
+.ross-btn-small {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* ====================================
+   HERO SECTIONS
+==================================== */
+
+.ross-hero-section,
+.ross-hero-fullscreen {
+    position: relative;
+    padding: 120px 0;
+    overflow: hidden;
+}
+
+.ross-hero-fullscreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.ross-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 0;
+}
+
+.ross-hero-content,
+.ross-hero-content-center {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+}
+
+.ross-hero-content-center {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ross-hero-title,
+.ross-hero-title-large {
+    margin-bottom: 1.5rem;
+}
+
+.ross-hero-subtitle,
+.ross-hero-subtitle-large {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.ross-hero-buttons,
+.ross-hero-buttons-center {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.ross-hero-buttons-center {
+    justify-content: center;
+}
+
+/* Badges */
+.ross-hero-badge,
+.ross-section-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.ross-section-badge {
+    color: var(--ross-primary-color, #001946);
+    background: var(--ross-primary-color, #001946);
+    background: rgba(var(--ross-primary-color-rgb, 0, 25, 70), 0.1);
+}
+
+/* ====================================
+   GRID SYSTEMS
+==================================== */
+
+.ross-grid-2,
+.ross-grid-3,
+.ross-grid-4,
+.ross-services-grid-3,
+.ross-features-grid-3,
+.ross-team-grid-4,
+.ross-products-grid-4 {
+    display: grid;
+    gap: 30px;
+}
+
+.ross-grid-2,
+.ross-services-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.ross-grid-3,
+.ross-services-grid-3,
+.ross-features-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.ross-grid-4,
+.ross-team-grid-4,
+.ross-products-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+    .ross-grid-4,
+    .ross-team-grid-4,
+    .ross-products-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .ross-grid-3,
+    .ross-services-grid-3,
+    .ross-features-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .ross-grid-2,
+    .ross-grid-3,
+    .ross-grid-4,
+    .ross-services-grid-2,
+    .ross-services-grid-3,
+    .ross-features-grid-3,
+    .ross-team-grid-4,
+    .ross-products-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====================================
+   CARDS
+==================================== */
+
+.ross-service-card,
+.ross-feature-card,
+.ross-team-card,
+.ross-product-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: var(--ross-border-radius, 8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.ross-service-card:hover,
+.ross-feature-card:hover,
+.ross-team-card:hover,
+.ross-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Service Cards */
+.ross-service-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+}
+
+.ross-service-icon svg {
+    width: 32px;
+    height: 32px;
+    color: #ffffff;
+}
+
+/* ====================================
+   SECTION HEADERS
+==================================== */
+
+.ross-section-header,
+.ross-section-header-center {
+    margin-bottom: 3rem;
+}
+
+.ross-section-header-center {
+    text-align: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ross-section-header h2,
+.ross-section-header-center h2 {
+    margin-bottom: 1rem;
+}
+
+.ross-section-header p,
+.ross-section-header-center p {
+    font-size: 1.125rem;
+    opacity: 0.8;
+}
+
+/* ====================================
+   FORMS
+==================================== */
+
+.ross-form,
+.ross-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ross-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ross-form input,
+.ross-form textarea,
+.ross-form select {
+    padding: 14px 18px;
+    border: 1px solid #e0e0e0;
+    border-radius: var(--ross-border-radius, 4px);
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+.ross-form input:focus,
+.ross-form textarea:focus,
+.ross-form select:focus {
+    outline: none;
+    border-color: var(--ross-primary-color, #001946);
+}
+
+.ross-form textarea {
+    resize: vertical;
+}
+
+/* ====================================
+   TESTIMONIALS
+==================================== */
+
+.ross-testimonial-card,
+.ross-testimonial-item {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: var(--ross-border-radius, 8px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.ross-testimonial-card p {
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    font-size: 1.0625rem;
+}
+
+.ross-testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ross-author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.ross-testimonial-author strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.ross-testimonial-author span {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+/* ====================================
+   CTA SECTIONS
+==================================== */
+
+.ross-cta-section,
+.ross-cta-banner {
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.ross-cta-content,
+.ross-cta-content-center {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.ross-cta-section h2,
+.ross-cta-banner h2 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.ross-cta-section p,
+.ross-cta-banner p {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+}
+
+/* ====================================
+   ANIMATIONS
+==================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ross-animate-fade-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ====================================
+   UTILITIES
+==================================== */
+
+.ross-text-center { text-align: center; }
+.ross-text-left { text-align: left; }
+.ross-text-right { text-align: right; }
+
+.ross-mb-0 { margin-bottom: 0; }
+.ross-mb-1 { margin-bottom: 1rem; }
+.ross-mb-2 { margin-bottom: 2rem; }
+.ross-mb-3 { margin-bottom: 3rem; }
+
+.ross-mt-0 { margin-top: 0; }
+.ross-mt-1 { margin-top: 1rem; }
+.ross-mt-2 { margin-top: 2rem; }
+.ross-mt-3 { margin-top: 3rem; }
+
+/* ====================================
+   RESPONSIVE HELPERS
+==================================== */
+
+@media (max-width: 768px) {
+    .ross-hide-mobile { display: none !important; }
+    .ross-text-center-mobile { text-align: center; }
+}
+
+@media (min-width: 769px) {
+    .ross-hide-desktop { display: none !important; }
+}
+
+/* ====================================
+   ACCESSIBILITY
+==================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus Styles */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--ross-primary-color, #001946);
+    outline-offset: 2px;
+}
+
+/* Skip to Content Link */
+.skip-to-content {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: var(--ross-primary-color, #001946);
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    z-index: 9999;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}

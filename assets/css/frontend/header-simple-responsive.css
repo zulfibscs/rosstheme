@@ -1,0 +1,353 @@
+/**
+ * Simple Responsive Header Styles
+ * Uses CSS variables and data attributes for clean responsive behavior
+ */
+
+.header-simple-responsive {
+    position: relative;
+    width: 100%;
+    background: var(--header-bg-color, #fff);
+    border-bottom: var(--header-border, 1px solid #e5e5e5);
+    z-index: 1000;
+}
+
+.header-simple-responsive .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+    padding: 0 var(--header-padding);
+    margin: var(--header-margin);
+}
+
+/* Logo Section */
+.header-simple-responsive .header-logo {
+    flex-shrink: 0;
+    z-index: 2;
+}
+
+.header-simple-responsive .site-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--logo-text-color, #333);
+    font-size: var(--logo-font-size, 1.5rem);
+    font-weight: var(--logo-font-weight, 700);
+}
+
+.header-simple-responsive .logo-image {
+    max-width: var(--logo-width);
+    height: auto;
+    max-height: calc(var(--header-height) - 20px);
+    object-fit: contain;
+}
+
+.header-simple-responsive .logo-text {
+    margin-left: 10px;
+}
+
+/* Navigation Menu */
+.header-simple-responsive .header-navigation {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin: 0 20px;
+}
+
+.header-simple-responsive .primary-menu {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+}
+
+.header-simple-responsive .primary-menu li {
+    position: relative;
+}
+
+.header-simple-responsive .primary-menu a {
+    color: var(--nav-link-color, #333);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 10px 0;
+    transition: color 0.3s ease;
+}
+
+.header-simple-responsive .primary-menu a:hover {
+    color: var(--nav-link-hover-color, #007cba);
+}
+
+/* Menu Alignment */
+.header-simple-responsive .header-navigation[data-menu-align="left"] {
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-right: 20px;
+}
+
+.header-simple-responsive .header-navigation[data-menu-align="right"] {
+    justify-content: flex-end;
+    margin-left: 20px;
+    margin-right: 0;
+}
+
+/* Actions Section (Search + CTA) */
+.header-simple-responsive .header-search,
+.header-simple-responsive .header-cta {
+    margin-left: 15px;
+}
+
+/* Search */
+.header-simple-responsive .header-search .search-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: var(--search-icon-color, #666);
+    transition: color 0.3s ease;
+}
+
+.header-simple-responsive .header-search .search-toggle:hover {
+    color: var(--search-icon-hover-color, #333);
+}
+
+/* CTA Button */
+.header-simple-responsive .header-cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--cta-bg-color, #007cba);
+    color: var(--cta-text-color, #fff);
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.header-simple-responsive .header-cta-button:hover {
+    background: var(--cta-hover-bg-color, #005a87);
+}
+
+/* Mobile Menu Toggle */
+.header-simple-responsive .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+}
+
+.header-simple-responsive .hamburger {
+    display: flex;
+    flex-direction: column;
+    width: 24px;
+    height: 18px;
+}
+
+.header-simple-responsive .hamburger-line {
+    height: 2px;
+    background: var(--hamburger-color, #333);
+    margin: 2px 0;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+/* Mobile Menu Overlay */
+.header-simple-responsive .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.header-simple-responsive .mobile-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.header-simple-responsive .mobile-menu-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    max-width: 80vw;
+    height: 100vh;
+    background: #fff;
+    padding: 80px 20px 20px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.header-simple-responsive .mobile-menu-overlay.active .mobile-menu-nav {
+    transform: translateX(0);
+}
+
+.header-simple-responsive .mobile-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-simple-responsive .mobile-menu li {
+    border-bottom: 1px solid #eee;
+}
+
+.header-simple-responsive .mobile-menu a {
+    display: block;
+    padding: 15px 0;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Search Overlay */
+.header-simple-responsive .search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.header-simple-responsive .search-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.header-simple-responsive .search-overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+}
+
+.header-simple-responsive .search-overlay .search-form {
+    position: relative;
+}
+
+.header-simple-responsive .search-overlay input[type="search"] {
+    width: 100%;
+    padding: 20px 60px 20px 20px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+}
+
+.header-simple-responsive .search-overlay .search-submit {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #666;
+}
+
+.header-simple-responsive .search-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    padding: 10px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .header-simple-responsive .header-inner {
+        min-height: var(--header-height-mobile);
+        padding: 0 var(--header-padding-mobile);
+        margin: var(--header-margin-mobile);
+    }
+
+    .header-simple-responsive .logo-image {
+        max-width: var(--logo-width-mobile);
+    }
+
+    /* Hide desktop navigation */
+    .header-simple-responsive .header-navigation {
+        display: none;
+    }
+
+    /* Show mobile menu toggle */
+    .header-simple-responsive .mobile-menu-toggle {
+        display: block;
+    }
+
+    /* Hide/show elements based on data attributes */
+    .header-simple-responsive .header-search[data-desktop="0"],
+    .header-simple-responsive .header-cta[data-desktop="0"] {
+        display: none;
+    }
+
+    .header-simple-responsive .header-search[data-mobile="1"],
+    .header-simple-responsive .header-cta[data-mobile="1"] {
+        display: block;
+    }
+
+    /* Mobile-specific adjustments */
+    .header-simple-responsive .header-search,
+    .header-simple-responsive .header-cta {
+        margin-left: 10px;
+    }
+
+    .header-simple-responsive .header-cta-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Desktop styles (above mobile breakpoint) */
+@media (min-width: 769px) {
+    .header-simple-responsive .header-search[data-mobile="0"],
+    .header-simple-responsive .header-cta[data-mobile="0"] {
+        display: none;
+    }
+
+    .header-simple-responsive .header-search[data-desktop="1"],
+    .header-simple-responsive .header-cta[data-desktop="1"] {
+        display: block;
+    }
+
+    /* Hide mobile elements on desktop */
+    .header-simple-responsive .mobile-menu-toggle {
+        display: none;
+    }
+}
+
+/* Slide-in menu animation */
+.header-simple-responsive .mobile-menu-overlay[data-menu-style="slide"] .mobile-menu-nav {
+    transform: translateX(100%);
+}
+
+.header-simple-responsive .mobile-menu-overlay[data-menu-style="slide"].active .mobile-menu-nav {
+    transform: translateX(0);
+}
+
+/* Fade-in menu animation */
+.header-simple-responsive .mobile-menu-overlay[data-menu-style="fade"] .mobile-menu-nav {
+    opacity: 0;
+    transform: none;
+}
+
+.header-simple-responsive .mobile-menu-overlay[data-menu-style="fade"].active .mobile-menu-nav {
+    opacity: 1;
+}

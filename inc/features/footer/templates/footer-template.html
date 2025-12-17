@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Footer Templates | Enhanced Color Schemes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: #334155;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #7c3aed, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .template-section {
+            margin-bottom: 90px;
+            border-radius: 24px;
+            background: white;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .template-section:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .template-title {
+            padding: 28px 40px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .template-note {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.85;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Template 1: Royal Midnight */
+        .template-1 .template-title {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+        }
+
+        .template-1 .template-content {
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+
+        /* Template 2: Sunset Glow */
+        .template-2 .template-title {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            color: #fff7ed;
+        }
+
+        .template-2 .template-content {
+            background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+            color: #431407;
+        }
+
+        /* Template 3: Ocean Breeze */
+        .template-3 .template-title {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+            color: #f0f9ff;
+        }
+
+        .template-3 .template-content {
+            background: #f0f9ff;
+            color: #0c4a6e;
+        }
+
+        /* Template 4: Forest Serenity */
+        .template-4 .template-title {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: #f0fdf4;
+        }
+
+        .template-4 .template-content {
+            background: #f0fdf4;
+            color: #064e3b;
+        }
+
+        /* Template 5: Velvet Twilight */
+        .template-5 .template-title {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: #faf5ff;
+        }
+
+        .template-5 .template-content {
+            background: linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%);
+            color: #4a1d96;
+        }
+
+        .template-content {
+            padding: 50px;
+        }
+
+        /* Footer Base Styles */
+        footer {
+            width: 100%;
+        }
+
+        .footer-cta {
+            padding: 70px 50px;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .footer-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+
+        .cta-heading {
+            font-family: 'Manrope', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-subheading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            max-width: 680px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            color: #0f172a;
+            padding: 18px 42px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Template-specific CTA Colors */
+        .template-1 .cta-button { background: #fbbf24; color: #78350f; }
+        .template-2 .cta-button { background: #1e293b; color: #f8fafc; }
+        .template-3 .cta-button { background: #0c4a6e; color: #e0f2fe; }
+        .template-4 .cta-button { background: #064e3b; color: #d1fae5; }
+        .template-5 .cta-button { background: #7c3aed; color: #f5f3ff; }
+
+        /* Footer Columns */
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-logo {
+            font-family: 'Manrope', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .template-1 .logo-icon { background: #475569; color: #f1f5f9; }
+        .template-2 .logo-icon { background: #dc2626; color: #fef2f2; }
+        .template-3 .logo-icon { background: #0ea5e9; color: #f0f9ff; }
+        .template-4 .logo-icon { background: #059669; color: #f0fdf4; }
+        .template-5 .logo-icon { background: #7c3aed; color: #faf5ff; }
+
+        .footer-description {
+            margin-bottom: 32px;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .template-1 .social-icon { background: #1e293b; color: #cbd5e1; }
+        .template-2 .social-icon { background: #fed7aa; color: #9a3412; }
+        .template-3 .social-icon { background: #bae6fd; color: #0369a1; }
+        .template-4 .social-icon { background: #bbf7d0; color: #065f46; }
+        .template-5 .social-icon { background: #e9d5ff; color: #7c3aed; }
+
+        .social-icon:hover {
+            transform: translateY(-4px) scale(1.1);
+        }
+
+        .footer-column h3 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 36px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .template-1 .footer-column h3::after { background: #fbbf24; }
+        .template-2 .footer-column h3::after { background: #dc2626; }
+        .template-3 .footer-column h3::after { background: #0ea5e9; }
+        .template-4 .footer-column h3::after { background: #059669; }
+        .template-5 .footer-column h3::after { background: #7c3aed; }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            padding: 6px 0;
+            border-radius: 8px;
+        }
+
+        .template-1 .footer-links a { color: #94a3b8; }
+        .template-2 .footer-links a { color: #7c2d12; }
+        .template-3 .footer-links a { color: #075985; }
+        .template-4 .footer-links a { color: #065f46; }
+        .template-5 .footer-links a { color: #5b21b6; }
+
+        .footer-links a:hover {
+            padding-left: 12px;
+        }
+
+        .link-icon {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .template-1 .contact-icon { background: #1e293b; color: #fbbf24; }
+        .template-2 .contact-icon { background: #fed7aa; color: #dc2626; }
+        .template-3 .contact-icon { background: #bae6fd; color: #0ea5e9; }
+        .template-4 .contact-icon { background: #bbf7d0; color: #059669; }
+        .template-5 .contact-icon { background: #e9d5ff; color: #7c3aed; }
+
+        .contact-text {
+            line-height: 1.7;
+        }
+
+        .contact-text strong {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .site-footer {
+            padding: 32px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .copyright {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .footer-bottom-links a {
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .footer-bottom-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            transition: var(--transition);
+        }
+
+        .template-1 .footer-bottom-links a { color: #94a3b8; }
+        .template-1 .footer-bottom-links a::after { background: #fbbf24; }
+        
+        .template-2 .footer-bottom-links a { color: #9a3412; }
+        .template-2 .footer-bottom-links a::after { background: #dc2626; }
+        
+        .template-3 .footer-bottom-links a { color: #075985; }
+        .template-3 .footer-bottom-links a::after { background: #0ea5e9; }
+        
+        .template-4 .footer-bottom-links a { color: #065f46; }
+        .template-4 .footer-bottom-links a::after { background: #059669; }
+        
+        .template-5 .footer-bottom-links a { color: #5b21b6; }
+        .template-5 .footer-bottom-links a::after { background: #7c3aed; }
+
+        .footer-bottom-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Template-specific decorations */
+        .template-1 .footer-cta {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+        }
+
+        .template-2 .footer-cta {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            color: #ffedd5;
+        }
+
+        .template-3 .footer-cta {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: #e0f2fe;
+        }
+
+        .template-4 .footer-cta {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #d1fae5;
+        }
+
+        .template-5 .footer-cta {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: #ede9fe;
+        }
+
+        /* Newsletter Form */
+        .newsletter-form {
+            margin-top: 32px;
+        }
+
+        .newsletter-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .newsletter-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .template-1 .newsletter-input { 
+            background: #1e293b; 
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+        
+        .template-2 .newsletter-input { 
+            background: white; 
+            color: #431407;
+            border: 1px solid #fdba74;
+        }
+        
+        .template-3 .newsletter-input { 
+            background: white; 
+            color: #0c4a6e;
+            border: 1px solid #7dd3fc;
+        }
+        
+        .template-4 .newsletter-input { 
+            background: white; 
+            color: #064e3b;
+            border: 1px solid #86efac;
+        }
+        
+        .template-5 .newsletter-input { 
+            background: white; 
+            color: #4a1d96;
+            border: 1px solid #c4b5fd;
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .newsletter-button {
+            padding: 16px 28px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .template-1 .newsletter-button { background: #fbbf24; color: #78350f; }
+        .template-2 .newsletter-button { background: #dc2626; color: #fef2f2; }
+        .template-3 .newsletter-button { background: #0ea5e9; color: #f0f9ff; }
+        .template-4 .newsletter-button { background: #059669; color: #f0fdf4; }
+        .template-5 .newsletter-button { background: #7c3aed; color: #faf5ff; }
+
+        .newsletter-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+            
+            .cta-heading {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.4rem;
+            }
+            
+            .template-content {
+                padding: 30px;
+            }
+            
+            .footer-cta {
+                padding: 50px 30px;
+            }
+            
+            .cta-heading {
+                font-size: 2rem;
+            }
+            
+            .cta-subheading {
+                font-size: 1.1rem;
+            }
+            
+            .site-footer {
+                flex-direction: column;
+                text-align: center;
+                gap: 24px;
+            }
+            
+            .footer-bottom-links {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .newsletter-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-heading {
+                font-size: 1.8rem;
+            }
+            
+            .footer-cta {
+                padding: 40px 20px;
+            }
+            
+            .template-title {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        /* Animation for template sections */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .template-section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Premium Footer Templates</h1>
+            <p>Five sophisticated footer designs with carefully curated color schemes that enhance visual appeal and user experience</p>
+        </div>
+
+        <!-- Template 1: Royal Midnight -->
+        <section class="template-section template-1">
+            <div class="template-title">
+                <span>ROYAL MIDNIGHT</span>
+                <span class="template-note">Dark theme with gold accents</span>
+            </div>
+            <div class="template-content">
+                <footer>
+                    <!-- CTA Section -->
+                    <div class="footer-cta">
+                        <h2 class="cta-heading">Elevate Your Digital Experience</h2>
+                        <h3 class="cta-subheading">Join 10,000+ forward-thinking businesses</h3>
+                        <p class="cta-description">Experience the power of premium digital solutions. Our platform combines cutting-edge technology with intuitive design to transform your online presence and drive measurable results.</p>
+                        <button class="cta-button">
+                            <i class="fas fa-crown"></i>
+                            Start Free Trial
+                        </button>
+                    </div>
+
+                    <!-- Four Column Section -->
+                    <div class="footer-columns">
+                        <!-- Column 1: Logo & Description -->
+                        <div class="footer-column footer-logo-column">
+                            <div class="footer-logo">
+                                <div class="logo-icon">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <span>RoyalTech</span>
+                            </div>
+                            <p class="footer-description">
+                                Crafting exceptional digital experiences with precision and innovation. We transform complex challenges into elegant solutions.
+                            </p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Dribbble">
+                                    <i class="fab fa-dribbble"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Solutions -->
+                        <div class="footer-column">
+                            <h3>Solutions</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Enterprise Platforms</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Cloud Infrastructure</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Data Analytics</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> AI & Machine Learning</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Cybersecurity</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Digital Transformation</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Resources -->
+                        <div class="footer-column">
+                            <h3>Resources</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Documentation</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> API Reference</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Case Studies</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> White Papers</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Webinars</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Community Forum</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Contact Info -->
+                        <div class="footer-column">
+                            <h3>Get In Touch</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Global Headquarters</strong>
+                                        350 Fifth Avenue, 68th Floor<br>
+                                        New York, NY 10118
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Contact Number</strong>
+                                        +1 (555) 123-4567
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Email Address</strong>
+                                        contact@royaltech.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Footer -->
+                    <div class="site-footer">
+                        <div class="copyright">
+                            &copy; 2023 RoyalTech. All rights reserved. Crafted with <i class="fas fa-heart" style="color: #fbbf24;"></i> in New York.
+                        </div>
+                        <div class="footer-bottom-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                            <a href="#">Cookie Policy</a>
+                            <a href="#">GDPR Compliance</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Template 2: Sunset Glow -->
+        <section class="template-section template-2">
+            <div class="template-title">
+                <span>SUNSET GLOW</span>
+                <span class="template-note">Warm orange theme with dark accents</span>
+            </div>
+            <div class="template-content">
+                <footer>
+                    <!-- CTA Section -->
+                    <div class="footer-cta">
+                        <h2 class="cta-heading">Ignite Your Creative Potential</h2>
+                        <h3 class="cta-subheading">Transform ideas into extraordinary experiences</h3>
+                        <p class="cta-description">Join our community of innovators, designers, and creators. Access premium tools, resources, and mentorship to bring your most ambitious projects to life.</p>
+                        <button class="cta-button">
+                            <i class="fas fa-fire"></i>
+                            Join Creative Hub
+                        </button>
+                    </div>
+
+                    <!-- Four Column Section -->
+                    <div class="footer-columns">
+                        <!-- Column 1: Logo & Description -->
+                        <div class="footer-column footer-logo-column">
+                            <div class="footer-logo">
+                                <div class="logo-icon">
+                                    <i class="fas fa-fire"></i>
+                                </div>
+                                <span>IgniteStudio</span>
+                            </div>
+                            <p class="footer-description">
+                                Where creativity meets innovation. We empower creators with tools, community, and inspiration to build extraordinary digital experiences.
+                            </p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Behance">
+                                    <i class="fab fa-behance"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Dribbble">
+                                    <i class="fab fa-dribbble"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="YouTube">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="newsletter-form">
+                                <div class="newsletter-title">Stay Inspired</div>
+                                <div class="newsletter-container">
+                                    <input type="email" class="newsletter-input" placeholder="Your email address">
+                                    <button class="newsletter-button">Subscribe</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Categories -->
+                        <div class="footer-column">
+                            <h3>Categories</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> UI/UX Design</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Graphic Design</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Motion Graphics</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> 3D Art</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Illustration</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Photography</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Quick Links -->
+                        <div class="footer-column">
+                            <h3>Quick Links</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Home</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Gallery</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Tutorials</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Challenges</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Resources</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Pricing</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Studio Info -->
+                        <div class="footer-column">
+                            <h3>Studio Info</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Creative Studio</strong>
+                                        123 Design District<br>
+                                        Los Angeles, CA 90014
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Studio Hours</strong>
+                                        Mon-Fri: 9:00 AM - 7:00 PM<br>
+                                        Sat: 10:00 AM - 4:00 PM
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Email</strong>
+                                        studio@ignitestudio.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Footer -->
+                    <div class="site-footer">
+                        <div class="copyright">
+                            &copy; 2023 IgniteStudio. All rights reserved. Made with passion in California.
+                        </div>
+                        <div class="footer-bottom-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Use</a>
+                            <a href="#">Community Guidelines</a>
+                            <a href="#">Contact</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Template 3: Ocean Breeze -->
+        <section class="template-section template-3">
+            <div class="template-title">
+                <span>OCEAN BREEZE</span>
+                <span class="template-note">Fresh blue theme with light accents</span>
+            </div>
+            <div class="template-content">
+                <footer>
+                    <!-- CTA Section -->
+                    <div class="footer-cta">
+                        <h2 class="cta-heading">Navigate Digital Success</h2>
+                        <h3 class="cta-subheading">Streamline your operations with intelligent solutions</h3>
+                        <p class="cta-description">Discover how our platform can transform your business processes, enhance productivity, and drive growth through automation and data-driven insights.</p>
+                        <button class="cta-button">
+                            <i class="fas fa-anchor"></i>
+                            Schedule Demo
+                        </button>
+                    </div>
+
+                    <!-- Four Column Section -->
+                    <div class="footer-columns">
+                        <!-- Column 1: Logo & Description -->
+                        <div class="footer-column footer-logo-column">
+                            <div class="footer-logo">
+                                <div class="logo-icon">
+                                    <i class="fas fa-anchor"></i>
+                                </div>
+                                <span>NautilusTech</span>
+                            </div>
+                            <p class="footer-description">
+                                Navigating the future of business technology. We provide scalable solutions that help companies adapt, grow, and thrive in the digital age.
+                            </p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="YouTube">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Products -->
+                        <div class="footer-column">
+                            <h3>Products</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Enterprise CRM</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Project Management</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> HR Platform</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Analytics Suite</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Communication Tools</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Security Solutions</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Company -->
+                        <div class="footer-column">
+                            <h3>Company</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> About Us</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Careers</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Leadership</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Press & Media</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Partners</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Sustainability</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Global Offices -->
+                        <div class="footer-column">
+                            <h3>Global Offices</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>North America</strong>
+                                        500 Tech Avenue<br>
+                                        San Francisco, CA 94107
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Europe</strong>
+                                        22 Innovation Street<br>
+                                        London, EC2A 4NE
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Global Support</strong>
+                                        +1 (800) 123-4567
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Footer -->
+                    <div class="site-footer">
+                        <div class="copyright">
+                            &copy; 2023 NautilusTech. All rights reserved. ISO 27001 Certified.
+                        </div>
+                        <div class="footer-bottom-links">
+                            <a href="#">Privacy Center</a>
+                            <a href="#">Terms & Conditions</a>
+                            <a href="#">Security</a>
+                            <a href="#">Trust Center</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Template 4: Forest Serenity -->
+        <section class="template-section template-4">
+            <div class="template-title">
+                <span>FOREST SERENITY</span>
+                <span class="template-note">Natural green theme with earth tones</span>
+            </div>
+            <div class="template-content">
+                <footer>
+                    <!-- CTA Section -->
+                    <div class="footer-cta">
+                        <h2 class="cta-heading">Cultivate Sustainable Growth</h2>
+                        <h3 class="cta-subheading">Join the movement toward eco-friendly business</h3>
+                        <p class="cta-description">Discover how sustainable practices can drive profitability while protecting our planet. Our platform helps businesses measure, reduce, and offset their environmental impact.</p>
+                        <button class="cta-button">
+                            <i class="fas fa-leaf"></i>
+                            Calculate Your Impact
+                        </button>
+                    </div>
+
+                    <!-- Four Column Section -->
+                    <div class="footer-columns">
+                        <!-- Column 1: Logo & Description -->
+                        <div class="footer-column footer-logo-column">
+                            <div class="footer-logo">
+                                <div class="logo-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <span>EcoVantage</span>
+                            </div>
+                            <p class="footer-description">
+                                Pioneering sustainable business solutions. We help organizations thrive economically while making a positive environmental impact.
+                            </p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Medium">
+                                    <i class="fab fa-medium-m"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="newsletter-form">
+                                <div class="newsletter-title">Green Insights Newsletter</div>
+                                <div class="newsletter-container">
+                                    <input type="email" class="newsletter-input" placeholder="Enter your email">
+                                    <button class="newsletter-button">Subscribe</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Solutions -->
+                        <div class="footer-column">
+                            <h3>Solutions</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Carbon Footprint</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Sustainable Supply</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Green Energy</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Waste Management</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Water Conservation</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Eco Certification</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Industries -->
+                        <div class="footer-column">
+                            <h3>Industries</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Manufacturing</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Agriculture</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Retail</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Technology</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Hospitality</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Transportation</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Contact -->
+                        <div class="footer-column">
+                            <h3>Contact</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Headquarters</strong>
+                                        100 Greenway Boulevard<br>
+                                        Portland, OR 97201
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Phone</strong>
+                                        +1 (503) 555-0123
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Email</strong>
+                                        sustainability@ecovantage.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Footer -->
+                    <div class="site-footer">
+                        <div class="copyright">
+                            &copy; 2023 EcoVantage. All rights reserved. B Corp Certified.
+                        </div>
+                        <div class="footer-bottom-links">
+                            <a href="#">Sustainability Report</a>
+                            <a href="#">Environmental Policy</a>
+                            <a href="#">Carbon Neutral</a>
+                            <a href="#">Partnerships</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Template 5: Velvet Twilight -->
+        <section class="template-section template-5">
+            <div class="template-title">
+                <span>VELVET TWILIGHT</span>
+                <span class="template-note">Luxury purple theme with elegant accents</span>
+            </div>
+            <div class="template-content">
+                <footer>
+                    <!-- CTA Section -->
+                    <div class="footer-cta">
+                        <h2 class="cta-heading">Experience Luxury Innovation</h2>
+                        <h3 class="cta-subheading">Where premium design meets cutting-edge technology</h3>
+                        <p class="cta-description">Indulge in the ultimate digital experience crafted for discerning clients who demand excellence in every detail. Join our exclusive community today.</p>
+                        <button class="cta-button">
+                            <i class="fas fa-gem"></i>
+                            Request Exclusive Access
+                        </button>
+                    </div>
+
+                    <!-- Four Column Section -->
+                    <div class="footer-columns">
+                        <!-- Column 1: Logo & Description -->
+                        <div class="footer-column footer-logo-column">
+                            <div class="footer-logo">
+                                <div class="logo-icon">
+                                    <i class="fas fa-gem"></i>
+                                </div>
+                                <span>LuxuryDigital</span>
+                            </div>
+                            <p class="footer-description">
+                                Crafting exceptional digital experiences for luxury brands and discerning clients. We blend artisanal design with innovative technology.
+                            </p>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Pinterest">
+                                    <i class="fab fa-pinterest-p"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="Behance">
+                                    <i class="fab fa-behance"></i>
+                                </a>
+                                <a href="#" class="social-icon" title="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Services -->
+                        <div class="footer-column">
+                            <h3>Services</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Luxury Branding</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Premium Web Design</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> E-commerce Solutions</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Mobile Applications</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Digital Strategy</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Exclusive Support</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 3: Portfolio -->
+                        <div class="footer-column">
+                            <h3>Portfolio</h3>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Fashion & Apparel</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Jewelry & Watches</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Automotive</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Real Estate</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Hospitality</a></li>
+                                <li><a href="#"><i class="fas fa-chevron-right link-icon"></i> Art & Culture</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Column 4: Atelier -->
+                        <div class="footer-column">
+                            <h3>Atelier</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Design Atelier</strong>
+                                        888 Avenue Montaigne<br>
+                                        Paris, 75008 France
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>By Appointment</strong>
+                                        +33 1 40 20 50 60
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-text">
+                                        <strong>Concierge</strong>
+                                        concierge@luxurydigital.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Site Footer -->
+                    <div class="site-footer">
+                        <div class="copyright">
+                            &copy; 2023 LuxuryDigital. All rights reserved. Exclusively crafted in Paris.
+                        </div>
+                        <div class="footer-bottom-links">
+                            <a href="#">Client Portal</a>
+                            <a href="#">Privacy Assurance</a>
+                            <a href="#">Exclusive Terms</a>
+                            <a href="#">Heritage</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Newsletter form handling
+            const newsletterButtons = document.querySelectorAll('.newsletter-button');
+            const ctaButtons = document.querySelectorAll('.cta-button');
+            
+            newsletterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.newsletter-input');
+                    if (input.value && input.value.includes('@')) {
+                        const originalText = this.textContent;
+                        this.innerHTML = '<i class="fas fa-check"></i> Subscribed!';
+                        this.style.backgroundColor = '#10b981';
+                        
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.style.backgroundColor = '';
+                        }, 2000);
+                        
+                        input.value = '';
+                    } else {
+                        const originalText = this.textContent;
+                        this.innerHTML = '<i class="fas fa-exclamation"></i> Invalid Email';
+                        this.style.backgroundColor = '#ef4444';
+                        
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                });
+                
+                // Enter key support
+                const input = button.parentElement.querySelector('.newsletter-input');
+                if (input) {
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            button.click();
+                        }
+                    });
+                }
+            });
+            
+            // CTA button animations
+            ctaButtons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-6px) scale(1.03)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+                
+                // Click effect
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                    
+                    // Show success message
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Success!';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                    }, 1500);
+                });
+            });
+            
+            // Social icon hover effects
+            const socialIcons = document.querySelectorAll('.social-icon');
+            
+            socialIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.1)';
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Footer link hover animations
+            const footerLinks = document.querySelectorAll('.footer-links a');
+            
+            footerLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.link-icon');
+                    if (icon) {
+                        icon.style.transform = 'translateX(4px)';
+                        icon.style.opacity = '1';
+                    }
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.link-icon');
+                    if (icon) {
+                        icon.style.transform = 'translateX(0)';
+                        icon.style.opacity = '0.7';
+                    }
+                });
+            });
+            
+            // Template section hover effect enhancement
+            const templateSections = document.querySelectorAll('.template-section');
+            
+            templateSections.forEach(section => {
+                section.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.15)';
+                });
+                
+                section.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = 'var(--shadow-md)';
+                });
+            });
+            
+            // Color scheme demonstration
+            console.log('%c🎨 Premium Color Schemes Applied', 'font-size: 16px; font-weight: bold; color: #7c3aed;');
+            console.log('Template 1: Royal Midnight (#0f172a, #fbbf24)');
+            console.log('Template 2: Sunset Glow (#ea580c, #dc2626)');
+            console.log('Template 3: Ocean Breeze (#0ea5e9, #06b6d4)');
+            console.log('Template 4: Forest Serenity (#059669, #10b981)');
+            console.log('Template 5: Velvet Twilight (#7c3aed, #a855f7)');
+        });
+    </script>
+</body>
+</html>

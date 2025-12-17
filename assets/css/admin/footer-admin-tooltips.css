@@ -1,0 +1,222 @@
+/**
+ * Footer Admin Tooltips & Help System
+ */
+
+/* Tooltip Container */
+.ross-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 6px;
+    cursor: help;
+}
+
+.ross-tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    transition: all 0.3s ease;
+}
+
+.ross-tooltip:hover .ross-tooltip-icon {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+}
+
+.ross-tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 10000;
+    background: #2c3e50;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    width: 250px;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(5px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.ross-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #2c3e50 transparent transparent transparent;
+}
+
+.ross-tooltip:hover .ross-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Info Box for Section Descriptions */
+.ross-info-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-left: 4px solid #667eea;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+.ross-info-box strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+.ross-info-box ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+}
+
+.ross-info-box ul li {
+    margin: 4px 0;
+}
+
+/* Help Panel */
+.ross-help-panel {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ross-help-panel h4 {
+    margin: 0 0 12px;
+    color: #667eea;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ross-help-panel h4::before {
+    content: "💡";
+    font-size: 18px;
+}
+
+.ross-help-panel p {
+    margin: 0 0 8px;
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ross-help-panel p:last-child {
+    margin-bottom: 0;
+}
+
+/* Quick Tips */
+.ross-quick-tip {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #856404;
+}
+
+.ross-quick-tip::before {
+    content: "💡 Quick Tip: ";
+    font-weight: 600;
+}
+
+/* Warning Box */
+.ross-warning-box {
+    background: #fff5f5;
+    border-left: 4px solid #dc3545;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #721c24;
+}
+
+.ross-warning-box::before {
+    content: "⚠️ Warning: ";
+    font-weight: 600;
+}
+
+/* Field Labels with Icons */
+.ross-field-label-enhanced {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.ross-field-icon {
+    font-size: 16px;
+}
+
+/* Collapsible Help Sections */
+.ross-collapsible-help {
+    margin: 16px 0;
+}
+
+.ross-collapsible-toggle {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.ross-collapsible-toggle:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+}
+
+.ross-collapsible-toggle .dashicons {
+    transition: transform 0.3s ease;
+}
+
+.ross-collapsible-toggle.active .dashicons {
+    transform: rotate(180deg);
+}
+
+.ross-collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: white;
+    border: 2px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.ross-collapsible-content.active {
+    max-height: 1000px;
+    padding: 14px;
+}

@@ -1,0 +1,442 @@
+/**
+ * Homepage Templates Styles
+ * Responsive styles for all homepage templates
+ * Mobile-first approach
+ * 
+ * IMPORTANT: These styles inherit from Ross Theme options
+ * - Colors from Ross Theme → General Settings
+ * - Typography from Ross Theme → General Settings
+ * - Spacing follows theme standards
+ * 
+ * DO NOT hard-code colors - use CSS variables or theme options
+ */
+
+/* ========================================
+   CSS CUSTOM PROPERTIES (Dynamic from Theme)
+   ======================================== */
+
+:root {
+    /* These are set dynamically by WordPress theme options */
+    --ross-primary-color: #001946;
+    --ross-secondary-color: #E5C902;
+    --ross-accent-color: #0073aa;
+    --ross-text-color: #333333;
+    --ross-heading-color: #1d2327;
+    --ross-background-color: #ffffff;
+    --ross-container-width: 1200px;
+    --ross-border-radius: 6px;
+    --ross-transition: all 0.3s ease;
+}
+
+/* Container - Respects theme container width */
+.ross-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Common Section Styles */
+.ross-homepage-template section {
+    padding: 60px 0;
+}
+
+.ross-section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.ross-section-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 15px;
+    color: #1d2327;
+}
+
+.ross-section-subtitle {
+    font-size: 18px;
+    color: #646970;
+    margin: 0;
+}
+
+/* Buttons */
+.ross-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+.ross-btn-primary {
+    background: #2271b1;
+    color: #fff;
+    border-color: #2271b1;
+}
+
+.ross-btn-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+
+.ross-btn-secondary {
+    background: transparent;
+    color: #2271b1;
+    border-color: #2271b1;
+}
+
+.ross-btn-secondary:hover {
+    background: #2271b1;
+    color: #fff;
+}
+
+.ross-btn-light {
+    background: #fff;
+    color: #2271b1;
+    border-color: #fff;
+}
+
+.ross-btn-light:hover {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+}
+
+/* ========================================
+   BUSINESS PROFESSIONAL TEMPLATE
+   ======================================== */
+
+/* Hero Section */
+.ross-hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.ross-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ross-hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0 0 20px;
+    line-height: 1.2;
+}
+
+.ross-hero-subtitle {
+    font-size: 20px;
+    margin: 0 0 40px;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.ross-hero-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Services Section */
+.ross-services-section {
+    background: #fff;
+}
+
+.ross-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.ross-service-card {
+    background: #f6f7f7;
+    padding: 40px 30px;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.ross-service-card:hover {
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.ross-service-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: #2271b1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ross-service-icon .dashicons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+}
+
+.ross-service-card h3 {
+    font-size: 22px;
+    margin: 0 0 15px;
+    color: #1d2327;
+}
+
+.ross-service-card p {
+    font-size: 16px;
+    color: #646970;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Testimonials Section */
+.ross-testimonials-section {
+    background: #f6f7f7;
+}
+
+.ross-testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.ross-testimonial-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.ross-testimonial-content {
+    margin-bottom: 20px;
+}
+
+.ross-testimonial-content p {
+    font-size: 16px;
+    font-style: italic;
+    color: #3c434a;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.ross-testimonial-author strong {
+    display: block;
+    font-size: 16px;
+    color: #1d2327;
+    margin-bottom: 5px;
+}
+
+.ross-testimonial-author span {
+    font-size: 14px;
+    color: #646970;
+}
+
+/* CTA Banner Section */
+.ross-cta-banner-section {
+    background: #2271b1;
+    color: #fff;
+    padding: 80px 0;
+}
+
+.ross-cta-banner-content {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.ross-cta-banner-content h2 {
+    font-size: 36px;
+    margin: 0 0 15px;
+    color: #fff;
+}
+
+.ross-cta-banner-content p {
+    font-size: 18px;
+    margin: 0 0 30px;
+    opacity: 0.95;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .ross-section-title {
+        font-size: 32px;
+    }
+    
+    .ross-hero-title {
+        font-size: 40px;
+    }
+    
+    .ross-hero-subtitle {
+        font-size: 18px;
+    }
+    
+    .ross-services-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+    
+    .ross-testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .ross-container {
+        padding: 0 15px;
+    }
+    
+    .ross-homepage-template section {
+        padding: 40px 0;
+    }
+    
+    .ross-section-header {
+        margin-bottom: 35px;
+    }
+    
+    .ross-section-title {
+        font-size: 28px;
+    }
+    
+    .ross-section-subtitle {
+        font-size: 16px;
+    }
+    
+    /* Hero Section Mobile */
+    .ross-hero-section {
+        padding: 60px 0;
+    }
+    
+    .ross-hero-title {
+        font-size: 32px;
+    }
+    
+    .ross-hero-subtitle {
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+    
+    .ross-hero-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .ross-hero-buttons .ross-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    /* Services Mobile */
+    .ross-services-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .ross-service-card {
+        padding: 30px 20px;
+    }
+    
+    /* Testimonials Mobile */
+    .ross-testimonial-card {
+        padding: 25px 20px;
+    }
+    
+    /* CTA Banner Mobile */
+    .ross-cta-banner-section {
+        padding: 50px 0;
+    }
+    
+    .ross-cta-banner-content h2 {
+        font-size: 28px;
+    }
+    
+    .ross-cta-banner-content p {
+        font-size: 16px;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .ross-section-title {
+        font-size: 24px;
+    }
+    
+    .ross-hero-title {
+        font-size: 26px;
+    }
+    
+    .ross-hero-subtitle {
+        font-size: 15px;
+    }
+    
+    .ross-btn {
+        padding: 12px 24px;
+        font-size: 15px;
+    }
+    
+    .ross-service-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .ross-service-icon .dashicons {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .ross-service-card h3 {
+        font-size: 20px;
+    }
+    
+    .ross-service-card p {
+        font-size: 15px;
+    }
+    
+    .ross-cta-banner-content h2 {
+        font-size: 24px;
+    }
+}
+
+/* High Resolution Displays */
+@media (min-width: 1400px) {
+    .ross-container {
+        max-width: 1400px;
+    }
+    
+    .ross-hero-title {
+        font-size: 56px;
+    }
+    
+    .ross-section-title {
+        font-size: 42px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .ross-hero-buttons,
+    .ross-cta-banner-section {
+        display: none;
+    }
+    
+    .ross-homepage-template section {
+        padding: 20px 0;
+    }
+}
