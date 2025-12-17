@@ -938,46 +938,6 @@ class RossHeaderOptions {
         );
         
         add_settings_field(
-            'transparent_overlay_enable',
-            'Enable Background Overlay (Transparent)',
-            array($this, 'transparent_overlay_enable_callback'),
-            'ross-theme-header-appearance',
-            'ross_header_appearance_section'
-        );
-        
-        add_settings_field(
-            'transparent_overlay_color',
-            'Overlay Color',
-            array($this, 'transparent_overlay_color_callback'),
-            'ross-theme-header-appearance',
-            'ross_header_appearance_section'
-        );
-        
-        add_settings_field(
-            'transparent_overlay_opacity',
-            'Overlay Opacity',
-            array($this, 'transparent_overlay_opacity_callback'),
-            'ross-theme-header-appearance',
-            'ross_header_appearance_section'
-        );
-        
-        add_settings_field(
-            'header_shadow_enable',
-            'Enable Header Shadow',
-            array($this, 'header_shadow_enable_callback'),
-            'ross-theme-header-appearance',
-            'ross_header_appearance_section'
-        );
-        
-        add_settings_field(
-            'header_shadow_size',
-            'Shadow Size',
-            array($this, 'header_shadow_size_callback'),
-            'ross-theme-header-appearance',
-            'ross_header_appearance_section'
-        );
-        
-        add_settings_field(
             'header_border_enable',
             'Enable Bottom Border',
             array($this, 'header_border_enable_callback'),
@@ -2026,51 +1986,6 @@ class RossHeaderOptions {
         <?php
     }
     
-    public function transparent_overlay_enable_callback() {
-        $value = isset($this->options['transparent_overlay_enable']) ? $this->options['transparent_overlay_enable'] : 0;
-        ?>
-        <input type="checkbox" name="ross_theme_header_options[transparent_overlay_enable]" value="1" <?php checked(1, $value); ?> />
-        <label>Add colored overlay to transparent header</label>
-        <p class="description">Useful for transparent headers over background images</p>
-        <?php
-    }
-    
-    public function transparent_overlay_color_callback() {
-        $value = isset($this->options['transparent_overlay_color']) ? $this->options['transparent_overlay_color'] : '#000000';
-        ?>
-        <input type="text" name="ross_theme_header_options[transparent_overlay_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#000000" />
-        <p class="description">Color for transparent overlay</p>
-        <?php
-    }
-    
-    public function transparent_overlay_opacity_callback() {
-        $value = isset($this->options['transparent_overlay_opacity']) ? $this->options['transparent_overlay_opacity'] : '0.3';
-        ?>
-        <input type="range" name="ross_theme_header_options[transparent_overlay_opacity]" min="0" max="1" step="0.1" value="<?php echo esc_attr($value); ?>" class="ross-range-slider" />
-        <span class="ross-range-value"><?php echo esc_html($value); ?></span>
-        <p class="description">Overlay opacity</p>
-        <?php
-    }
-    
-    public function header_shadow_enable_callback() {
-        $value = isset($this->options['header_shadow_enable']) ? $this->options['header_shadow_enable'] : 0;
-        ?>
-        <input type="checkbox" name="ross_theme_header_options[header_shadow_enable]" value="1" <?php checked(1, $value); ?> />
-        <label>Add drop shadow to header</label>
-        <?php
-    }
-    
-    public function header_shadow_size_callback() {
-        $value = isset($this->options['header_shadow_size']) ? $this->options['header_shadow_size'] : 'medium';
-        ?>
-        <select name="ross_theme_header_options[header_shadow_size]">
-            <option value="small" <?php selected($value, 'small'); ?>>Small</option>
-            <option value="medium" <?php selected($value, 'medium'); ?>>Medium</option>
-            <option value="large" <?php selected($value, 'large'); ?>>Large</option>
-        </select>
-        <?php
-    }
-    
     public function header_border_enable_callback() {
         $value = isset($this->options['header_border_enable']) ? $this->options['header_border_enable'] : 0;
         ?>
@@ -2171,10 +2086,20 @@ class RossHeaderOptions {
     // Top Bar - new
     $sanitized['enable_social'] = isset($input['enable_social']) ? 1 : 0;
     $sanitized['social_facebook'] = isset($input['social_facebook']) ? esc_url_raw($input['social_facebook']) : '';
+    $sanitized['social_facebook_enabled'] = isset($input['social_facebook_enabled']) ? 1 : 0;
+    $sanitized['social_facebook_icon'] = isset($input['social_facebook_icon']) ? sanitize_text_field($input['social_facebook_icon']) : 'fab fa-facebook-f';
     $sanitized['social_twitter'] = isset($input['social_twitter']) ? esc_url_raw($input['social_twitter']) : '';
+    $sanitized['social_twitter_enabled'] = isset($input['social_twitter_enabled']) ? 1 : 0;
+    $sanitized['social_twitter_icon'] = isset($input['social_twitter_icon']) ? sanitize_text_field($input['social_twitter_icon']) : 'fab fa-twitter';
     $sanitized['social_linkedin'] = isset($input['social_linkedin']) ? esc_url_raw($input['social_linkedin']) : '';
+    $sanitized['social_linkedin_enabled'] = isset($input['social_linkedin_enabled']) ? 1 : 0;
+    $sanitized['social_linkedin_icon'] = isset($input['social_linkedin_icon']) ? sanitize_text_field($input['social_linkedin_icon']) : 'fab fa-linkedin-in';
     $sanitized['social_instagram'] = isset($input['social_instagram']) ? esc_url_raw($input['social_instagram']) : '';
+    $sanitized['social_instagram_enabled'] = isset($input['social_instagram_enabled']) ? 1 : 0;
+    $sanitized['social_instagram_icon'] = isset($input['social_instagram_icon']) ? sanitize_text_field($input['social_instagram_icon']) : 'fab fa-instagram';
     $sanitized['social_youtube'] = isset($input['social_youtube']) ? esc_url_raw($input['social_youtube']) : '';
+    $sanitized['social_youtube_enabled'] = isset($input['social_youtube_enabled']) ? 1 : 0;
+    $sanitized['social_youtube_icon'] = isset($input['social_youtube_icon']) ? sanitize_text_field($input['social_youtube_icon']) : 'fab fa-youtube';
     $sanitized['phone_number'] = isset($input['phone_number']) ? sanitize_text_field($input['phone_number']) : '';
         $sanitized['topbar_email'] = isset($input['topbar_email']) ? sanitize_email($input['topbar_email']) : '';
         $sanitized['enable_announcement'] = isset($input['enable_announcement']) ? 1 : 0;
@@ -2236,8 +2161,9 @@ class RossHeaderOptions {
                 $icon = sanitize_text_field($item['icon']);
                 $url = esc_url_raw($item['url']);
                 $title = isset($item['title']) ? sanitize_text_field($item['title']) : '';
+                $enabled = isset($item['enabled']) ? 1 : 0;
                 if (empty($url) || empty($icon)) continue;
-                $sanitized['topbar_custom_icon_links'][] = array('icon' => $icon, 'url' => $url, 'title' => $title);
+                $sanitized['topbar_custom_icon_links'][] = array('icon' => $icon, 'url' => $url, 'title' => $title, 'enabled' => $enabled);
             }
         }
         
@@ -2285,14 +2211,7 @@ class RossHeaderOptions {
         $sanitized['header_link_hover_color'] = sanitize_hex_color($input['header_link_hover_color']);
         $sanitized['transparent_homepage'] = isset($input['transparent_homepage']) ? 1 : 0;
         
-        // Appearance - Overlay
-        $sanitized['transparent_overlay_enable'] = isset($input['transparent_overlay_enable']) ? 1 : 0;
-        $sanitized['transparent_overlay_color'] = isset($input['transparent_overlay_color']) ? sanitize_hex_color($input['transparent_overlay_color']) : '#000000';
-        $sanitized['transparent_overlay_opacity'] = isset($input['transparent_overlay_opacity']) ? floatval($input['transparent_overlay_opacity']) : 0.3;
-        
         // Appearance - Shadow & Border
-        $sanitized['header_shadow_enable'] = isset($input['header_shadow_enable']) ? 1 : 0;
-        $sanitized['header_shadow_size'] = isset($input['header_shadow_size']) ? sanitize_text_field($input['header_shadow_size']) : 'medium';
         $sanitized['header_border_enable'] = isset($input['header_border_enable']) ? 1 : 0;
         $sanitized['header_border_color'] = isset($input['header_border_color']) ? sanitize_hex_color($input['header_border_color']) : '#e0e0e0';
         $sanitized['header_border_width'] = isset($input['header_border_width']) ? absint($input['header_border_width']) : 1;

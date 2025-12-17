@@ -289,6 +289,30 @@
     border-top: 1px solid #e2e8f0;
 }
 
+/* Custom Icons - Integrated with Social Icons */
+.ross-custom-icons-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.ross-custom-icons-section .ross-section-header {
+    margin-bottom: 16px;
+}
+
+.ross-custom-icons-section .ross-section-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.ross-custom-icons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 /* Colors Grid */
 .ross-colors-grid {
     display: grid;

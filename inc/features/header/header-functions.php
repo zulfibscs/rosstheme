@@ -266,15 +266,25 @@ function ross_theme_render_topbar() {
         }
     } else {
         $fb = !empty($options['social_facebook']) ? esc_url($options['social_facebook']) : '';
+        $fb_enabled = isset($options['social_facebook_enabled']) ? $options['social_facebook_enabled'] : (!empty($fb));
+        $fb_icon = isset($options['social_facebook_icon']) ? $options['social_facebook_icon'] : 'fab fa-facebook-f';
         $tw = !empty($options['social_twitter']) ? esc_url($options['social_twitter']) : '';
+        $tw_enabled = isset($options['social_twitter_enabled']) ? $options['social_twitter_enabled'] : (!empty($tw));
+        $tw_icon = isset($options['social_twitter_icon']) ? $options['social_twitter_icon'] : 'fab fa-twitter';
         $li = !empty($options['social_linkedin']) ? esc_url($options['social_linkedin']) : '';
+        $li_enabled = isset($options['social_linkedin_enabled']) ? $options['social_linkedin_enabled'] : (!empty($li));
+        $li_icon = isset($options['social_linkedin_icon']) ? $options['social_linkedin_icon'] : 'fab fa-linkedin-in';
         $ig = !empty($options['social_instagram']) ? esc_url($options['social_instagram']) : '';
+        $ig_enabled = isset($options['social_instagram_enabled']) ? $options['social_instagram_enabled'] : (!empty($ig));
+        $ig_icon = isset($options['social_instagram_icon']) ? $options['social_instagram_icon'] : 'fab fa-instagram';
         $yt = !empty($options['social_youtube']) ? esc_url($options['social_youtube']) : '';
-        if ($fb) $social_links[] = array('icon' => 'fab fa-facebook-f', 'url' => $fb);
-        if ($tw) $social_links[] = array('icon' => 'fab fa-twitter', 'url' => $tw);
-        if ($li) $social_links[] = array('icon' => 'fab fa-linkedin-in', 'url' => $li);
-        if ($ig) $social_links[] = array('icon' => 'fab fa-instagram', 'url' => $ig);
-        if ($yt) $social_links[] = array('icon' => 'fab fa-youtube', 'url' => $yt);
+        $yt_enabled = isset($options['social_youtube_enabled']) ? $options['social_youtube_enabled'] : (!empty($yt));
+        $yt_icon = isset($options['social_youtube_icon']) ? $options['social_youtube_icon'] : 'fab fa-youtube';
+        if ($fb && $fb_enabled) $social_links[] = array('icon' => $fb_icon, 'url' => $fb);
+        if ($tw && $tw_enabled) $social_links[] = array('icon' => $tw_icon, 'url' => $tw);
+        if ($li && $li_enabled) $social_links[] = array('icon' => $li_icon, 'url' => $li);
+        if ($ig && $ig_enabled) $social_links[] = array('icon' => $ig_icon, 'url' => $ig);
+        if ($yt && $yt_enabled) $social_links[] = array('icon' => $yt_icon, 'url' => $yt);
     }
 
     // Render markup
@@ -324,12 +334,17 @@ function ross_theme_render_topbar() {
         foreach ($social_links as $s) {
             $icon_output = '';
             if (!empty($s['icon'])) {
-                // If icon looks like an HTML tag, allow a small set of tags
-                if (strpos(trim($s['icon']), '<') === 0) {
-                    $icon_output = wp_kses($s['icon'], array('i' => array('class' => array()), 'svg' => array(), 'path' => array()));
+                $icon_raw = trim($s['icon']);
+                // Handle different icon types
+                if (strpos($icon_raw, '<') === 0) {
+                    // HTML icon (SVG, etc.)
+                    $icon_output = wp_kses($icon_raw, array('i' => array('class' => array()), 'svg' => array(), 'path' => array()));
+                } elseif (preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $icon_raw)) {
+                    // Uploaded image URL
+                    $icon_output = '<img src="' . esc_url($icon_raw) . '" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />';
                 } else {
-                    // Treat as a FontAwesome (or similar) class name and render an <i>
-                    $icon_output = '<i class="' . esc_attr($s['icon']) . '"></i>';
+                    // FontAwesome or other CSS class
+                    $icon_output = '<i class="' . esc_attr($icon_raw) . '"></i>';
                 }
             } else {
                 $icon_output = '&#9679;';
@@ -355,19 +370,59 @@ function ross_theme_render_topbar() {
 
     // Custom icon links (configured in admin)
     if (!empty($options['topbar_custom_icon_links']) && is_array($options['topbar_custom_icon_links'])) {
-        $icon_color = isset($options['topbar_icon_color']) ? esc_attr($options['topbar_icon_color']) : $color;
+        // Debug output for admins
+        if (current_user_can('manage_options')) {
+            echo '<!-- DEBUG: Rendering ' . count($options['topbar_custom_icon_links']) . ' custom icons -->';
+            foreach ($options['topbar_custom_icon_links'] as $idx => $c) {
+                echo '<!-- DEBUG: Custom icon ' . $idx . ': ' . json_encode($c) . ' -->';
+            }
+        }
+        $icon_color = isset($options['social_icon_color']) ? esc_attr($options['social_icon_color']) : $color;
+        $icon_bg_color = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
+        $icon_border_color = isset($options['social_icon_border_color']) ? $options['social_icon_border_color'] : 'transparent';
+        $icon_border_size = isset($options['social_icon_border_size']) ? $options['social_icon_border_size'] : '0';
+        $icon_width = isset($options['social_icon_width']) ? absint($options['social_icon_width']) : 32;
+        $icon_size = isset($options['social_icon_size']) ? $options['social_icon_size'] : 'medium';
+        $icon_shape = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
+        $icon_effect = isset($options['social_icon_effect']) ? $options['social_icon_effect'] : 'none';
+        $custom_link_extra_classes = 'social-link--' . esc_attr($icon_size) . ' social-link--' . esc_attr($icon_shape);
+        if ($icon_effect !== 'none') {
+            $custom_link_extra_classes .= ' social-link--' . esc_attr($icon_effect);
+        }
+        
         echo '<div class="topbar-custom-icons">';
         foreach ($options['topbar_custom_icon_links'] as $c) {
             if (empty($c['url']) || empty($c['icon'])) continue;
+            // Check if this custom icon is enabled
+            if (isset($c['enabled']) && !$c['enabled']) continue;
             $title = isset($c['title']) ? esc_attr($c['title']) : '';
             $icon_raw = trim($c['icon']);
+            
+            // Handle different icon types
             if (strpos($icon_raw, '<') === 0) {
+                // HTML icon (SVG, etc.)
                 $icon_html = wp_kses($icon_raw, array('i' => array('class' => array()), 'svg' => array(), 'path' => array()));
+            } elseif (preg_match('/\.(jpg|jpeg|png|gif|svg|webp)$/i', $icon_raw)) {
+                // Uploaded image URL
+                $icon_html = '<img src="' . esc_url($icon_raw) . '" alt="' . $title . '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />';
             } else {
+                // FontAwesome or other CSS class
                 $icon_html = '<i class="' . esc_attr($icon_raw) . '"></i>';
             }
 
-            echo '<a class="topbar-custom-icon social-link" href="' . esc_url($c['url']) . '" title="' . $title . '">' . $icon_html . '</a>';
+            // Apply same styling as regular social icons
+            $inline_style = '';
+            $inline_style .= 'width: ' . esc_attr($icon_width) . 'px !important; ';
+            $inline_style .= 'height: ' . esc_attr($icon_width) . 'px !important; ';
+            if ($icon_bg_color !== 'transparent') {
+                $inline_style .= 'background-color: ' . esc_attr($icon_bg_color) . ' !important; ';
+            }
+            $inline_style .= 'color: ' . esc_attr($icon_color) . ' !important; ';
+            if ($icon_border_color !== 'transparent' && $icon_border_size !== '0') {
+                $inline_style .= 'border: ' . esc_attr($icon_border_size) . 'px solid ' . esc_attr($icon_border_color) . ' !important; ';
+            }
+
+            echo '<a class="topbar-custom-icon social-link ' . $custom_link_extra_classes . '" href="' . esc_url($c['url']) . '" title="' . $title . '" style="' . $inline_style . '">' . $icon_html . '</a>';
         }
         echo '</div>';
     }

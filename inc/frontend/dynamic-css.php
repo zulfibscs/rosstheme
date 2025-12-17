@@ -100,41 +100,6 @@ function ross_theme_dynamic_css() {
         echo '.site-header { opacity: ' . $opacity . ' !important; }';
     }
     
-    // Transparent Header Overlay
-    if (!empty($header_options['transparent_overlay_enable'])) {
-        $overlay_color = isset($header_options['transparent_overlay_color']) ? $header_options['transparent_overlay_color'] : '#000000';
-        $overlay_opacity = isset($header_options['transparent_overlay_opacity']) ? floatval($header_options['transparent_overlay_opacity']) : 0.3;
-        
-        // Convert hex to RGB
-        $hex = ltrim($overlay_color, '#');
-        if (strlen($hex) === 3) {
-            $r = hexdec(str_repeat(substr($hex,0,1),2));
-            $g = hexdec(str_repeat(substr($hex,1,1),2));
-            $b = hexdec(str_repeat(substr($hex,2,1),2));
-        } else {
-            $r = hexdec(substr($hex,0,2));
-            $g = hexdec(substr($hex,2,2));
-            $b = hexdec(substr($hex,4,2));
-        }
-        $rgba = 'rgba(' . $r . ',' . $g . ',' . $b . ',' . $overlay_opacity . ')';
-        
-        echo '.site-header.has-transparent-overlay { position: relative !important; }';
-        echo '.site-header.has-transparent-overlay::before { content: "" !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background: ' . $rgba . ' !important; pointer-events: none !important; z-index: 0 !important; }';
-        echo '.site-header.has-transparent-overlay > * { position: relative !important; z-index: 1 !important; }';
-    }
-    
-    // Header Shadow
-    if (!empty($header_options['header_shadow_enable'])) {
-        $shadow_size = isset($header_options['header_shadow_size']) ? $header_options['header_shadow_size'] : 'medium';
-        $shadow_values = array(
-            'small' => '0 2px 4px rgba(0,0,0,0.1)',
-            'medium' => '0 4px 8px rgba(0,0,0,0.15)',
-            'large' => '0 6px 16px rgba(0,0,0,0.2)'
-        );
-        $shadow = isset($shadow_values[$shadow_size]) ? $shadow_values[$shadow_size] : $shadow_values['medium'];
-        echo '.site-header { box-shadow: ' . $shadow . ' !important; }';
-    }
-    
     // Header Bottom Border
     if (!empty($header_options['header_border_enable'])) {
         $border_color = isset($header_options['header_border_color']) ? $header_options['header_border_color'] : '#e0e0e0';

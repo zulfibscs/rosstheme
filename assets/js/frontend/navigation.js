@@ -200,15 +200,29 @@
             if (shouldBeSticky && !state.isSticky) {
                 header.classList.add('is-sticky');
                 document.body.classList.add('has-sticky-header');
-                if (shrinkEnabled) {
-                    header.classList.add('shrink');
-                    document.body.classList.add('is-sticky');
-                }
                 state.isSticky = true;
             } else if (!shouldBeSticky && state.isSticky) {
                 header.classList.remove('is-sticky', 'shrink');
                 document.body.classList.remove('has-sticky-header', 'is-sticky');
                 state.isSticky = false;
+            }
+            
+            // Handle shrink behavior separately
+            if (state.isSticky && shrinkEnabled) {
+                if (behavior === 'scroll_up') {
+                    // For scroll_up, shrink when scrolling down, unshrink when scrolling up
+                    if (scrollingDown) {
+                        header.classList.add('shrink');
+                        document.body.classList.add('is-sticky');
+                    } else {
+                        header.classList.remove('shrink');
+                        document.body.classList.remove('is-sticky');
+                    }
+                } else {
+                    // For other behaviors, always shrink when sticky
+                    header.classList.add('shrink');
+                    document.body.classList.add('is-sticky');
+                }
             }
             
             // Handle scroll_up behavior visibility

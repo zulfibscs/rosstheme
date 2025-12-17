@@ -14,6 +14,13 @@ function ross_theme_render_topbar_admin_improved() {
     $get = function($key, $default = '') use ($options) {
         return isset($options[$key]) ? $options[$key] : $default;
     };
+    
+    // Debug output for admins
+    if (current_user_can('manage_options')) {
+        echo '<!-- DEBUG: Admin options loaded: ' . json_encode($options) . ' -->';
+        $custom_icons = $get('topbar_custom_icon_links', array());
+        echo '<!-- DEBUG: Custom icons in admin: ' . json_encode($custom_icons) . ' -->';
+    }
     ?>
     
     <div class="ross-topbar-admin-improved">
@@ -62,10 +69,7 @@ function ross_theme_render_topbar_admin_improved() {
                 </div>
                 
                 <div class="ross-admin-section">
-                    <div class="ross-section-header">
-                        <h3>🔗 Social Icons</h3>
-                        <button type="button" class="ross-button ross-button-small" id="ross-add-social-icon">+ Add Custom Icon</button>
-                    </div>
+                    <h3>🔗 Social Icons</h3>
                     
                     <div class="ross-field-group">
                         <label class="ross-switch-label">
@@ -110,6 +114,53 @@ function ross_theme_render_topbar_admin_improved() {
                                 </div>
                             </div>
                             <?php } ?>
+                        </div>
+                        
+                        <!-- Custom Icons Section - Integrated with Social Icons -->
+                        <div class="ross-custom-icons-section">
+                            <div class="ross-section-header">
+                                <h4>➕ Custom Icons</h4>
+                                <button type="button" class="ross-button ross-button-small" id="ross-add-social-icon">+ Add Icon</button>
+                            </div>
+                            <div class="ross-custom-icons-list">
+                                <?php
+                                $custom_icons = $get('topbar_custom_icon_links', array());
+                                if (is_array($custom_icons)) {
+                                    foreach ($custom_icons as $index => $icon) {
+                                        if (!is_array($icon)) continue;
+                                        $enabled = isset($icon['enabled']) ? $icon['enabled'] : (!empty($icon['url']));
+                                        $icon_class = $icon['icon'] ?? '';
+                                        $url = $icon['url'] ?? '';
+                                        $title = $icon['title'] ?? 'Custom Icon';
+                                        ?>
+                                        <div class="ross-social-item ross-custom-icon-item" data-platform="custom_<?php echo $index; ?>">
+                                            <div class="ross-social-drag-handle">⋮⋮</div>
+                                            <div class="ross-social-toggle">
+                                                <label class="ross-switch-label">
+                                                    <input type="checkbox" name="ross_theme_header_options[topbar_custom_icon_links][<?php echo $index; ?>][enabled]" value="1" <?php checked(1, $enabled); ?> />
+                                                    <span class="ross-switch"></span>
+                                                </label>
+                                            </div>
+                                            <div class="ross-social-icon-preview">
+                                                <i class="<?php echo esc_attr($icon_class); ?>" style="color: #6b7280;"></i>
+                                            </div>
+                                            <div class="ross-social-fields">
+                                                <input type="text" name="ross_theme_header_options[topbar_custom_icon_links][<?php echo $index; ?>][title]" value="<?php echo esc_attr($title); ?>" class="ross-input ross-input-small" placeholder="Icon name" />
+                                                <input type="url" name="ross_theme_header_options[topbar_custom_icon_links][<?php echo $index; ?>][url]" value="<?php echo esc_attr($url); ?>" class="ross-input ross-input-small" placeholder="https://" />
+                                                <input type="text" name="ross_theme_header_options[topbar_custom_icon_links][<?php echo $index; ?>][icon]" value="<?php echo esc_attr($icon_class); ?>" class="ross-input ross-input-small" placeholder="fab fa-custom" />
+                                                <button type="button" class="ross-button ross-button-icon ross-upload-custom-icon" data-platform="custom_<?php echo $index; ?>" title="Upload Custom Icon">📁</button>
+                                                <button type="button" class="ross-button ross-button-icon ross-remove-custom-icon" title="Remove">×</button>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </div>
+                            
+                            <div class="ross-admin-notice" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 12px; margin-top: 16px;">
+                                <p style="margin: 0; color: #0c4a6e;"><strong>💡 Tip:</strong> Add unlimited custom social icons. Use FontAwesome classes like <code>fab fa-discord</code> or <code>fas fa-envelope</code>. Click the "Save Header Settings" button to apply changes.</p>
+                            </div>
                         </div>
                         
                         <div class="ross-social-options">
@@ -176,6 +227,10 @@ function ross_theme_render_topbar_admin_improved() {
                                     <option value="3" <?php selected($get('social_icon_border_size', '0'), '3'); ?>>3px</option>
                                 </select>
                             </div>
+                        </div>
+                        
+                        <div class="ross-admin-notice" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 12px; margin-top: 16px;">
+                            <p style="margin: 0; color: #0c4a6e;"><strong>💡 Important:</strong> After adding or modifying custom icons, click the "Save Header Settings" button at the bottom of the page. Your changes will not be saved until you click Save.</p>
                         </div>
                     </div>
                 </div>
@@ -362,6 +417,9 @@ function ross_theme_render_topbar_admin_improved() {
         // Attach a delegated input/change listener to the admin container for live updates
         document.addEventListener('DOMContentLoaded', function(){
             buildPreviewIcons();
+            
+            // Add custom icon functionality - REMOVED: handled by jQuery in JS file
+            
             var adminRoot = document.querySelector('.ross-topbar-admin-improved') || document;
             adminRoot.addEventListener('input', function(e){
                 if (!e.target || !e.target.name) return;
@@ -376,7 +434,17 @@ function ross_theme_render_topbar_admin_improved() {
                     buildPreviewIcons();
                 }
             });
+            
+            // Handle remove custom icon buttons
+            adminRoot.addEventListener('click', function(e){
+                if (e.target && e.target.classList.contains('ross-remove-custom-icon')) {
+                    e.preventDefault();
+                    e.target.closest('.ross-custom-icon-item').remove();
+                    buildPreviewIcons();
+                }
+            });
         });
+        
     })();
     </script>
 

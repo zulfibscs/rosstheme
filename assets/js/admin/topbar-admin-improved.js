@@ -259,16 +259,16 @@
     }
 
     function addCustomSocialIcon() {
-        var $container = $('#ross-social-items');
-        var iconCount = $container.find('.ross-social-item').length;
-        var platform = 'custom_' + iconCount;
+        var $container = $('.ross-custom-icons-list');
+        var iconCount = $container.find('.ross-custom-icon-item').length;
+        var platform = 'custom_' + Date.now(); // Use timestamp to ensure unique IDs
         
         var $newItem = $(
-            '<div class="ross-social-item" data-platform="' + platform + '">' +
+            '<div class="ross-social-item ross-custom-icon-item" data-platform="' + platform + '">' +
                 '<div class="ross-social-drag-handle">⋮⋮</div>' +
                 '<div class="ross-social-toggle">' +
                     '<label class="ross-switch-label">' +
-                        '<input type="checkbox" name="ross_theme_header_options[social_' + platform + '_enabled]" value="1" />' +
+                        '<input type="checkbox" name="ross_theme_header_options[topbar_custom_icon_links][' + iconCount + '][enabled]" value="1" />' +
                         '<span class="ross-switch"></span>' +
                     '</label>' +
                 '</div>' +
@@ -276,11 +276,11 @@
                     '<i class="fas fa-link" style="color: #6b7280;"></i>' +
                 '</div>' +
                 '<div class="ross-social-fields">' +
-                    '<input type="text" name="ross_theme_header_options[social_' + platform + '_name]" value="Custom" class="ross-input ross-input-small" placeholder="Name" />' +
-                    '<input type="url" name="ross_theme_header_options[social_' + platform + ']" class="ross-input ross-input-small" placeholder="URL" />' +
-                    '<input type="text" name="ross_theme_header_options[social_' + platform + '_icon]" value="fas fa-link" class="ross-input ross-input-small" placeholder="Icon class" />' +
+                    '<input type="text" name="ross_theme_header_options[topbar_custom_icon_links][' + iconCount + '][title]" placeholder="Icon name" class="ross-input ross-input-small" />' +
+                    '<input type="url" name="ross_theme_header_options[topbar_custom_icon_links][' + iconCount + '][url]" placeholder="https://" class="ross-input ross-input-small" />' +
+                    '<input type="text" name="ross_theme_header_options[topbar_custom_icon_links][' + iconCount + '][icon]" placeholder="fab fa-custom" class="ross-input ross-input-small" />' +
                     '<button type="button" class="ross-button ross-button-icon ross-upload-custom-icon" data-platform="' + platform + '" title="Upload Custom Icon">📁</button>' +
-                    '<button type="button" class="ross-button ross-button-icon ross-remove-social-icon" title="Remove Icon">🗑️</button>' +
+                    '<button type="button" class="ross-button ross-button-icon ross-remove-custom-icon" title="Remove">×</button>' +
                 '</div>' +
             '</div>'
         );
@@ -293,9 +293,9 @@
 
     // Drag and Drop for Social Icons
     function initDragAndDrop() {
-        var $container = $('#ross-social-items');
-        
-        $container.sortable({
+        // Social icons drag and drop
+        var $socialContainer = $('#ross-social-items');
+        $socialContainer.sortable({
             handle: '.ross-social-drag-handle',
             placeholder: 'ross-social-item-placeholder',
             tolerance: 'pointer',
@@ -304,6 +304,20 @@
             },
             update: function(e, ui) {
                 updateSocialIconOrder();
+            }
+        });
+
+        // Custom icons drag and drop
+        var $customContainer = $('.ross-custom-icons-list');
+        $customContainer.sortable({
+            handle: '.ross-social-drag-handle',
+            placeholder: 'ross-social-item-placeholder',
+            tolerance: 'pointer',
+            start: function(e, ui) {
+                ui.placeholder.height(ui.item.height());
+            },
+            update: function(e, ui) {
+                updateLivePreview();
             }
         });
     }
@@ -336,21 +350,38 @@
             
             frame.on('select', function() {
                 var attachment = frame.state().get('selection').first().toJSON();
-                var $iconInput = $('input[name="ross_theme_header_options[social_' + platform + '_icon]"]');
-                var $preview = $button.closest('.ross-social-item').find('.ross-social-icon-preview i');
+                var $iconInput, $preview;
+                
+                if (platform.startsWith('custom_')) {
+                    // Custom icon - find the input within the same item
+                    $iconInput = $button.closest('.ross-social-item').find('input[name*="[icon]"]');
+                    $preview = $button.closest('.ross-social-item').find('.ross-social-icon-preview i');
+                } else {
+                    // Standard social icon
+                    $iconInput = $('input[name="ross_theme_header_options[social_' + platform + '_icon]"]');
+                    $preview = $button.closest('.ross-social-item').find('.ross-social-icon-preview i');
+                }
                 
                 // Update icon input with image URL
                 $iconInput.val(attachment.url);
                 
-                // Update preview
-                $preview.attr('class', '').css({
-                    'background-image': 'url(' + attachment.url + ')',
-                    'background-size': 'cover',
-                    'background-position': 'center',
-                    'width': '20px',
-                    'height': '20px',
-                    'border-radius': '50%'
-                });
+                // Update preview - for uploaded images, show as background
+                if (attachment.url.match(/\.(jpg|jpeg|png|gif|svg)$/i)) {
+                    $preview.attr('class', '').css({
+                        'background-image': 'url(' + attachment.url + ')',
+                        'background-size': 'cover',
+                        'background-position': 'center',
+                        'width': '20px',
+                        'height': '20px',
+                        'border-radius': '50%'
+                    });
+                } else {
+                    // Fallback for non-image files
+                    $preview.attr('class', 'fas fa-image').css({
+                        'background-image': 'none',
+                        'color': '#6b7280'
+                    });
+                }
                 
                 updateLivePreview();
             });
@@ -362,6 +393,16 @@
         $(document).on('click', '.ross-remove-social-icon', function(e) {
             e.preventDefault();
             var $item = $(this).closest('.ross-social-item');
+            $item.fadeOut(200, function() {
+                $(this).remove();
+                updateLivePreview();
+            });
+        });
+
+        // Remove custom icon from custom icons section
+        $(document).on('click', '.ross-remove-custom-icon', function(e) {
+            e.preventDefault();
+            var $item = $(this).closest('.ross-custom-icon-item');
             $item.fadeOut(200, function() {
                 $(this).remove();
                 updateLivePreview();
@@ -457,6 +498,14 @@ style.textContent = `
         border: 2px dashed #cbd5e1;
         border-radius: 8px;
         margin: 6px 0;
+    }
+    
+    .ross-custom-icon-item-placeholder {
+        background: #f1f5f9;
+        border: 2px dashed #cbd5e1;
+        border-radius: 6px;
+        margin: 4px 0;
+        height: 40px;
     }
 `;
 document.head.appendChild(style);

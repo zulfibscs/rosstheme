@@ -71,6 +71,7 @@
 @keyframes topbar-fade { 0%{opacity:0;}50%{opacity:1;}100%{opacity:0;} }
 @keyframes topbar-slide { 0%{transform:translateY(-8px);opacity:0;}100%{transform:translateY(0);opacity:1;} }
 .topbar-social .social-link { margin-left:0.5rem; color: inherit; text-decoration:none; }
+.topbar-custom-icons .social-link { margin-left:0.5rem; color: inherit; text-decoration:none; }
 .topbar-phone { margin-right:0.5rem; color: inherit; text-decoration:none; font-weight:600; }
 
 /* Social icon shapes and sizes */
