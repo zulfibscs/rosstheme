@@ -69,46 +69,95 @@ $inline_style = ross_theme_get_header_inline_style();
             </nav>
 
             <!-- Header Actions Right -->
-            <div class="header-actions">
-                <?php if (ross_theme_header_feature_enabled('search')): ?>
+            <div class="header-actions" style="gap: <?php echo esc_attr($options['header_actions_spacing'] ?? '15'); ?>px;">
+                <?php
+                // Determine order of elements
+                $actions_order = isset($options['header_actions_order']) ? $options['header_actions_order'] : 'search-cta';
+                $show_search = ross_theme_header_feature_enabled('search') && (!wp_is_mobile() || empty($options['search_mobile_hide']));
+                $show_cta = ross_theme_header_feature_enabled('cta_button') && (!wp_is_mobile() || empty($options['cta_button_mobile_hide']));
+
+                $elements = array();
+                if ($actions_order === 'search-cta') {
+                    if ($show_search) $elements[] = 'search';
+                    if ($show_cta) $elements[] = 'cta';
+                } else {
+                    if ($show_cta) $elements[] = 'cta';
+                    if ($show_search) $elements[] = 'search';
+                }
+
+                foreach ($elements as $element):
+                    if ($element === 'search'):
+                ?>
                     <div class="header-search">
-                        <button class="search-toggle" aria-label="Open search">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
+                        <button class="search-toggle <?php echo esc_attr($options['search_icon_style'] ?? 'magnifying-glass'); ?> <?php echo esc_attr($options['search_animation'] ?? 'none'); ?>" aria-label="Open search">
+                            <?php
+                            $icon_style = $options['search_icon_style'] ?? 'magnifying-glass';
+                            switch ($icon_style) {
+                                case 'search-text':
+                                    echo '<span class="search-text">Search</span>';
+                                    break;
+                                case 'search-circle':
+                                    echo '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>';
+                                    break;
+                                case 'minimal':
+                                    echo '<span class="search-dot">•</span>';
+                                    break;
+                                default: // magnifying-glass
+                                    echo '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>';
+                            }
+                            ?>
                         </button>
                     </div>
-                <?php endif; ?>
+                <?php
+                    elseif ($element === 'cta'):
+                        $cta_url = ! empty($options['cta_button_url']) ? $options['cta_button_url'] : home_url('/contact');
+                        $cta_style = isset($options['cta_button_style']) ? $options['cta_button_style'] : 'solid';
+                        $cta_size = isset($options['cta_button_size']) ? $options['cta_button_size'] : 'medium';
+                        $cta_border_radius = isset($options['cta_button_border_radius']) ? $options['cta_button_border_radius'] : '8';
+                        $cta_hover_effect = isset($options['cta_button_hover_effect']) ? $options['cta_button_hover_effect'] : 'scale';
+                        $cta_text_hover_effect = isset($options['cta_button_text_hover_effect']) ? $options['cta_button_text_hover_effect'] : 'none';
+                        $cta_text_color = isset($options['cta_button_text_color']) ? $options['cta_button_text_color'] : '#ffffff';
+                        $cta_hover_text_color = isset($options['cta_button_hover_text_color']) ? $options['cta_button_hover_text_color'] : '#ffffff';
+                        $cta_font_size = isset($options['cta_button_font_size']) ? $options['cta_button_font_size'] : '16';
+                        $cta_icon = isset($options['cta_button_icon']) ? $options['cta_button_icon'] : 'none';
+                        $cta_icon_position = isset($options['cta_button_icon_position']) ? $options['cta_button_icon_position'] : 'left';
+                        $cta_shadow = isset($options['cta_button_shadow']) ? $options['cta_button_shadow'] : 'none';
+                        $cta_target = isset($options['cta_button_target']) ? $options['cta_button_target'] : '_self';
+                        $cta_position = isset($options['cta_button_position']) ? $options['cta_button_position'] : 'right';
 
-                <?php if (ross_theme_header_feature_enabled('cta_button')):
-                    $cta_url = ! empty($options['cta_button_url']) ? $options['cta_button_url'] : home_url('/contact');
-                    $cta_style = isset($options['cta_button_style']) ? $options['cta_button_style'] : 'solid';
-                    $cta_size = isset($options['cta_button_size']) ? $options['cta_button_size'] : 'medium';
-                    $cta_border_radius = isset($options['cta_button_border_radius']) ? $options['cta_button_border_radius'] : '8';
-                    $cta_hover_effect = isset($options['cta_button_hover_effect']) ? $options['cta_button_hover_effect'] : 'scale';
-                    $cta_text_hover_effect = isset($options['cta_button_text_hover_effect']) ? $options['cta_button_text_hover_effect'] : 'none';
-                    $cta_text_color = isset($options['cta_button_text_color']) ? $options['cta_button_text_color'] : '#ffffff';
-                    $cta_hover_text_color = isset($options['cta_button_hover_text_color']) ? $options['cta_button_hover_text_color'] : '#ffffff';
-                    $cta_font_size = isset($options['cta_button_font_size']) ? $options['cta_button_font_size'] : '16';
-                    
-                    $button_classes = 'header-cta-button cta-style-' . esc_attr($cta_style) . ' cta-size-' . esc_attr($cta_size) . ' cta-hover-' . esc_attr($cta_hover_effect) . ' cta-text-hover-' . esc_attr($cta_text_hover_effect);
-                    $button_styles = 'border-radius: ' . esc_attr($cta_border_radius) . 'px; font-size: ' . esc_attr($cta_font_size) . 'px; --cta-text-color: ' . esc_attr($cta_text_color) . '; --cta-hover-text-color: ' . esc_attr($cta_hover_text_color) . '; --cta-bg-color: ' . esc_attr($options['cta_button_color']) . ';';
-                    
-                    if ($cta_style === 'solid') {
-                        $button_styles .= 'background: ' . esc_attr($options['cta_button_color']) . ';';
-                    } elseif ($cta_style === 'outline') {
-                        $button_styles .= 'border: 2px solid ' . esc_attr($options['cta_button_color']) . '; background: transparent;';
-                    } elseif ($cta_style === 'ghost') {
-                        $button_styles .= 'background: transparent;';
-                    } elseif ($cta_style === 'gradient') {
-                        $button_styles .= 'background: linear-gradient(135deg, ' . esc_attr($options['cta_button_color']) . ', ' . esc_attr($options['cta_button_color']) . 'dd);';
-                    }
+                        $button_classes = 'header-cta-button cta-style-' . esc_attr($cta_style) . ' cta-size-' . esc_attr($cta_size) . ' cta-hover-' . esc_attr($cta_hover_effect) . ' cta-text-hover-' . esc_attr($cta_text_hover_effect) . ' cta-shadow-' . esc_attr($cta_shadow) . ' cta-position-' . esc_attr($cta_position);
+                        $button_styles = 'border-radius: ' . esc_attr($cta_border_radius) . 'px; font-size: ' . esc_attr($cta_font_size) . 'px; --cta-text-color: ' . esc_attr($cta_text_color) . '; --cta-hover-text-color: ' . esc_attr($cta_hover_text_color) . '; --cta-bg-color: ' . esc_attr($options['cta_button_color']) . ';';
+
+                        if ($cta_style === 'solid') {
+                            $button_styles .= 'background: ' . esc_attr($options['cta_button_color']) . ';';
+                        } elseif ($cta_style === 'outline') {
+                            $button_styles .= 'border: 2px solid ' . esc_attr($options['cta_button_color']) . '; background: transparent;';
+                        } elseif ($cta_style === 'ghost') {
+                            $button_styles .= 'background: transparent;';
+                        } elseif ($cta_style === 'gradient') {
+                            $button_styles .= 'background: linear-gradient(135deg, ' . esc_attr($options['cta_button_color']) . ', ' . esc_attr($options['cta_button_color']) . 'dd);';
+                        }
+
+                        // Add icon
+                        $icon_html = '';
+                        if ($cta_icon !== 'none') {
+                            $icon_class = 'cta-icon cta-icon-' . esc_attr($cta_icon);
+                            $icon_html = '<span class="' . esc_attr($icon_class) . '">' . ross_theme_get_cta_icon($cta_icon) . '</span>';
+                        }
                 ?>
-                    <a href="<?php echo esc_url($cta_url); ?>" class="<?php echo esc_attr($button_classes); ?>" style="<?php echo esc_attr($button_styles); ?>">
-                        <?php echo esc_html($options['cta_button_text']); ?>
+                    <a href="<?php echo esc_url($cta_url); ?>" target="<?php echo esc_attr($cta_target); ?>" class="<?php echo esc_attr($button_classes); ?>" style="<?php echo esc_attr($button_styles); ?>">
+                        <?php if ($cta_icon_position === 'left' && $icon_html): ?>
+                            <?php echo $icon_html; ?>
+                        <?php endif; ?>
+                        <span class="cta-text"><?php echo esc_html($options['cta_button_text']); ?></span>
+                        <?php if ($cta_icon_position === 'right' && $icon_html): ?>
+                            <?php echo $icon_html; ?>
+                        <?php endif; ?>
                     </a>
-                <?php endif; ?>
+                <?php
+                    endif;
+                endforeach;
+                ?>
             </div>
 
     <?php if ( isset($options['header_width']) && $options['header_width'] === 'contained' ) : ?>

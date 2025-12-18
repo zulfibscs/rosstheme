@@ -240,7 +240,7 @@
      * Search Functionality with Multiple Types
      */
     function initSearch() {
-        var searchBtn = document.querySelector('.header-search-toggle');
+        var searchBtn = document.querySelector('.search-toggle, .header-search-toggle, .ross-search-toggle');
         var searchType = headerOptions.search_type || 'modal';
         
         if (!searchBtn) return;

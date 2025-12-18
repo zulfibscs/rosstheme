@@ -601,3 +601,39 @@ function adjust_brightness($hex, $steps) {
 }
 
 add_action('wp_head', 'ross_theme_topbar_dynamic_css', 999);
+
+/**
+ * Get CTA button icon HTML
+ */
+function ross_theme_get_cta_icon($icon_type) {
+    $icons = array(
+        'arrow-right' => '→',
+        'arrow-left' => '←',
+        'phone' => '📞',
+        'email' => '✉️',
+        'chat' => '💬',
+        'download' => '📥',
+        'play' => '▶️',
+        'star' => '⭐',
+        'heart' => '❤️'
+    );
+
+    return isset($icons[$icon_type]) ? $icons[$icon_type] : '';
+}
+
+/**
+ * Convert hex color to RGB values for CSS rgba()
+ */
+function ross_theme_hex_to_rgb($hex) {
+    $hex = ltrim($hex, '#');
+    if (strlen($hex) === 3) {
+        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+    }
+    if (strlen($hex) !== 6) {
+        return '0,0,0'; // fallback
+    }
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    return $r . ',' . $g . ',' . $b;
+}

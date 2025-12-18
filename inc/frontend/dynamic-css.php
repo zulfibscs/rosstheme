@@ -294,6 +294,43 @@ function ross_theme_dynamic_css() {
         // 'solid' is default, already handled
     }
     
+    // Enhanced CTA Button Styling
+    if (!empty($header_options['cta_button_shadow'])) {
+        $shadow = $header_options['cta_button_shadow'];
+        if ($shadow === 'small') {
+            echo '.header-cta-button { box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; }';
+            echo '.header-cta-button:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important; }';
+        } elseif ($shadow === 'medium') {
+            echo '.header-cta-button { box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important; }';
+            echo '.header-cta-button:hover { box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important; }';
+        } elseif ($shadow === 'large') {
+            echo '.header-cta-button { box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important; }';
+            echo '.header-cta-button:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.25) !important; }';
+        } elseif ($shadow === 'glow') {
+            $bg_color = isset($header_options['cta_button_color']) ? $header_options['cta_button_color'] : '#E5C902';
+            echo '.header-cta-button { box-shadow: 0 0 10px rgba(' . ross_theme_hex_to_rgb($bg_color) . ', 0.3) !important; }';
+            echo '.header-cta-button:hover { box-shadow: 0 0 20px rgba(' . ross_theme_hex_to_rgb($bg_color) . ', 0.5) !important; }';
+        }
+    }
+    
+    // CTA Button Icon Styling
+    if (!empty($header_options['cta_button_icon']) && $header_options['cta_button_icon'] !== 'none') {
+        echo '.header-cta-button .cta-icon { display: inline-block; margin: 0 4px; }';
+        echo '.header-cta-button .cta-text { display: inline-block; }';
+    }
+    
+    // CTA Button Positioning
+    if (!empty($header_options['cta_button_position'])) {
+        $position = $header_options['cta_button_position'];
+        if ($position === 'left') {
+            echo '.cta-position-left { margin-right: auto; }';
+        } elseif ($position === 'center') {
+            echo '.cta-position-center { margin: 0 auto; }';
+        } elseif ($position === 'right') {
+            echo '.cta-position-right { margin-left: auto; }';
+        }
+    }
+    
     // Mobile Menu Styling (basic structure, full implementation in navigation.js)
     $mobile_breakpoint = isset($header_options['mobile_breakpoint']) ? absint($header_options['mobile_breakpoint']) : 768;
     

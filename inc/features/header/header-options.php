@@ -871,6 +871,97 @@ class RossHeaderOptions {
             'ross-theme-header-cta',
             'ross_header_cta_section'
         );
+        
+        // Enhanced Search Settings
+        add_settings_field(
+            'search_icon_style',
+            'Search Icon Style',
+            array($this, 'search_icon_style_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'search_animation',
+            'Search Animation',
+            array($this, 'search_animation_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'search_mobile_hide',
+            'Hide Search on Mobile',
+            array($this, 'search_mobile_hide_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        // Enhanced CTA Settings
+        add_settings_field(
+            'cta_button_icon',
+            'Button Icon',
+            array($this, 'cta_button_icon_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_icon_position',
+            'Icon Position',
+            array($this, 'cta_button_icon_position_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_shadow',
+            'Button Shadow',
+            array($this, 'cta_button_shadow_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_target',
+            'Link Target',
+            array($this, 'cta_button_target_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_mobile_hide',
+            'Hide CTA on Mobile',
+            array($this, 'cta_button_mobile_hide_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'cta_button_position',
+            'CTA Position in Header',
+            array($this, 'cta_button_position_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        // Layout Settings
+        add_settings_field(
+            'header_actions_order',
+            'Actions Order (Search/CTA)',
+            array($this, 'header_actions_order_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
+        
+        add_settings_field(
+            'header_actions_spacing',
+            'Actions Spacing',
+            array($this, 'header_actions_spacing_callback'),
+            'ross-theme-header-cta',
+            'ross_header_cta_section'
+        );
     }
     
     private function add_appearance_section() {
@@ -1912,6 +2003,139 @@ class RossHeaderOptions {
         <?php
     }
     
+    // Enhanced Search Callbacks
+    public function search_icon_style_callback() {
+        $value = isset($this->options['search_icon_style']) ? $this->options['search_icon_style'] : 'magnifying-glass';
+        ?>
+        <select name="ross_theme_header_options[search_icon_style]">
+            <option value="magnifying-glass" <?php selected($value, 'magnifying-glass'); ?>>Magnifying Glass</option>
+            <option value="search-text" <?php selected($value, 'search-text'); ?>>Search Text</option>
+            <option value="search-circle" <?php selected($value, 'search-circle'); ?>>Search Circle</option>
+            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal Dot</option>
+        </select>
+        <p class="description">Visual style for the search icon</p>
+        <?php
+    }
+    
+    public function search_animation_callback() {
+        $value = isset($this->options['search_animation']) ? $this->options['search_animation'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[search_animation]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Animation</option>
+            <option value="pulse" <?php selected($value, 'pulse'); ?>>Pulse</option>
+            <option value="bounce" <?php selected($value, 'bounce'); ?>>Bounce</option>
+            <option value="rotate" <?php selected($value, 'rotate'); ?>>Rotate</option>
+            <option value="glow" <?php selected($value, 'glow'); ?>>Glow</option>
+        </select>
+        <p class="description">Animation effect for the search icon</p>
+        <?php
+    }
+    
+    public function search_mobile_hide_callback() {
+        $value = isset($this->options['search_mobile_hide']) ? $this->options['search_mobile_hide'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[search_mobile_hide]" value="1" <?php checked(1, $value); ?> />
+        <label for="search_mobile_hide">Hide search icon on mobile devices</label>
+        <?php
+    }
+    
+    // Enhanced CTA Callbacks
+    public function cta_button_icon_callback() {
+        $value = isset($this->options['cta_button_icon']) ? $this->options['cta_button_icon'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[cta_button_icon]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Icon</option>
+            <option value="arrow-right" <?php selected($value, 'arrow-right'); ?>>Arrow Right →</option>
+            <option value="arrow-left" <?php selected($value, 'arrow-left'); ?>>← Arrow Left</option>
+            <option value="phone" <?php selected($value, 'phone'); ?>>📞 Phone</option>
+            <option value="email" <?php selected($value, 'email'); ?>>✉️ Email</option>
+            <option value="chat" <?php selected($value, 'chat'); ?>>💬 Chat</option>
+            <option value="download" <?php selected($value, 'download'); ?>>📥 Download</option>
+            <option value="play" <?php selected($value, 'play'); ?>>▶️ Play</option>
+            <option value="star" <?php selected($value, 'star'); ?>>⭐ Star</option>
+            <option value="heart" <?php selected($value, 'heart'); ?>>❤️ Heart</option>
+        </select>
+        <p class="description">Icon to display in the CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_icon_position_callback() {
+        $value = isset($this->options['cta_button_icon_position']) ? $this->options['cta_button_icon_position'] : 'left';
+        ?>
+        <select name="ross_theme_header_options[cta_button_icon_position]">
+            <option value="left" <?php selected($value, 'left'); ?>>Left of Text</option>
+            <option value="right" <?php selected($value, 'right'); ?>>Right of Text</option>
+        </select>
+        <p class="description">Position of the icon relative to button text</p>
+        <?php
+    }
+    
+    public function cta_button_shadow_callback() {
+        $value = isset($this->options['cta_button_shadow']) ? $this->options['cta_button_shadow'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[cta_button_shadow]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Shadow</option>
+            <option value="small" <?php selected($value, 'small'); ?>>Small Shadow</option>
+            <option value="medium" <?php selected($value, 'medium'); ?>>Medium Shadow</option>
+            <option value="large" <?php selected($value, 'large'); ?>>Large Shadow</option>
+            <option value="glow" <?php selected($value, 'glow'); ?>>Glow Effect</option>
+        </select>
+        <p class="description">Shadow effect for the CTA button</p>
+        <?php
+    }
+    
+    public function cta_button_target_callback() {
+        $value = isset($this->options['cta_button_target']) ? $this->options['cta_button_target'] : '_self';
+        ?>
+        <select name="ross_theme_header_options[cta_button_target]">
+            <option value="_self" <?php selected($value, '_self'); ?>>Same Window</option>
+            <option value="_blank" <?php selected($value, '_blank'); ?>>New Window/Tab</option>
+        </select>
+        <p class="description">How the CTA button link opens</p>
+        <?php
+    }
+    
+    public function cta_button_mobile_hide_callback() {
+        $value = isset($this->options['cta_button_mobile_hide']) ? $this->options['cta_button_mobile_hide'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[cta_button_mobile_hide]" value="1" <?php checked(1, $value); ?> />
+        <label for="cta_button_mobile_hide">Hide CTA button on mobile devices</label>
+        <?php
+    }
+    
+    public function cta_button_position_callback() {
+        $value = isset($this->options['cta_button_position']) ? $this->options['cta_button_position'] : 'right';
+        ?>
+        <select name="ross_theme_header_options[cta_button_position]">
+            <option value="left" <?php selected($value, 'left'); ?>>Left Side</option>
+            <option value="center" <?php selected($value, 'center'); ?>>Center</option>
+            <option value="right" <?php selected($value, 'right'); ?>>Right Side</option>
+        </select>
+        <p class="description">Position of CTA button within the header actions area</p>
+        <?php
+    }
+    
+    // Layout Callbacks
+    public function header_actions_order_callback() {
+        $value = isset($this->options['header_actions_order']) ? $this->options['header_actions_order'] : 'search-cta';
+        ?>
+        <select name="ross_theme_header_options[header_actions_order]">
+            <option value="search-cta" <?php selected($value, 'search-cta'); ?>>Search → CTA</option>
+            <option value="cta-search" <?php selected($value, 'cta-search'); ?>>CTA → Search</option>
+        </select>
+        <p class="description">Order of search and CTA elements in header</p>
+        <?php
+    }
+    
+    public function header_actions_spacing_callback() {
+        $value = isset($this->options['header_actions_spacing']) ? $this->options['header_actions_spacing'] : '15';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_actions_spacing]" value="<?php echo esc_attr($value); ?>" min="0" max="50" step="1" />
+        <span>px</span>
+        <p class="description">Spacing between search and CTA elements (0-50px)</p>
+        <?php
+    }
+    
     // Field Callbacks - Appearance Section
     public function header_bg_color_callback() {
         $value = isset($this->options['header_bg_color']) ? $this->options['header_bg_color'] : '#ffffff';
@@ -2175,6 +2399,26 @@ class RossHeaderOptions {
         $sanitized['cta_button_hover_effect'] = isset($input['cta_button_hover_effect']) && in_array($input['cta_button_hover_effect'], $allowed_hover_effects) ? sanitize_text_field($input['cta_button_hover_effect']) : 'scale';
         $allowed_text_hover_effects = array('none', 'fade', 'slide-up', 'slide-down', 'scale-text', 'glow-text');
         $sanitized['cta_button_text_hover_effect'] = isset($input['cta_button_text_hover_effect']) && in_array($input['cta_button_text_hover_effect'], $allowed_text_hover_effects) ? sanitize_text_field($input['cta_button_text_hover_effect']) : 'none';
+        
+        // Enhanced Search Settings
+        $sanitized['search_icon_style'] = isset($input['search_icon_style']) ? sanitize_text_field($input['search_icon_style']) : 'magnifying-glass';
+        $allowed_animations = array('none', 'pulse', 'bounce', 'rotate', 'glow');
+        $sanitized['search_animation'] = isset($input['search_animation']) && in_array($input['search_animation'], $allowed_animations) ? sanitize_text_field($input['search_animation']) : 'none';
+        $sanitized['search_mobile_hide'] = isset($input['search_mobile_hide']) ? 1 : 0;
+        
+        // Enhanced CTA Settings
+        $allowed_icons = array('none', 'arrow-right', 'arrow-left', 'phone', 'email', 'chat', 'download', 'play', 'star', 'heart');
+        $sanitized['cta_button_icon'] = isset($input['cta_button_icon']) && in_array($input['cta_button_icon'], $allowed_icons) ? sanitize_text_field($input['cta_button_icon']) : 'none';
+        $sanitized['cta_button_icon_position'] = isset($input['cta_button_icon_position']) ? sanitize_text_field($input['cta_button_icon_position']) : 'left';
+        $allowed_shadows = array('none', 'small', 'medium', 'large', 'glow');
+        $sanitized['cta_button_shadow'] = isset($input['cta_button_shadow']) && in_array($input['cta_button_shadow'], $allowed_shadows) ? sanitize_text_field($input['cta_button_shadow']) : 'none';
+        $sanitized['cta_button_target'] = isset($input['cta_button_target']) ? sanitize_text_field($input['cta_button_target']) : '_self';
+        $sanitized['cta_button_mobile_hide'] = isset($input['cta_button_mobile_hide']) ? 1 : 0;
+        $sanitized['cta_button_position'] = isset($input['cta_button_position']) ? sanitize_text_field($input['cta_button_position']) : 'right';
+        
+        // Layout Settings
+        $sanitized['header_actions_order'] = isset($input['header_actions_order']) ? sanitize_text_field($input['header_actions_order']) : 'search-cta';
+        $sanitized['header_actions_spacing'] = isset($input['header_actions_spacing']) ? absint($input['header_actions_spacing']) : 15;
         
         // Appearance
         $sanitized['header_bg_color'] = sanitize_hex_color($input['header_bg_color']);
