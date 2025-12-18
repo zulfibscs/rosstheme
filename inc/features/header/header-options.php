@@ -967,11 +967,20 @@ class RossHeaderOptions {
     private function add_appearance_section() {
         add_settings_section(
             'ross_header_appearance_section',
-            '🌗 Header Appearance',
+            '� Header Appearance & Styling',
             array($this, 'appearance_section_callback'),
             'ross-theme-header-appearance'
         );
-        
+
+        // ===== BACKGROUND =====
+        add_settings_field(
+            'header_bg_type',
+            'Background Type',
+            array($this, 'header_bg_type_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
         add_settings_field(
             'header_bg_color',
             'Background Color',
@@ -979,15 +988,24 @@ class RossHeaderOptions {
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
-            'header_opacity',
-            'Header Opacity',
-            array($this, 'header_opacity_callback'),
+            'header_bg_gradient_start',
+            'Gradient Start',
+            array($this, 'header_bg_gradient_start_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
+        add_settings_field(
+            'header_bg_gradient_end',
+            'Gradient End',
+            array($this, 'header_bg_gradient_end_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        // ===== TYPOGRAPHY =====
         add_settings_field(
             'header_text_color',
             'Text Color',
@@ -995,31 +1013,32 @@ class RossHeaderOptions {
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
-            'header_link_hover_color',
-            'Link Hover Color',
-            array($this, 'header_link_hover_color_callback'),
+            'header_font_size',
+            'Font Size',
+            array($this, 'header_font_size_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
-            'transparent_homepage',
-            'Transparent Header on Homepage',
-            array($this, 'transparent_homepage_callback'),
+            'header_font_weight',
+            'Font Weight',
+            array($this, 'header_font_weight_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
+        // ===== BORDER & SHADOW =====
         add_settings_field(
             'header_border_enable',
-            'Enable Bottom Border',
+            'Enable Border',
             array($this, 'header_border_enable_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
             'header_border_color',
             'Border Color',
@@ -1027,27 +1046,78 @@ class RossHeaderOptions {
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
-            'header_border_width',
-            'Border Width (px)',
-            array($this, 'header_border_width_callback'),
+            'header_shadow_enable',
+            'Enable Shadow',
+            array($this, 'header_shadow_enable_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
         add_settings_field(
-            'header_font_family',
-            'Header Font Family',
-            array($this, 'header_font_family_callback'),
+            'header_shadow_color',
+            'Shadow Color',
+            array($this, 'header_shadow_color_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
-        
+
+        // ===== SPACING =====
         add_settings_field(
-            'header_font_weight',
-            'Header Font Weight',
-            array($this, 'header_font_weight_callback'),
+            'header_height',
+            'Header Height',
+            array($this, 'header_height_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_padding_top',
+            'Padding Top',
+            array($this, 'header_padding_top_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_padding_bottom',
+            'Padding Bottom',
+            array($this, 'header_padding_bottom_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        // ===== EFFECTS =====
+        add_settings_field(
+            'header_opacity',
+            'Header Opacity',
+            array($this, 'header_opacity_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_glass_effect',
+            'Glass Effect',
+            array($this, 'header_glass_effect_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        // ===== SPECIAL =====
+        add_settings_field(
+            'transparent_homepage',
+            'Transparent on Homepage',
+            array($this, 'transparent_homepage_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_custom_css',
+            'Custom CSS',
+            array($this, 'header_custom_css_callback'),
             'ross-theme-header-appearance',
             'ross_header_appearance_section'
         );
@@ -1076,7 +1146,60 @@ class RossHeaderOptions {
     }
     
     public function appearance_section_callback() {
-        echo '<p>Control colors and visual appearance of the header.</p>';
+        echo '<p>Customize the visual appearance of your header with essential styling options.</p>';
+        echo '<style>
+        /* Clean Header Appearance Layout */
+        #ross-theme-header-appearance .form-table { margin-top: 20px; }
+        #ross-theme-header-appearance .form-table th { 
+            background: #f8f9fa; 
+            padding: 15px 12px 8px; 
+            font-weight: 600; 
+            color: #495057; 
+            border-bottom: 2px solid #dee2e6;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        #ross-theme-header-appearance .form-table td { 
+            padding: 12px; 
+            border-bottom: 1px solid #e9ecef;
+        }
+        #ross-theme-header-appearance .form-table tr:first-child th,
+        #ross-theme-header-appearance .form-table tr:first-child td {
+            border-top: 2px solid #007cba;
+        }
+        #ross-theme-header-appearance .form-table tr:nth-child(5) th,
+        #ross-theme-header-appearance .form-table tr:nth-child(5) td {
+            border-top: 2px solid #28a745;
+        }
+        #ross-theme-header-appearance .form-table tr:nth-child(9) th,
+        #ross-theme-header-appearance .form-table tr:nth-child(9) td {
+            border-top: 2px solid #dc3545;
+        }
+        #ross-theme-header-appearance .form-table tr:nth-child(13) th,
+        #ross-theme-header-appearance .form-table tr:nth-child(13) td {
+            border-top: 2px solid #ffc107;
+        }
+        #ross-theme-header-appearance .form-table tr:nth-child(16) th,
+        #ross-theme-header-appearance .form-table tr:nth-child(16) td {
+            border-top: 2px solid #17a2b8;
+        }
+        #ross-theme-header-appearance .form-table tr:nth-child(19) th,
+        #ross-theme-header-appearance .form-table tr:nth-child(19) td {
+            border-top: 2px solid #6f42c1;
+        }
+        #ross-theme-header-appearance .color-picker { border-radius: 4px; }
+        #ross-theme-header-appearance input[type="number"] { width: 80px; }
+        #ross-theme-header-appearance select { min-width: 150px; }
+        </style>';
+
+        // Add section headers
+        echo '<h3 style="color: #007cba; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">🎨 Background Settings</h3>';
+        echo '<h3 style="color: #28a745; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">📝 Typography Settings</h3>';
+        echo '<h3 style="color: #dc3545; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">🔲 Border & Shadow Settings</h3>';
+        echo '<h3 style="color: #ffc107; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">📏 Spacing Settings</h3>';
+        echo '<h3 style="color: #17a2b8; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">✨ Effects Settings</h3>';
+        echo '<h3 style="color: #6f42c1; margin: 30px 0 10px; font-size: 16px; font-weight: 600;">⚙️ Special Settings</h3>';
     }
     
     public function header_style_callback() {
@@ -2136,71 +2259,184 @@ class RossHeaderOptions {
         <?php
     }
     
-    // Field Callbacks - Appearance Section
+    // Field Callbacks - Layout Section (Sticky Behavior)
+    
+    // ===== ENTERPRISE APPEARANCE CALLBACKS =====
+    
+    // Background Section Callbacks
+    public function header_bg_type_callback() {
+        $value = isset($this->options['header_bg_type']) ? $this->options['header_bg_type'] : 'solid';
+        ?>
+        <select name="ross_theme_header_options[header_bg_type]" id="header_bg_type">
+            <option value="solid" <?php selected($value, 'solid'); ?>>Solid Color</option>
+            <option value="gradient" <?php selected($value, 'gradient'); ?>>Gradient</option>
+            <option value="image" <?php selected($value, 'image'); ?>>Background Image</option>
+            <option value="pattern" <?php selected($value, 'pattern'); ?>>Pattern</option>
+        </select>
+        <p class="description">Choose the background type for your header</p>
+        <?php
+    }
+    
     public function header_bg_color_callback() {
         $value = isset($this->options['header_bg_color']) ? $this->options['header_bg_color'] : '#ffffff';
         ?>
         <input type="text" name="ross_theme_header_options[header_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
+        <p class="description">Primary background color</p>
         <?php
     }
     
+    public function header_bg_gradient_start_callback() {
+        $value = isset($this->options['header_bg_gradient_start']) ? $this->options['header_bg_gradient_start'] : '#ffffff';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_bg_gradient_start]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#ffffff" />
+        <p class="description">Gradient starting color</p>
+        <?php
+    }
+    
+    public function header_bg_gradient_end_callback() {
+        $value = isset($this->options['header_bg_gradient_end']) ? $this->options['header_bg_gradient_end'] : '#f8f9fa';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_bg_gradient_end]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#f8f9fa" />
+        <p class="description">Gradient ending color</p>
+        <?php
+    }
+    
+    public function header_bg_gradient_angle_callback() {
+        $value = isset($this->options['header_bg_gradient_angle']) ? $this->options['header_bg_gradient_angle'] : 'to right';
+        ?>
+        <select name="ross_theme_header_options[header_bg_gradient_angle]">
+            <option value="to right" <?php selected($value, 'to right'); ?>>Left to Right</option>
+            <option value="to left" <?php selected($value, 'to left'); ?>>Right to Left</option>
+            <option value="to bottom" <?php selected($value, 'to bottom'); ?>>Top to Bottom</option>
+            <option value="to top" <?php selected($value, 'to top'); ?>>Bottom to Top</option>
+            <option value="45deg" <?php selected($value, '45deg'); ?>>Diagonal (45°)</option>
+            <option value="135deg" <?php selected($value, '135deg'); ?>>Diagonal (135°)</option>
+        </select>
+        <p class="description">Gradient direction</p>
+        <?php
+    }
+    
+    public function header_bg_image_callback() {
+        $value = isset($this->options['header_bg_image']) ? $this->options['header_bg_image'] : '';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_bg_image]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="https://example.com/image.jpg" />
+        <button type="button" class="button upload-image-button" data-target="header_bg_image">Upload Image</button>
+        <p class="description">Background image URL</p>
+        <?php
+    }
+    
+    public function header_bg_image_position_callback() {
+        $value = isset($this->options['header_bg_image_position']) ? $this->options['header_bg_image_position'] : 'center center';
+        ?>
+        <select name="ross_theme_header_options[header_bg_image_position]">
+            <option value="left top" <?php selected($value, 'left top'); ?>>Top Left</option>
+            <option value="center top" <?php selected($value, 'center top'); ?>>Top Center</option>
+            <option value="right top" <?php selected($value, 'right top'); ?>>Top Right</option>
+            <option value="left center" <?php selected($value, 'left center'); ?>>Center Left</option>
+            <option value="center center" <?php selected($value, 'center center'); ?>>Center</option>
+            <option value="right center" <?php selected($value, 'right center'); ?>>Center Right</option>
+            <option value="left bottom" <?php selected($value, 'left bottom'); ?>>Bottom Left</option>
+            <option value="center bottom" <?php selected($value, 'center bottom'); ?>>Bottom Center</option>
+            <option value="right bottom" <?php selected($value, 'right bottom'); ?>>Bottom Right</option>
+        </select>
+        <p class="description">Background image position</p>
+        <?php
+    }
+    
+    public function header_bg_image_size_callback() {
+        $value = isset($this->options['header_bg_image_size']) ? $this->options['header_bg_image_size'] : 'cover';
+        ?>
+        <select name="ross_theme_header_options[header_bg_image_size]">
+            <option value="auto" <?php selected($value, 'auto'); ?>>Auto</option>
+            <option value="cover" <?php selected($value, 'cover'); ?>>Cover</option>
+            <option value="contain" <?php selected($value, 'contain'); ?>>Contain</option>
+            <option value="100% 100%" <?php selected($value, '100% 100%'); ?>>Stretch</option>
+        </select>
+        <p class="description">Background image sizing</p>
+        <?php
+    }
+    
+    public function header_bg_image_repeat_callback() {
+        $value = isset($this->options['header_bg_image_repeat']) ? $this->options['header_bg_image_repeat'] : 'no-repeat';
+        ?>
+        <select name="ross_theme_header_options[header_bg_image_repeat]">
+            <option value="no-repeat" <?php selected($value, 'no-repeat'); ?>>No Repeat</option>
+            <option value="repeat" <?php selected($value, 'repeat'); ?>>Repeat</option>
+            <option value="repeat-x" <?php selected($value, 'repeat-x'); ?>>Repeat Horizontally</option>
+            <option value="repeat-y" <?php selected($value, 'repeat-y'); ?>>Repeat Vertically</option>
+        </select>
+        <p class="description">Background image repeat behavior</p>
+        <?php
+    }
+    
+    public function header_bg_overlay_callback() {
+        $value = isset($this->options['header_bg_overlay']) ? $this->options['header_bg_overlay'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_bg_overlay]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable background overlay</label>
+        <?php
+    }
+    
+    public function header_bg_overlay_color_callback() {
+        $value = isset($this->options['header_bg_overlay_color']) ? $this->options['header_bg_overlay_color'] : 'rgba(0,0,0,0.5)';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_bg_overlay_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="rgba(0,0,0,0.5)" data-alpha="true" />
+        <p class="description">Overlay color with transparency</p>
+        <?php
+    }
+    
+    public function header_bg_pattern_callback() {
+        $value = isset($this->options['header_bg_pattern']) ? $this->options['header_bg_pattern'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[header_bg_pattern]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Pattern</option>
+            <option value="dots" <?php selected($value, 'dots'); ?>>Dots</option>
+            <option value="lines" <?php selected($value, 'lines'); ?>>Lines</option>
+            <option value="grid" <?php selected($value, 'grid'); ?>>Grid</option>
+            <option value="diagonal" <?php selected($value, 'diagonal'); ?>>Diagonal Lines</option>
+        </select>
+        <p class="description">Built-in background pattern</p>
+        <?php
+    }
+    
+    public function header_bg_pattern_color_callback() {
+        $value = isset($this->options['header_bg_pattern_color']) ? $this->options['header_bg_pattern_color'] : '#e5e7eb';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_bg_pattern_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#e5e7eb" />
+        <p class="description">Pattern color</p>
+        <?php
+    }
+    
+    // Typography Section Callbacks
     public function header_text_color_callback() {
         $value = isset($this->options['header_text_color']) ? $this->options['header_text_color'] : '#333333';
         ?>
         <input type="text" name="ross_theme_header_options[header_text_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#333333" />
+        <p class="description">Primary text color for header elements</p>
+        <?php
+    }
+    
+    public function header_link_color_callback() {
+        $value = isset($this->options['header_link_color']) ? $this->options['header_link_color'] : '#007cba';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_link_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#007cba" />
+        <p class="description">Link color for navigation items</p>
         <?php
     }
     
     public function header_link_hover_color_callback() {
-        $value = isset($this->options['header_link_hover_color']) ? $this->options['header_link_hover_color'] : '#E5C902';
+        $value = isset($this->options['header_link_hover_color']) ? $this->options['header_link_hover_color'] : '#005a87';
         ?>
-        <input type="text" name="ross_theme_header_options[header_link_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <input type="text" name="ross_theme_header_options[header_link_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#005a87" />
+        <p class="description">Link hover color</p>
         <?php
     }
     
-    public function transparent_homepage_callback() {
-        $value = isset($this->options['transparent_homepage']) ? $this->options['transparent_homepage'] : 0;
+    public function header_font_size_callback() {
+        $value = isset($this->options['header_font_size']) ? $this->options['header_font_size'] : '16';
         ?>
-        <input type="checkbox" name="ross_theme_header_options[transparent_homepage]" value="1" <?php checked(1, $value); ?> />
-        <label for="transparent_homepage">Make header transparent on homepage</label>
-        <?php
-    }
-    
-    public function header_opacity_callback() {
-        $value = isset($this->options['header_opacity']) ? $this->options['header_opacity'] : '1.0';
-        ?>
-        <input type="range" name="ross_theme_header_options[header_opacity]" min="0" max="1" step="0.1" value="<?php echo esc_attr($value); ?>" class="ross-range-slider" />
-        <span class="ross-range-value"><?php echo esc_html($value); ?></span>
-        <p class="description">Header background opacity (0 = fully transparent, 1 = fully opaque)</p>
-        <script>
-        jQuery(function($) {
-            $('.ross-range-slider').on('input', function() {
-                $(this).next('.ross-range-value').text($(this).val());
-            });
-        });
-        </script>
-        <?php
-    }
-    
-    public function header_border_enable_callback() {
-        $value = isset($this->options['header_border_enable']) ? $this->options['header_border_enable'] : 0;
-        ?>
-        <input type="checkbox" name="ross_theme_header_options[header_border_enable]" value="1" <?php checked(1, $value); ?> />
-        <label>Add bottom border to header</label>
-        <?php
-    }
-    
-    public function header_border_color_callback() {
-        $value = isset($this->options['header_border_color']) ? $this->options['header_border_color'] : '#e0e0e0';
-        ?>
-        <input type="text" name="ross_theme_header_options[header_border_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#e0e0e0" />
-        <?php
-    }
-    
-    public function header_border_width_callback() {
-        $value = isset($this->options['header_border_width']) ? $this->options['header_border_width'] : '1';
-        ?>
-        <input type="number" name="ross_theme_header_options[header_border_width]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="10" /> px
+        <input type="number" name="ross_theme_header_options[header_font_size]" value="<?php echo esc_attr($value); ?>" class="small-text" min="10" max="24" /> px
+        <p class="description">Base font size for header text</p>
         <?php
     }
     
@@ -2208,12 +2444,14 @@ class RossHeaderOptions {
         $value = isset($this->options['header_font_family']) ? $this->options['header_font_family'] : 'inherit';
         ?>
         <select name="ross_theme_header_options[header_font_family]">
-            <option value="inherit" <?php selected($value, 'inherit'); ?>>Theme Default</option>
+            <option value="inherit" <?php selected($value, 'inherit'); ?>>Inherit from theme</option>
             <option value="Arial, sans-serif" <?php selected($value, 'Arial, sans-serif'); ?>>Arial</option>
-            <option value="'Helvetica Neue', sans-serif" <?php selected($value, "'Helvetica Neue', sans-serif"); ?>>Helvetica</option>
+            <option value="Helvetica, sans-serif" <?php selected($value, 'Helvetica, sans-serif'); ?>>Helvetica</option>
             <option value="Georgia, serif" <?php selected($value, 'Georgia, serif'); ?>>Georgia</option>
-            <option value="'Times New Roman', serif" <?php selected($value, "'Times New Roman', serif"); ?>>Times New Roman</option>
-            <option value="'Courier New', monospace" <?php selected($value, "'Courier New', monospace"); ?>>Courier New</option>
+            <option value="Times New Roman, serif" <?php selected($value, 'Times New Roman, serif'); ?>>Times New Roman</option>
+            <option value="Verdana, sans-serif" <?php selected($value, 'Verdana, sans-serif'); ?>>Verdana</option>
+            <option value="Tahoma, sans-serif" <?php selected($value, 'Tahoma, sans-serif'); ?>>Tahoma</option>
+            <option value="Trebuchet MS, sans-serif" <?php selected($value, 'Trebuchet MS, sans-serif'); ?>>Trebuchet MS</option>
         </select>
         <p class="description">Font family for header text</p>
         <?php
@@ -2223,17 +2461,413 @@ class RossHeaderOptions {
         $value = isset($this->options['header_font_weight']) ? $this->options['header_font_weight'] : '400';
         ?>
         <select name="ross_theme_header_options[header_font_weight]">
+            <option value="100" <?php selected($value, '100'); ?>>Thin (100)</option>
+            <option value="200" <?php selected($value, '200'); ?>>Extra Light (200)</option>
             <option value="300" <?php selected($value, '300'); ?>>Light (300)</option>
             <option value="400" <?php selected($value, '400'); ?>>Normal (400)</option>
             <option value="500" <?php selected($value, '500'); ?>>Medium (500)</option>
-            <option value="600" <?php selected($value, '600'); ?>>Semi-Bold (600)</option>
+            <option value="600" <?php selected($value, '600'); ?>>Semi Bold (600)</option>
             <option value="700" <?php selected($value, '700'); ?>>Bold (700)</option>
+            <option value="800" <?php selected($value, '800'); ?>>Extra Bold (800)</option>
+            <option value="900" <?php selected($value, '900'); ?>>Black (900)</option>
         </select>
-        <p class="description">Font weight for header menu items</p>
+        <p class="description">Font weight for header text</p>
         <?php
     }
     
-    // Field Callbacks - Layout Section (Sticky Behavior)
+    public function header_line_height_callback() {
+        $value = isset($this->options['header_line_height']) ? $this->options['header_line_height'] : '1.5';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_line_height]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="3" step="0.1" />
+        <p class="description">Line height for header text</p>
+        <?php
+    }
+    
+    public function header_letter_spacing_callback() {
+        $value = isset($this->options['header_letter_spacing']) ? $this->options['header_letter_spacing'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_letter_spacing]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-2" max="5" step="0.1" /> px
+        <p class="description">Letter spacing for header text</p>
+        <?php
+    }
+    
+    public function header_text_transform_callback() {
+        $value = isset($this->options['header_text_transform']) ? $this->options['header_text_transform'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[header_text_transform]">
+            <option value="none" <?php selected($value, 'none'); ?>>None</option>
+            <option value="uppercase" <?php selected($value, 'uppercase'); ?>>Uppercase</option>
+            <option value="lowercase" <?php selected($value, 'lowercase'); ?>>Lowercase</option>
+            <option value="capitalize" <?php selected($value, 'capitalize'); ?>>Capitalize</option>
+        </select>
+        <p class="description">Text transformation for header elements</p>
+        <?php
+    }
+    
+    // Border Section Callbacks
+    public function header_border_top_callback() {
+        $value = isset($this->options['header_border_top']) ? $this->options['header_border_top'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_border_top]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable top border</label>
+        <?php
+    }
+    
+    public function header_border_top_width_callback() {
+        $value = isset($this->options['header_border_top_width']) ? $this->options['header_border_top_width'] : '1';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_border_top_width]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="10" /> px
+        <p class="description">Top border width</p>
+        <?php
+    }
+    
+    public function header_border_top_color_callback() {
+        $value = isset($this->options['header_border_top_color']) ? $this->options['header_border_top_color'] : '#e5e7eb';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_border_top_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#e5e7eb" />
+        <p class="description">Top border color</p>
+        <?php
+    }
+    
+    public function header_border_bottom_callback() {
+        $value = isset($this->options['header_border_bottom']) ? $this->options['header_border_bottom'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_border_bottom]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable bottom border</label>
+        <?php
+    }
+    
+    public function header_border_bottom_width_callback() {
+        $value = isset($this->options['header_border_bottom_width']) ? $this->options['header_border_bottom_width'] : '1';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_border_bottom_width]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="10" /> px
+        <p class="description">Bottom border width</p>
+        <?php
+    }
+    
+    public function header_border_bottom_color_callback() {
+        $value = isset($this->options['header_border_bottom_color']) ? $this->options['header_border_bottom_color'] : '#e5e7eb';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_border_bottom_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#e5e7eb" />
+        <p class="description">Bottom border color</p>
+        <?php
+    }
+    
+    public function header_border_radius_callback() {
+        $value = isset($this->options['header_border_radius']) ? $this->options['header_border_radius'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_border_radius]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="50" /> px
+        <p class="description">Border radius for rounded corners</p>
+        <?php
+    }
+    
+    public function header_border_enable_callback() {
+        $value = isset($this->options['header_border_enable']) ? $this->options['header_border_enable'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_border_enable]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable borders</label>
+        <?php
+    }
+    
+    public function header_border_color_callback() {
+        $value = isset($this->options['header_border_color']) ? $this->options['header_border_color'] : '#e5e7eb';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_border_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#e5e7eb" />
+        <p class="description">Border color</p>
+        <?php
+    }
+    
+    public function header_border_width_callback() {
+        $value = isset($this->options['header_border_width']) ? $this->options['header_border_width'] : '1';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_border_width]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="10" /> px
+        <p class="description">Border width</p>
+        <?php
+    }
+    
+    // Shadow Section Callbacks
+    public function header_box_shadow_callback() {
+        $value = isset($this->options['header_box_shadow']) ? $this->options['header_box_shadow'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_box_shadow]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable box shadow</label>
+        <?php
+    }
+    
+    public function header_shadow_color_callback() {
+        $value = isset($this->options['header_shadow_color']) ? $this->options['header_shadow_color'] : 'rgba(0,0,0,0.1)';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_shadow_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="rgba(0,0,0,0.1)" data-alpha="true" />
+        <p class="description">Shadow color with transparency</p>
+        <?php
+    }
+    
+    public function header_shadow_x_callback() {
+        $value = isset($this->options['header_shadow_x']) ? $this->options['header_shadow_x'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_shadow_x]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-20" max="20" /> px
+        <p class="description">Horizontal shadow offset</p>
+        <?php
+    }
+    
+    public function header_shadow_y_callback() {
+        $value = isset($this->options['header_shadow_y']) ? $this->options['header_shadow_y'] : '2';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_shadow_y]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-20" max="20" /> px
+        <p class="description">Vertical shadow offset</p>
+        <?php
+    }
+    
+    public function header_shadow_blur_callback() {
+        $value = isset($this->options['header_shadow_blur']) ? $this->options['header_shadow_blur'] : '4';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_shadow_blur]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="50" /> px
+        <p class="description">Shadow blur radius</p>
+        <?php
+    }
+    
+    public function header_shadow_spread_callback() {
+        $value = isset($this->options['header_shadow_spread']) ? $this->options['header_shadow_spread'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_shadow_spread]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-20" max="20" /> px
+        <p class="description">Shadow spread radius</p>
+        <?php
+    }
+    
+    // Spacing Section Callbacks
+    public function header_padding_top_callback() {
+        $value = isset($this->options['header_padding_top']) ? $this->options['header_padding_top'] : '15';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_padding_top]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
+        <p class="description">Top padding</p>
+        <?php
+    }
+    
+    public function header_padding_bottom_callback() {
+        $value = isset($this->options['header_padding_bottom']) ? $this->options['header_padding_bottom'] : '15';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_padding_bottom]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
+        <p class="description">Bottom padding</p>
+        <?php
+    }
+    
+    public function header_padding_left_callback() {
+        $value = isset($this->options['header_padding_left']) ? $this->options['header_padding_left'] : '20';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_padding_left]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
+        <p class="description">Left padding</p>
+        <?php
+    }
+    
+    public function header_padding_right_callback() {
+        $value = isset($this->options['header_padding_right']) ? $this->options['header_padding_right'] : '20';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_padding_right]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
+        <p class="description">Right padding</p>
+        <?php
+    }
+    
+    public function header_margin_top_callback() {
+        $value = isset($this->options['header_margin_top']) ? $this->options['header_margin_top'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_margin_top]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-50" max="100" /> px
+        <p class="description">Top margin</p>
+        <?php
+    }
+    
+    public function header_margin_bottom_callback() {
+        $value = isset($this->options['header_margin_bottom']) ? $this->options['header_margin_bottom'] : '0';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_margin_bottom]" value="<?php echo esc_attr($value); ?>" class="small-text" min="-50" max="100" /> px
+        <p class="description">Bottom margin</p>
+        <?php
+    }
+    
+    // Effects Section Callbacks
+    public function header_opacity_callback() {
+        $value = isset($this->options['header_opacity']) ? $this->options['header_opacity'] : '1';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_opacity]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="1" step="0.1" />
+        <p class="description">Header opacity (0 = transparent, 1 = opaque)</p>
+        <?php
+    }
+    
+    public function header_blur_callback() {
+        $value = isset($this->options['header_blur']) ? $this->options['header_blur'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_blur]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable backdrop blur effect</label>
+        <?php
+    }
+    
+    public function header_blur_amount_callback() {
+        $value = isset($this->options['header_blur_amount']) ? $this->options['header_blur_amount'] : '10';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_blur_amount]" value="<?php echo esc_attr($value); ?>" class="small-text" min="1" max="20" /> px
+        <p class="description">Blur intensity</p>
+        <?php
+    }
+    
+    public function header_glass_effect_callback() {
+        $value = isset($this->options['header_glass_effect']) ? $this->options['header_glass_effect'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_glass_effect]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable glass morphism effect</label>
+        <?php
+    }
+    
+    public function header_glass_opacity_callback() {
+        $value = isset($this->options['header_glass_opacity']) ? $this->options['header_glass_opacity'] : '0.8';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_glass_opacity]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="1" step="0.1" />
+        <p class="description">Glass background opacity</p>
+        <?php
+    }
+    
+    public function header_animation_callback() {
+        $value = isset($this->options['header_animation']) ? $this->options['header_animation'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[header_animation]">
+            <option value="none" <?php selected($value, 'none'); ?>>No Animation</option>
+            <option value="fade-in" <?php selected($value, 'fade-in'); ?>>Fade In</option>
+            <option value="slide-down" <?php selected($value, 'slide-down'); ?>>Slide Down</option>
+            <option value="scale-in" <?php selected($value, 'scale-in'); ?>>Scale In</option>
+        </select>
+        <p class="description">Entrance animation for the header</p>
+        <?php
+    }
+    
+    public function header_animation_duration_callback() {
+        $value = isset($this->options['header_animation_duration']) ? $this->options['header_animation_duration'] : '0.5';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_animation_duration]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0.1" max="3" step="0.1" /> s
+        <p class="description">Animation duration in seconds</p>
+        <?php
+    }
+    
+    // Responsive Section Callbacks
+    public function transparent_homepage_callback() {
+        $value = isset($this->options['transparent_homepage']) ? $this->options['transparent_homepage'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[transparent_homepage]" value="1" <?php checked(1, $value); ?> />
+        <label>Make header transparent on homepage</label>
+        <p class="description">When enabled, the header will be transparent on the homepage for hero sections</p>
+        <?php
+    }
+    
+    public function header_sticky_bg_color_callback() {
+        $value = isset($this->options['header_sticky_bg_color']) ? $this->options['header_sticky_bg_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_sticky_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" placeholder="Use default color" />
+        <p class="description">Background color when header is sticky (leave empty to use default)</p>
+        <?php
+    }
+    
+    public function header_mobile_bg_color_callback() {
+        $value = isset($this->options['header_mobile_bg_color']) ? $this->options['header_mobile_bg_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_mobile_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" placeholder="Use desktop color" />
+        <p class="description">Mobile-specific background color (leave empty to use desktop setting)</p>
+        <?php
+    }
+    
+    public function header_mobile_padding_callback() {
+        $value = isset($this->options['header_mobile_padding']) ? $this->options['header_mobile_padding'] : '';
+        ?>
+        <input type="text" name="ross_theme_header_options[header_mobile_padding]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="10px 15px" />
+        <p class="description">Mobile padding (e.g., "10px 15px" or leave empty for desktop settings)</p>
+        <?php
+    }
+    
+    public function header_mobile_height_callback() {
+        $value = isset($this->options['header_mobile_height']) ? $this->options['header_mobile_height'] : '';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_mobile_height]" value="<?php echo esc_attr($value); ?>" class="small-text" min="30" max="150" placeholder="Use desktop height" /> px
+        <p class="description">Mobile header height (leave empty to use desktop setting)</p>
+        <?php
+    }
+    
+    public function header_tablet_breakpoint_callback() {
+        $value = isset($this->options['header_tablet_breakpoint']) ? $this->options['header_tablet_breakpoint'] : '768';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_tablet_breakpoint]" value="<?php echo esc_attr($value); ?>" class="small-text" min="600" max="900" /> px
+        <p class="description">Tablet breakpoint width</p>
+        <?php
+    }
+    
+    public function header_mobile_breakpoint_callback() {
+        $value = isset($this->options['header_mobile_breakpoint']) ? $this->options['header_mobile_breakpoint'] : '480';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_mobile_breakpoint]" value="<?php echo esc_attr($value); ?>" class="small-text" min="320" max="600" /> px
+        <p class="description">Mobile breakpoint width</p>
+        <?php
+    }
+    
+    public function header_custom_css_callback() {
+        $value = isset($this->options['header_custom_css']) ? $this->options['header_custom_css'] : '';
+        ?>
+        <textarea name="ross_theme_header_options[header_custom_css]" rows="8" cols="50" class="large-text code" placeholder=".site-header { /* Your custom CSS here */ }"><?php echo esc_textarea($value); ?></textarea>
+        <p class="description">Add custom CSS for the header. This will be applied after all other styles.</p>
+        <?php
+    }
+    
+    // ===== MISSING CALLBACKS =====
+    
+    public function header_bg_overlay_opacity_callback() {
+        $value = isset($this->options['header_bg_overlay_opacity']) ? $this->options['header_bg_overlay_opacity'] : '0.5';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_bg_overlay_opacity]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="1" step="0.1" />
+        <p class="description">Overlay opacity (0 = transparent, 1 = opaque)</p>
+        <?php
+    }
+    
+    public function header_border_style_callback() {
+        $value = isset($this->options['header_border_style']) ? $this->options['header_border_style'] : 'solid';
+        ?>
+        <select name="ross_theme_header_options[header_border_style]">
+            <option value="solid" <?php selected($value, 'solid'); ?>>Solid</option>
+            <option value="dashed" <?php selected($value, 'dashed'); ?>>Dashed</option>
+            <option value="dotted" <?php selected($value, 'dotted'); ?>>Dotted</option>
+            <option value="double" <?php selected($value, 'double'); ?>>Double</option>
+        </select>
+        <p class="description">Border line style</p>
+        <?php
+    }
+    
+    public function header_border_position_callback() {
+        $value = isset($this->options['header_border_position']) ? $this->options['header_border_position'] : 'bottom';
+        ?>
+        <select name="ross_theme_header_options[header_border_position]">
+            <option value="top" <?php selected($value, 'top'); ?>>Top</option>
+            <option value="bottom" <?php selected($value, 'bottom'); ?>>Bottom</option>
+            <option value="both" <?php selected($value, 'both'); ?>>Top & Bottom</option>
+        </select>
+        <p class="description">Border position</p>
+        <?php
+    }
+    
+    public function header_shadow_enable_callback() {
+        $value = isset($this->options['header_shadow_enable']) ? $this->options['header_shadow_enable'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_shadow_enable]" value="1" <?php checked(1, $value); ?> />
+        <label>Enable header shadow</label>
+        <?php
+    }
+    
+    public function header_shadow_type_callback() {
+        $value = isset($this->options['header_shadow_type']) ? $this->options['header_shadow_type'] : 'drop';
+        ?>
+        <select name="ross_theme_header_options[header_shadow_type]">
+            <option value="drop" <?php selected($value, 'drop'); ?>>Drop Shadow</option>
+            <option value="inner" <?php selected($value, 'inner'); ?>>Inner Shadow</option>
+            <option value="glow" <?php selected($value, 'glow'); ?>>Glow Effect</option>
+        </select>
+        <p class="description">Shadow type</p>
+        <?php
+    }
+    
+    // ===== END ENTERPRISE APPEARANCE CALLBACKS =====
+    
     public function sanitize_header_options($input) {
         // Debug: log input for admins
         if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
@@ -2450,6 +3084,96 @@ class RossHeaderOptions {
         // Animation / behavior
         $sanitized['header_logo_scale'] = isset($input['header_logo_scale']) ? floatval($input['header_logo_scale']) : 0.92;
         
+        // ===== ENTERPRISE APPEARANCE SANITIZATION =====
+        
+        // Background Settings
+        $allowed_bg_types = array('solid', 'gradient', 'image', 'pattern');
+        $sanitized['header_bg_type'] = isset($input['header_bg_type']) && in_array($input['header_bg_type'], $allowed_bg_types) ? sanitize_text_field($input['header_bg_type']) : 'solid';
+        $sanitized['header_bg_color'] = isset($input['header_bg_color']) ? sanitize_hex_color($input['header_bg_color']) : '#ffffff';
+        $sanitized['header_bg_gradient_start'] = isset($input['header_bg_gradient_start']) ? sanitize_hex_color($input['header_bg_gradient_start']) : '#ffffff';
+        $sanitized['header_bg_gradient_end'] = isset($input['header_bg_gradient_end']) ? sanitize_hex_color($input['header_bg_gradient_end']) : '#f8f9fa';
+        $allowed_directions = array('to right', 'to left', 'to bottom', 'to top', '45deg', '135deg');
+        $sanitized['header_bg_gradient_angle'] = isset($input['header_bg_gradient_angle']) && in_array($input['header_bg_gradient_angle'], $allowed_directions) ? sanitize_text_field($input['header_bg_gradient_angle']) : 'to right';
+        $sanitized['header_bg_image'] = isset($input['header_bg_image']) ? esc_url_raw($input['header_bg_image']) : '';
+        $allowed_positions = array('left top', 'center top', 'right top', 'left center', 'center center', 'right center', 'left bottom', 'center bottom', 'right bottom');
+        $sanitized['header_bg_image_position'] = isset($input['header_bg_image_position']) && in_array($input['header_bg_image_position'], $allowed_positions) ? sanitize_text_field($input['header_bg_image_position']) : 'center center';
+        $allowed_sizes = array('auto', 'cover', 'contain', '100% 100%');
+        $sanitized['header_bg_image_size'] = isset($input['header_bg_image_size']) && in_array($input['header_bg_image_size'], $allowed_sizes) ? sanitize_text_field($input['header_bg_image_size']) : 'cover';
+        $allowed_repeats = array('no-repeat', 'repeat', 'repeat-x', 'repeat-y');
+        $sanitized['header_bg_image_repeat'] = isset($input['header_bg_image_repeat']) && in_array($input['header_bg_image_repeat'], $allowed_repeats) ? sanitize_text_field($input['header_bg_image_repeat']) : 'no-repeat';
+        $sanitized['header_bg_overlay'] = isset($input['header_bg_overlay']) ? 1 : 0;
+        $sanitized['header_bg_overlay_color'] = isset($input['header_bg_overlay_color']) ? sanitize_text_field($input['header_bg_overlay_color']) : 'rgba(0,0,0,0.5)';
+        $sanitized['header_bg_overlay_opacity'] = isset($input['header_bg_overlay_opacity']) ? floatval($input['header_bg_overlay_opacity']) : 0.5;
+        $allowed_patterns = array('none', 'dots', 'lines', 'grid', 'diagonal');
+        $sanitized['header_bg_pattern'] = isset($input['header_bg_pattern']) && in_array($input['header_bg_pattern'], $allowed_patterns) ? sanitize_text_field($input['header_bg_pattern']) : 'none';
+        $sanitized['header_bg_pattern_color'] = isset($input['header_bg_pattern_color']) ? sanitize_hex_color($input['header_bg_pattern_color']) : '#e5e7eb';
+        
+        // Typography Settings
+        $sanitized['header_text_color'] = isset($input['header_text_color']) ? sanitize_hex_color($input['header_text_color']) : '#333333';
+        $sanitized['header_link_color'] = isset($input['header_link_color']) ? sanitize_hex_color($input['header_link_color']) : '#007cba';
+        $sanitized['header_link_hover_color'] = isset($input['header_link_hover_color']) ? sanitize_hex_color($input['header_link_hover_color']) : '#005a87';
+        $sanitized['header_font_size'] = isset($input['header_font_size']) ? absint($input['header_font_size']) : 16;
+        $sanitized['header_line_height'] = isset($input['header_line_height']) ? floatval($input['header_line_height']) : 1.5;
+        $sanitized['header_letter_spacing'] = isset($input['header_letter_spacing']) ? floatval($input['header_letter_spacing']) : 0;
+        $allowed_transforms = array('none', 'uppercase', 'lowercase', 'capitalize');
+        $sanitized['header_text_transform'] = isset($input['header_text_transform']) && in_array($input['header_text_transform'], $allowed_transforms) ? sanitize_text_field($input['header_text_transform']) : 'none';
+        
+        // Border Settings
+        $sanitized['header_border_top'] = isset($input['header_border_top']) ? 1 : 0;
+        $sanitized['header_border_top_width'] = isset($input['header_border_top_width']) ? absint($input['header_border_top_width']) : 1;
+        $sanitized['header_border_top_color'] = isset($input['header_border_top_color']) ? sanitize_hex_color($input['header_border_top_color']) : '#e5e7eb';
+        $sanitized['header_border_bottom'] = isset($input['header_border_bottom']) ? 1 : 0;
+        $sanitized['header_border_bottom_width'] = isset($input['header_border_bottom_width']) ? absint($input['header_border_bottom_width']) : 1;
+        $sanitized['header_border_bottom_color'] = isset($input['header_border_bottom_color']) ? sanitize_hex_color($input['header_border_bottom_color']) : '#e5e7eb';
+        $allowed_border_styles = array('solid', 'dashed', 'dotted', 'double');
+        $sanitized['header_border_style'] = isset($input['header_border_style']) && in_array($input['header_border_style'], $allowed_border_styles) ? sanitize_text_field($input['header_border_style']) : 'solid';
+        $allowed_border_positions = array('top', 'bottom', 'both');
+        $sanitized['header_border_position'] = isset($input['header_border_position']) && in_array($input['header_border_position'], $allowed_border_positions) ? sanitize_text_field($input['header_border_position']) : 'bottom';
+        $sanitized['header_border_radius'] = isset($input['header_border_radius']) ? absint($input['header_border_radius']) : 0;
+        
+        // Shadow Settings
+        $sanitized['header_box_shadow'] = isset($input['header_box_shadow']) ? 1 : 0;
+        $sanitized['header_shadow_enable'] = isset($input['header_shadow_enable']) ? 1 : 0;
+        $allowed_shadow_types = array('drop', 'inner', 'glow');
+        $sanitized['header_shadow_type'] = isset($input['header_shadow_type']) && in_array($input['header_shadow_type'], $allowed_shadow_types) ? sanitize_text_field($input['header_shadow_type']) : 'drop';
+        $sanitized['header_shadow_color'] = isset($input['header_shadow_color']) ? sanitize_text_field($input['header_shadow_color']) : 'rgba(0,0,0,0.1)';
+        $sanitized['header_shadow_x'] = isset($input['header_shadow_x']) ? intval($input['header_shadow_x']) : 0;
+        $sanitized['header_shadow_y'] = isset($input['header_shadow_y']) ? intval($input['header_shadow_y']) : 2;
+        $sanitized['header_shadow_blur'] = isset($input['header_shadow_blur']) ? absint($input['header_shadow_blur']) : 4;
+        $sanitized['header_shadow_spread'] = isset($input['header_shadow_spread']) ? intval($input['header_shadow_spread']) : 0;
+        
+        // Spacing Settings
+        $sanitized['header_padding_top'] = isset($input['header_padding_top']) ? absint($input['header_padding_top']) : 15;
+        $sanitized['header_padding_bottom'] = isset($input['header_padding_bottom']) ? absint($input['header_padding_bottom']) : 15;
+        $sanitized['header_padding_left'] = isset($input['header_padding_left']) ? absint($input['header_padding_left']) : 20;
+        $sanitized['header_padding_right'] = isset($input['header_padding_right']) ? absint($input['header_padding_right']) : 20;
+        $sanitized['header_margin_top'] = isset($input['header_margin_top']) ? intval($input['header_margin_top']) : 0;
+        $sanitized['header_margin_bottom'] = isset($input['header_margin_bottom']) ? intval($input['header_margin_bottom']) : 0;
+        
+        // Effects Settings
+        $sanitized['header_opacity'] = isset($input['header_opacity']) ? floatval($input['header_opacity']) : 1;
+        $sanitized['header_blur'] = isset($input['header_blur']) ? 1 : 0;
+        $sanitized['header_blur_amount'] = isset($input['header_blur_amount']) ? absint($input['header_blur_amount']) : 10;
+        $sanitized['header_glass_effect'] = isset($input['header_glass_effect']) ? 1 : 0;
+        $sanitized['header_glass_opacity'] = isset($input['header_glass_opacity']) ? floatval($input['header_glass_opacity']) : 0.8;
+        $allowed_animations = array('none', 'fade-in', 'slide-down', 'scale-in');
+        $sanitized['header_animation'] = isset($input['header_animation']) && in_array($input['header_animation'], $allowed_animations) ? sanitize_text_field($input['header_animation']) : 'none';
+        $sanitized['header_animation_duration'] = isset($input['header_animation_duration']) ? floatval($input['header_animation_duration']) : 0.5;
+        
+        // Responsive Settings
+        $sanitized['header_mobile_bg_color'] = isset($input['header_mobile_bg_color']) ? sanitize_hex_color($input['header_mobile_bg_color']) : '';
+        $sanitized['header_mobile_padding'] = isset($input['header_mobile_padding']) ? sanitize_text_field($input['header_mobile_padding']) : '';
+        $sanitized['header_mobile_height'] = isset($input['header_mobile_height']) ? absint($input['header_mobile_height']) : '';
+        $sanitized['header_tablet_breakpoint'] = isset($input['header_tablet_breakpoint']) ? absint($input['header_tablet_breakpoint']) : 768;
+        $sanitized['header_mobile_breakpoint'] = isset($input['header_mobile_breakpoint']) ? absint($input['header_mobile_breakpoint']) : 480;
+        
+        // Additional Settings
+        $sanitized['transparent_homepage'] = isset($input['transparent_homepage']) ? 1 : 0;
+        $sanitized['header_sticky_bg_color'] = isset($input['header_sticky_bg_color']) ? sanitize_hex_color($input['header_sticky_bg_color']) : '';
+        $sanitized['header_custom_css'] = isset($input['header_custom_css']) ? wp_kses_post($input['header_custom_css']) : '';
+        
+        // ===== END ENTERPRISE APPEARANCE SANITIZATION =====
+        
         // Debug: log sanitized output for admins
         if (current_user_can('manage_options') && defined('WP_DEBUG') && WP_DEBUG) {
             error_log('[ross_theme_sanitize_header_options] Sanitized: ' . json_encode($sanitized));
@@ -2457,7 +3181,7 @@ class RossHeaderOptions {
         
         return $sanitized;
     }
-    
+
     /**
      * AJAX: Apply header template
      */
