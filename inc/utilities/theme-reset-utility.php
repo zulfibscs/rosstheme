@@ -231,7 +231,6 @@ class RossThemeResetUtility {
             'menu_alignment' => 'left',
             'menu_font_size' => '16',
             'active_item_color' => '#E5C902',
-            'mobile_breakpoint' => '768',
             'enable_search' => 1,
             'enable_cta_button' => 1,
             'cta_button_text' => 'Get Free Consultation',

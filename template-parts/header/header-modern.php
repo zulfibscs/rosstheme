@@ -102,7 +102,7 @@ $width_class = $header_width === 'full' ? 'ross-header-full-width' : 'ross-heade
                         'menu_class'     => 'primary-menu',
                         'container'      => false,
                         'fallback_cb'    => false,
-                        'items_wrap'     => '<ul id="%1$s" class="%2$s" style="font-size: ' . esc_attr($menu_font_size) . 'px;">%3$s</ul>',
+                        'items_wrap'     => '<ul id="%1$s" class="%2$s">%3$s</ul>',
                     ));
                     ?>
                 </nav>

@@ -186,25 +186,9 @@ class RossHeaderOptions {
         );
         
         add_settings_field(
-            'mobile_logo',
-            'Mobile Logo (Optional)',
-            array($this, 'mobile_logo_callback'),
-            'ross-theme-header-logo',
-            'ross_header_logo_section'
-        );
-        
-        add_settings_field(
             'logo_width',
             'Logo Max Width (px)',
             array($this, 'logo_width_callback'),
-            'ross-theme-header-logo',
-            'ross_header_logo_section'
-        );
-        
-        add_settings_field(
-            'mobile_logo_width',
-            'Mobile Logo Max Width (px)',
-            array($this, 'mobile_logo_width_callback'),
             'ross-theme-header-logo',
             'ross_header_logo_section'
         );
@@ -584,33 +568,33 @@ class RossHeaderOptions {
         );
         
         add_settings_field(
-            'mobile_breakpoint',
-            'Mobile Breakpoint (px)',
-            array($this, 'mobile_breakpoint_callback'),
+            'menu_font_family',
+            'Menu Font Family',
+            array($this, 'menu_font_family_callback'),
             'ross-theme-header-nav',
             'ross_header_nav_section'
         );
         
         add_settings_field(
-            'mobile_menu_style',
-            'Mobile Menu Style',
-            array($this, 'mobile_menu_style_callback'),
+            'menu_font_weight',
+            'Menu Font Weight',
+            array($this, 'menu_font_weight_callback'),
             'ross-theme-header-nav',
             'ross_header_nav_section'
         );
         
         add_settings_field(
-            'hamburger_animation',
-            'Hamburger Icon Animation',
-            array($this, 'hamburger_animation_callback'),
+            'menu_letter_spacing',
+            'Menu Letter Spacing (px)',
+            array($this, 'menu_letter_spacing_callback'),
             'ross-theme-header-nav',
             'ross_header_nav_section'
         );
         
         add_settings_field(
-            'mobile_menu_position',
-            'Mobile Menu Position',
-            array($this, 'mobile_menu_position_callback'),
+            'menu_text_transform',
+            'Menu Text Transform',
+            array($this, 'menu_text_transform_callback'),
             'ross-theme-header-nav',
             'ross_header_nav_section'
         );
@@ -1150,30 +1134,10 @@ class RossHeaderOptions {
         <?php
     }
     
-    public function mobile_logo_callback() {
-        $value = isset($this->options['mobile_logo']) ? $this->options['mobile_logo'] : '';
-        ?>
-        <input type="text" name="ross_theme_header_options[mobile_logo]" id="mobile_logo" value="<?php echo esc_url($value); ?>" class="regular-text" />
-        <input type="button" class="button ross-upload-button" data-target="mobile_logo" value="Upload Mobile Logo" />
-        <?php if ($value): ?>
-            <p><img src="<?php echo esc_url($value); ?>" style="max-width: 150px; height: auto; margin-top: 10px;" /></p>
-        <?php endif; ?>
-        <p class="description">Optional separate logo for mobile devices (typically smaller or simplified).</p>
-        <?php
-    }
-    
     public function logo_width_callback() {
         $value = isset($this->options['logo_width']) ? $this->options['logo_width'] : '200';
         ?>
         <input type="number" name="ross_theme_header_options[logo_width]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
-        <?php
-    }
-    
-    public function mobile_logo_width_callback() {
-        $value = isset($this->options['mobile_logo_width']) ? $this->options['mobile_logo_width'] : '120';
-        ?>
-        <input type="number" name="ross_theme_header_options[mobile_logo_width]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
-        <p class="description">Maximum width for mobile logo (default: 120px).</p>
         <?php
     }
     
@@ -1688,21 +1652,21 @@ class RossHeaderOptions {
     public function menu_font_size_callback() {
         $value = isset($this->options['menu_font_size']) ? $this->options['menu_font_size'] : '16';
         ?>
-        <input type="number" name="ross_theme_header_options[menu_font_size]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
+        <input type="number" name="ross_theme_header_options[menu_font_size]" id="menu_font_size" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
         <?php
     }
     
     public function active_item_color_callback() {
         $value = isset($this->options['active_item_color']) ? $this->options['active_item_color'] : '#E5C902';
         ?>
-        <input type="text" name="ross_theme_header_options[active_item_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <input type="text" name="ross_theme_header_options[active_item_color]" id="active_item_color" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
         <?php
     }
 
     public function menu_hover_color_callback() {
         $value = isset($this->options['menu_hover_color']) ? $this->options['menu_hover_color'] : '#E5C902';
         ?>
-        <input type="text" name="ross_theme_header_options[menu_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <input type="text" name="ross_theme_header_options[menu_hover_color]" id="menu_hover_color" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
         <p class="description">Color applied when hovering menu links (desktop).</p>
         <?php
     }
@@ -1710,7 +1674,7 @@ class RossHeaderOptions {
     public function menu_bg_color_callback() {
         $value = isset($this->options['menu_bg_color']) ? $this->options['menu_bg_color'] : '';
         ?>
-        <input type="text" name="ross_theme_header_options[menu_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <input type="text" name="ross_theme_header_options[menu_bg_color]" id="menu_bg_color" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
         <p class="description">Optional background color for the menu area. Leave empty for transparent.</p>
         <?php
     }
@@ -1718,23 +1682,15 @@ class RossHeaderOptions {
     public function menu_border_color_callback() {
         $value = isset($this->options['menu_border_color']) ? $this->options['menu_border_color'] : '#E5C902';
         ?>
-        <input type="text" name="ross_theme_header_options[menu_border_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <input type="text" name="ross_theme_header_options[menu_border_color]" id="menu_border_color" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
         <p class="description">Color for the underline/border used by menu items (and active indicator).</p>
-        <?php
-    }
-    
-    public function mobile_breakpoint_callback() {
-        $value = isset($this->options['mobile_breakpoint']) ? $this->options['mobile_breakpoint'] : '768';
-        ?>
-        <input type="number" name="ross_theme_header_options[mobile_breakpoint]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
-        <p class="description">Screen width at which mobile menu activates</p>
         <?php
     }
     
     public function menu_hover_effect_callback() {
         $value = isset($this->options['menu_hover_effect']) ? $this->options['menu_hover_effect'] : 'underline';
         ?>
-        <select name="ross_theme_header_options[menu_hover_effect]">
+        <select name="ross_theme_header_options[menu_hover_effect]" id="menu_hover_effect">
             <option value="underline" <?php selected($value, 'underline'); ?>>Underline</option>
             <option value="background" <?php selected($value, 'background'); ?>>Background Color</option>
             <option value="none" <?php selected($value, 'none'); ?>>None</option>
@@ -1746,7 +1702,7 @@ class RossHeaderOptions {
     public function menu_hover_underline_style_callback() {
         $value = isset($this->options['menu_hover_underline_style']) ? $this->options['menu_hover_underline_style'] : 'slide';
         ?>
-        <select name="ross_theme_header_options[menu_hover_underline_style]">
+        <select name="ross_theme_header_options[menu_hover_underline_style]" id="menu_hover_underline_style">
             <option value="slide" <?php selected($value, 'slide'); ?>>Slide In</option>
             <option value="fade" <?php selected($value, 'fade'); ?>>Fade In</option>
             <option value="instant" <?php selected($value, 'instant'); ?>>Instant</option>
@@ -1755,41 +1711,57 @@ class RossHeaderOptions {
         <?php
     }
     
-    public function mobile_menu_style_callback() {
-        $value = isset($this->options['mobile_menu_style']) ? $this->options['mobile_menu_style'] : 'slide';
+    public function menu_font_family_callback() {
+        $value = isset($this->options['menu_font_family']) ? $this->options['menu_font_family'] : 'inherit';
         ?>
-        <select name="ross_theme_header_options[mobile_menu_style]">
-            <option value="slide" <?php selected($value, 'slide'); ?>>Slide from Side</option>
-            <option value="dropdown" <?php selected($value, 'dropdown'); ?>>Dropdown</option>
-            <option value="fullscreen" <?php selected($value, 'fullscreen'); ?>>Full Screen Overlay</option>
-            <option value="push" <?php selected($value, 'push'); ?>>Push Content</option>
+        <select name="ross_theme_header_options[menu_font_family]" id="menu_font_family">
+            <option value="inherit" <?php selected($value, 'inherit'); ?>>Inherit from Theme</option>
+            <option value="Arial, sans-serif" <?php selected($value, 'Arial, sans-serif'); ?>>Arial</option>
+            <option value="'Helvetica Neue', Helvetica, Arial, sans-serif" <?php selected($value, "'Helvetica Neue', Helvetica, Arial, sans-serif"); ?>>Helvetica</option>
+            <option value="'Courier New', monospace" <?php selected($value, "'Courier New', monospace"); ?>>Courier New</option>
+            <option value="Georgia, serif" <?php selected($value, "Georgia, serif"); ?>>Georgia</option>
+            <option value="'Times New Roman', Times, serif" <?php selected($value, "'Times New Roman', Times, serif"); ?>>Times New Roman</option>
+            <option value="'Trebuchet MS', sans-serif" <?php selected($value, "'Trebuchet MS', sans-serif"); ?>>Trebuchet MS</option>
+            <option value="Verdana, sans-serif" <?php selected($value, "Verdana, sans-serif"); ?>>Verdana</option>
         </select>
-        <p class="description">Style of mobile menu presentation</p>
+        <p class="description">Font family for menu items</p>
         <?php
     }
     
-    public function hamburger_animation_callback() {
-        $value = isset($this->options['hamburger_animation']) ? $this->options['hamburger_animation'] : 'collapse';
+    public function menu_font_weight_callback() {
+        $value = isset($this->options['menu_font_weight']) ? $this->options['menu_font_weight'] : '600';
         ?>
-        <select name="ross_theme_header_options[hamburger_animation]">
-            <option value="collapse" <?php selected($value, 'collapse'); ?>>Collapse to X</option>
-            <option value="spin" <?php selected($value, 'spin'); ?>>Spin to X</option>
-            <option value="arrow" <?php selected($value, 'arrow'); ?>>Arrow</option>
-            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal Fade</option>
+        <select name="ross_theme_header_options[menu_font_weight]" id="menu_font_weight">
+            <option value="300" <?php selected($value, '300'); ?>>Light (300)</option>
+            <option value="400" <?php selected($value, '400'); ?>>Regular (400)</option>
+            <option value="500" <?php selected($value, '500'); ?>>Medium (500)</option>
+            <option value="600" <?php selected($value, '600'); ?>>Semi Bold (600)</option>
+            <option value="700" <?php selected($value, '700'); ?>>Bold (700)</option>
+            <option value="800" <?php selected($value, '800'); ?>>Extra Bold (800)</option>
+            <option value="900" <?php selected($value, '900'); ?>>Black (900)</option>
         </select>
-        <p class="description">Animation for hamburger menu icon</p>
+        <p class="description">Font weight for menu items</p>
         <?php
     }
     
-    public function mobile_menu_position_callback() {
-        $value = isset($this->options['mobile_menu_position']) ? $this->options['mobile_menu_position'] : 'left';
+    public function menu_letter_spacing_callback() {
+        $value = isset($this->options['menu_letter_spacing']) ? $this->options['menu_letter_spacing'] : '0';
         ?>
-        <select name="ross_theme_header_options[mobile_menu_position]">
-            <option value="left" <?php selected($value, 'left'); ?>>Left Side</option>
-            <option value="right" <?php selected($value, 'right'); ?>>Right Side</option>
-            <option value="top" <?php selected($value, 'top'); ?>>From Top</option>
+        <input type="number" name="ross_theme_header_options[menu_letter_spacing]" id="menu_letter_spacing" value="<?php echo esc_attr($value); ?>" step="0.1" min="-2" max="5" />
+        <p class="description">Letter spacing in pixels (can be negative)</p>
+        <?php
+    }
+    
+    public function menu_text_transform_callback() {
+        $value = isset($this->options['menu_text_transform']) ? $this->options['menu_text_transform'] : 'none';
+        ?>
+        <select name="ross_theme_header_options[menu_text_transform]" id="menu_text_transform">
+            <option value="none" <?php selected($value, 'none'); ?>>None</option>
+            <option value="uppercase" <?php selected($value, 'uppercase'); ?>>Uppercase</option>
+            <option value="lowercase" <?php selected($value, 'lowercase'); ?>>Lowercase</option>
+            <option value="capitalize" <?php selected($value, 'capitalize'); ?>>Capitalize</option>
         </select>
-        <p class="description">Position for slide-in mobile menu</p>
+        <p class="description">Text transformation for menu items</p>
         <?php
     }
     
@@ -2174,16 +2146,16 @@ class RossHeaderOptions {
         $sanitized['menu_hover_color'] = isset($input['menu_hover_color']) ? sanitize_hex_color($input['menu_hover_color']) : $sanitized['active_item_color'];
         $sanitized['menu_bg_color'] = isset($input['menu_bg_color']) && !empty($input['menu_bg_color']) ? sanitize_hex_color($input['menu_bg_color']) : '';
         $sanitized['menu_border_color'] = isset($input['menu_border_color']) ? sanitize_hex_color($input['menu_border_color']) : $sanitized['active_item_color'];
-        $sanitized['mobile_breakpoint'] = absint($input['mobile_breakpoint']);
         
         // Navigation - Hover Effects
         $sanitized['menu_hover_effect'] = isset($input['menu_hover_effect']) ? sanitize_text_field($input['menu_hover_effect']) : 'underline';
         $sanitized['menu_hover_underline_style'] = isset($input['menu_hover_underline_style']) ? sanitize_text_field($input['menu_hover_underline_style']) : 'slide';
         
-        // Navigation - Mobile
-        $sanitized['mobile_menu_style'] = isset($input['mobile_menu_style']) ? sanitize_text_field($input['mobile_menu_style']) : 'slide';
-        $sanitized['hamburger_animation'] = isset($input['hamburger_animation']) ? sanitize_text_field($input['hamburger_animation']) : 'collapse';
-        $sanitized['mobile_menu_position'] = isset($input['mobile_menu_position']) ? sanitize_text_field($input['mobile_menu_position']) : 'left';
+        // Navigation - Typography
+        $sanitized['menu_font_family'] = isset($input['menu_font_family']) ? sanitize_text_field($input['menu_font_family']) : 'inherit';
+        $sanitized['menu_font_weight'] = isset($input['menu_font_weight']) ? sanitize_text_field($input['menu_font_weight']) : '600';
+        $sanitized['menu_letter_spacing'] = isset($input['menu_letter_spacing']) ? floatval($input['menu_letter_spacing']) : 0;
+        $sanitized['menu_text_transform'] = isset($input['menu_text_transform']) ? sanitize_text_field($input['menu_text_transform']) : 'none';
         
         // CTA
         $sanitized['enable_search'] = isset($input['enable_search']) ? 1 : 0;

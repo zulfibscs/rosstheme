@@ -119,7 +119,7 @@ $vars = sprintf(
     .header-creative-agency .menu-toggle.open .hamburger::after { transform: rotate(-45deg); top: 0; }
 
     .header-creative-agency .primary-nav { display: block; }
-    .header-creative-agency .primary-menu-creative { list-style: none; margin: 0; padding: 0; display: flex; gap: 36px; justify-content: center; align-items: center; }
+    .header-creative-agency .primary-menu-creative { list-style: none; margin: 0; padding: 0; display: flex; gap: 36px; align-items: center; }
     .header-creative-agency .primary-menu-creative a { color: var(--header-text); text-decoration: none; font-weight: 600; font-size: <?php echo esc_attr($font_size); ?>; letter-spacing: <?php echo esc_attr($letter_spacing); ?>; text-transform: <?php echo esc_attr($text_transform); ?>; padding: 6px 4px; position: relative; }
     .header-creative-agency .primary-menu-creative a::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: -8px; width: 0; height: 3px; background: var(--header-accent); transition: width 0.28s ease; }
     .header-creative-agency .primary-menu-creative a:hover { color: var(--header-hover); }

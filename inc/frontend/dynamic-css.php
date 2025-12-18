@@ -37,18 +37,18 @@ function ross_theme_dynamic_css() {
         echo '.primary-menu .current-menu-item a { color: ' . esc_attr($header_options['active_item_color']) . ' !important; }';
     }
 
-    // Menu font size and alignment
-    if (!empty($header_options['menu_font_size'])) {
-        $size = absint($header_options['menu_font_size']);
-        echo '.primary-menu a { font-size: ' . $size . 'px !important; }';
+    // Menu typography
+    if (!empty($header_options['menu_font_family']) && $header_options['menu_font_family'] !== 'inherit') {
+        echo '.primary-menu a { font-family: ' . esc_attr($header_options['menu_font_family']) . ' !important; }';
     }
+    
 
     if (!empty($header_options['menu_alignment'])) {
         $align = esc_attr($header_options['menu_alignment']);
         $justify = 'flex-start';
         if ($align === 'center') $justify = 'center';
         if ($align === 'right') $justify = 'flex-end';
-        echo '.primary-menu { justify-content: ' . $justify . ' !important; }';
+        echo '.header-navigation ul, .main-navigation ul, .header-navigation-centered ul, .primary-menu-creative { justify-content: ' . $justify . ' !important; }';
     }
 
     // Menu hover, background and border colors
@@ -62,8 +62,11 @@ function ross_theme_dynamic_css() {
     }
 
     if (!empty($header_options['menu_border_color'])) {
-        echo '.primary-menu a::after { background: ' . esc_attr($header_options['menu_border_color']) . ' !important; }';
-        echo '.primary-menu .current-menu-item a::after { background: ' . esc_attr($header_options['menu_border_color']) . ' !important; }';
+        // Only set underline color if hover effect is underline
+        if (isset($header_options['menu_hover_effect']) && $header_options['menu_hover_effect'] === 'underline') {
+            echo '.primary-menu a::after { background: ' . esc_attr($header_options['menu_border_color']) . ' !important; }';
+            echo '.primary-menu .current-menu-item a::after { background: ' . esc_attr($header_options['menu_border_color']) . ' !important; }';
+        }
     }
 
     // ===== PHASE 1 ENHANCEMENTS: NEW HEADER CONTROLS =====
@@ -130,6 +133,28 @@ function ross_theme_dynamic_css() {
     if (!empty($header_options['header_text_transform'])) {
         echo '.primary-menu a { text-transform: ' . esc_attr($header_options['header_text_transform']) . ' !important; }';
     }
+
+    // Menu-specific text transform (overrides header_text_transform)
+    if (!empty($header_options['menu_text_transform']) && $header_options['menu_text_transform'] !== 'none') {
+        echo '.primary-menu a { text-transform: ' . esc_attr($header_options['menu_text_transform']) . ' !important; }';
+    }
+
+    // Menu-specific font weight (overrides header_font_weight)
+    if (!empty($header_options['menu_font_weight'])) {
+        echo '.primary-menu a { font-weight: ' . esc_attr($header_options['menu_font_weight']) . ' !important; }';
+    }
+    
+    // Menu-specific letter spacing (overrides header_letter_spacing)
+    if (isset($header_options['menu_letter_spacing'])) {
+        $spacing = floatval($header_options['menu_letter_spacing']);
+        echo '.primary-menu a { letter-spacing: ' . $spacing . 'px !important; }';
+    }
+
+    // Menu-specific font size (overrides header_font_size)
+    if (!empty($header_options['menu_font_size'])) {
+        $size = absint($header_options['menu_font_size']);
+        echo '.primary-menu a { font-size: ' . $size . 'px !important; }';
+    }
     
     // Menu Hover Effects
     if (!empty($header_options['menu_hover_effect'])) {
@@ -155,6 +180,10 @@ function ross_theme_dynamic_css() {
             echo '.primary-menu a::after { display: none !important; }';
         } elseif ($effect === 'none') {
             echo '.primary-menu a::after { display: none !important; }';
+        } elseif ($effect === 'underline') {
+            // Ensure underline is properly configured for hover effect
+            echo '.primary-menu a::after { content: "" !important; position: absolute !important; width: 0 !important; height: 2px !important; bottom: 0 !important; left: 50% !important; transition: width 0.3s ease !important; transform: translateX(-50%) !important; }';
+            echo '.primary-menu a:hover::after, .primary-menu .current-menu-item a::after { width: 100% !important; }';
         }
         // 'underline' is default, already handled by existing CSS
     }
