@@ -44,13 +44,14 @@ $padding_bottom = $header_options['header_padding_bottom'] ?? '20';
 
 // Sticky class
 $sticky_class = $sticky_enabled ? 'ross-sticky-header' : '';
-$center_class = $header_center ? 'ross-header-centered' : '';
+// Only apply centering when header is full width
+$center_class = ($header_center && $header_width === 'full') ? 'ross-header-centered' : '';
 $width_class = $header_width === 'full' ? 'ross-header-full-width' : 'ross-header-contained';
 ?>
 
 <header id="masthead" class="site-header ross-header-modern <?php echo esc_attr($sticky_class . ' ' . $center_class . ' ' . $width_class); ?>" 
         data-sticky="<?php echo esc_attr($sticky_enabled); ?>"
-        style="background-color: <?php echo esc_attr($header_bg); ?>; color: <?php echo esc_attr($header_text); ?>; padding: <?php echo esc_attr($padding_top); ?>px 0 <?php echo esc_attr($padding_bottom); ?>px;">
+        style="color: <?php echo esc_attr($header_text); ?>; padding: <?php echo esc_attr($padding_top); ?>px 0 <?php echo esc_attr($padding_bottom); ?>px;">
     
     <div class="ross-header-container <?php echo $header_width === 'contained' ? 'container' : 'container-fluid'; ?>">
         <div class="ross-header-inner">

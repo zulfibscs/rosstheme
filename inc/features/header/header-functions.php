@@ -26,6 +26,13 @@ function ross_theme_get_header_options() {
             'header_margin_bottom' => '0',
             'header_margin_left' => '0',
         'sticky_header' => 0,
+        'sticky_behavior' => 'always',
+        'sticky_scroll_threshold' => '100',
+        'sticky_shrink_header' => 0,
+        'sticky_header_height' => '70',
+        'sticky_animation_duration' => '300',
+        'sticky_easing' => 'ease-out',
+        'sticky_hide_mobile' => 0,
         'header_height' => '80',
         'logo_upload' => '',
         'logo_width' => '200',
@@ -130,7 +137,14 @@ function ross_theme_display_header() {
         
         // Map template IDs to template part names
         $template_map = array(
-            'creative-agency' => 'creative-agency'
+            'modern-complete' => 'modern-complete',
+            'classic-static' => 'classic-static',
+            'default' => 'default',
+            'centered' => 'centered',
+            'minimal' => 'minimal',
+            'modern' => 'modern',
+            'responsive' => 'responsive',
+            'transparent' => 'transparent'
         );
         
         if (isset($template_map[$template_id])) {
@@ -228,8 +242,7 @@ function ross_theme_get_header_inline_style() {
     $text_color = isset($options['header_text_color']) ? sanitize_hex_color($options['header_text_color']) : '#333333';
     
     return sprintf(
-        'background: %s; color: %s; min-height: %dpx; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
-        esc_attr($bg_color),
+        'color: %s; min-height: %dpx; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
         esc_attr($text_color),
         $height,
         $pt, $pr, $pb, $pl,
@@ -329,7 +342,7 @@ function ross_theme_render_topbar() {
     $has_social_icons = ($enable_social && !empty($social_links)) || (!empty($options['topbar_custom_icon_links']) && is_array($options['topbar_custom_icon_links']));
     
     if ($has_social_icons) {
-        $icon_color = isset($options['topbar_icon_color']) ? esc_attr($options['topbar_icon_color']) : $color;
+        $icon_color = isset($options['social_icon_color']) ? esc_attr($options['social_icon_color']) : $color;
         $icon_size = isset($options['social_icon_size']) ? $options['social_icon_size'] : 'medium';
         $icon_shape = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
         $icon_bg_color = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
@@ -519,8 +532,15 @@ function ross_theme_topbar_dynamic_css() {
     }
 
     $text_color   = isset($options['topbar_text_color']) ? sanitize_hex_color($options['topbar_text_color']) : '#ffffff';
-    $icon_color   = isset($options['topbar_icon_color']) ? sanitize_hex_color($options['topbar_icon_color']) : $text_color;
-    $icon_hover   = isset($options['topbar_icon_hover_color']) ? sanitize_hex_color($options['topbar_icon_hover_color']) : $icon_color;
+    $phone_color  = isset($options['topbar_icon_color']) ? sanitize_hex_color($options['topbar_icon_color']) : '#ffffff';
+    $icon_color   = isset($options['social_icon_color']) ? sanitize_hex_color($options['social_icon_color']) : '#ffffff';
+    $icon_hover   = isset($options['topbar_icon_hover_color']) ? sanitize_hex_color($options['topbar_icon_hover_color']) : '#E5C902';
+    $icon_bg      = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
+    $icon_border  = isset($options['social_icon_border_color']) ? $options['social_icon_border_color'] : 'transparent';
+    $icon_border_size = isset($options['social_icon_border_size']) ? intval($options['social_icon_border_size']) : 0;
+    $icon_width   = isset($options['social_icon_width']) ? intval($options['social_icon_width']) : 32;
+    $icon_shape   = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
+    $icon_effect  = isset($options['social_icon_effect']) ? $options['social_icon_effect'] : 'none';
     $bg_color     = isset($options['topbar_bg_color']) ? sanitize_hex_color($options['topbar_bg_color']) : '#001946';
     $use_gradient = !empty($options['topbar_gradient_enable']);
     $grad1        = isset($options['topbar_gradient_color1']) ? sanitize_hex_color($options['topbar_gradient_color1']) : '#001946';
@@ -561,43 +581,83 @@ function ross_theme_topbar_dynamic_css() {
     echo 'color: ' . $text_color . ';';
     echo '}';
 
-    echo '.site-topbar .social-link, .site-topbar .topbar-phone, .site-topbar .topbar-custom-icon {';
-    echo 'color: ' . $icon_color . ';';
+    // Phone number styling (only color, no icon styling)
+    echo '.site-topbar .topbar-phone {';
+    echo 'color: ' . $phone_color . ';';
     echo 'transition: all 0.2s ease;';
     echo '}';
 
-    echo '.site-topbar .social-link:hover, .site-topbar .topbar-phone:hover, .site-topbar .topbar-custom-icon:hover {';
-    echo 'color: ' . $icon_hover . ';';
-    echo 'opacity: 0.8; transform: scale(1.1);';
+    // Social icon styling (full icon treatment)
+    echo '.site-topbar .social-link, .site-topbar .topbar-custom-icon {';
+    echo 'color: ' . $icon_color . ';';
+    echo 'width: ' . $icon_width . 'px;';
+    echo 'height: ' . $icon_width . 'px;';
+    echo 'display: inline-flex;';
+    echo 'align-items: center;';
+    echo 'justify-content: center;';
+    echo 'transition: all 0.2s ease;';
+    if ($icon_bg !== 'transparent') {
+        echo '--social-icon-bg: ' . $icon_bg . ';';
+        // Create hover background with increased opacity
+        if (preg_match('/^#[a-f0-9]{6}$/i', $icon_bg)) {
+            // For hex colors, add opacity
+            echo '--social-icon-bg-hover: ' . $icon_bg . 'e6;'; // ~90% opacity
+        } else {
+            // For other formats, try to add opacity
+            echo '--social-icon-bg-hover: ' . $icon_bg . ';';
+        }
+    } else {
+        echo '--social-icon-bg: rgba(255, 255, 255, 0.1);';
+        echo '--social-icon-bg-hover: rgba(255, 255, 255, 0.2);';
+    }
+    if ($icon_border_size > 0 && $icon_border !== 'transparent') {
+        echo '--social-icon-border: ' . $icon_border_size . 'px solid ' . $icon_border . ';';
+    } else {
+        echo '--social-icon-border: none;';
+    }
+    if ($icon_shape === 'circle') {
+        echo 'border-radius: 50%;';
+    } elseif ($icon_shape === 'rounded') {
+        echo 'border-radius: 4px;';
+    }
     echo '}';
 
+    // Phone number hover (only color change)
+    echo '.site-topbar .topbar-phone:hover {';
+    echo 'color: ' . $icon_hover . ';';
+    echo '}';
+
+    // Social icon hover effects
+    echo '.site-topbar .social-link:hover, .site-topbar .topbar-custom-icon:hover {';
+    echo 'color: ' . $icon_hover . ';';
+    echo 'background: var(--social-icon-bg-hover, rgba(255, 255, 255, 0.2));';
+    if ($icon_effect === 'scale') {
+        echo 'transform: scale(1.1);';
+    } elseif ($icon_effect === 'bounce') {
+        echo 'animation: bounce 0.6s ease;';
+    } elseif ($icon_effect === 'pulse') {
+        echo 'animation: pulse 1s infinite;';
+    } elseif ($icon_effect === 'rotate') {
+        echo 'transform: rotate(360deg);';
+    }
+    echo '}';
+
+    // Add keyframe animations for effects
+    if ($icon_effect === 'bounce') {
+        echo '@keyframes bounce {';
+        echo '0%, 20%, 50%, 80%, 100% { transform: translateY(0); }';
+        echo '40% { transform: translateY(-10px); }';
+        echo '60% { transform: translateY(-5px); }';
+        echo '}';
+    } elseif ($icon_effect === 'pulse') {
+        echo '@keyframes pulse {';
+        echo '0% { transform: scale(1); }';
+        echo '50% { transform: scale(1.1); }';
+        echo '100% { transform: scale(1); }';
+        echo '}';
+    }
+
     echo '</style>';
-}
-
-/**
- * Adjust color brightness
- */
-function adjust_brightness($hex, $steps) {
-    // Steps should be between -255 and 255. Negative = darker, positive = lighter
-    $steps = max(-255, min(255, $steps));
-
-    // Normalize into a six character long hex string
-    $hex = str_replace('#', '', $hex);
-    if (strlen($hex) == 3) {
-        $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
-    }
-
-    // Split into three parts: R, G and B
-    $color_parts = str_split($hex, 2);
-    $return = '#';
-
-    foreach ($color_parts as $color) {
-        $color = hexdec($color); // Convert to decimal
-        $color = max(0, min(255, $color + $steps)); // Adjust color
-        $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
-    }
-
-    return $return;
 }
 
 add_action('wp_head', 'ross_theme_topbar_dynamic_css', 999);

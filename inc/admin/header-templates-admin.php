@@ -49,7 +49,7 @@ function ross_theme_render_header_templates_admin() {
                                 <span>Services</span>
                             </div>
                             <?php if ($template['cta']['enabled']): ?>
-                                <div style="background: <?php echo esc_attr($template['cta']['bg']); ?>; color: <?php echo esc_attr($template['cta']['color']); ?>; padding: 6px 14px; border-radius: <?php echo esc_attr($template['cta']['border_radius']); ?>; font-size: 12px; font-weight: 600;">
+                                <div style="background: <?php echo esc_attr($template['cta']['bg'] ?? $template['cta']['color'] ?? '#E5C902'); ?>; color: <?php echo esc_attr($template['cta']['text_color'] ?? $template['text'] ?? '#001946'); ?>; padding: 6px 14px; border-radius: <?php echo esc_attr($template['cta']['border_radius'] ?? '8px'); ?>; font-size: 12px; font-weight: 600;">
                                     <?php echo esc_html($template['cta']['text']); ?>
                                 </div>
                             <?php endif; ?>

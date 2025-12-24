@@ -21,8 +21,9 @@ function ross_theme_dynamic_css() {
     }
     
     // Force apply header styles
-    if (!empty($header_options['header_bg_color'])) {
-        echo '.site-header { background-color: ' . esc_attr($header_options['header_bg_color']) . ' !important; }';
+    // Only set background color CSS variable if glass effect is not enabled
+    if (!empty($header_options['header_bg_color']) && empty($header_options['header_glass_effect'])) {
+        echo ':root { --header-bg-color: ' . esc_attr($header_options['header_bg_color']) . '; }';
     }
     
     if (!empty($header_options['header_text_color'])) {
@@ -135,25 +136,25 @@ function ross_theme_dynamic_css() {
     }
 
     // Menu-specific text transform (overrides header_text_transform)
-    if (!empty($header_options['menu_text_transform']) && $header_options['menu_text_transform'] !== 'none') {
-        echo '.primary-menu a { text-transform: ' . esc_attr($header_options['menu_text_transform']) . ' !important; }';
+    if (!empty($header_options['menu_text_transform'])) {
+        echo ':root { --menu-text-transform: ' . esc_attr($header_options['menu_text_transform']) . '; }';
     }
 
     // Menu-specific font weight (overrides header_font_weight)
     if (!empty($header_options['menu_font_weight'])) {
-        echo '.primary-menu a { font-weight: ' . esc_attr($header_options['menu_font_weight']) . ' !important; }';
+        echo ':root { --menu-font-weight: ' . esc_attr($header_options['menu_font_weight']) . '; }';
     }
     
     // Menu-specific letter spacing (overrides header_letter_spacing)
     if (isset($header_options['menu_letter_spacing'])) {
         $spacing = floatval($header_options['menu_letter_spacing']);
-        echo '.primary-menu a { letter-spacing: ' . $spacing . 'px !important; }';
+        echo ':root { --menu-letter-spacing: ' . $spacing . 'px; }';
     }
 
     // Menu-specific font size (overrides header_font_size)
     if (!empty($header_options['menu_font_size'])) {
         $size = absint($header_options['menu_font_size']);
-        echo '.primary-menu a { font-size: ' . $size . 'px !important; }';
+        echo ':root { --menu-font-size: ' . $size . 'px; --menu-font-size-mobile: ' . $size . 'px; }';
     }
     
     // Menu Hover Effects
@@ -199,41 +200,6 @@ function ross_theme_dynamic_css() {
             echo '.primary-menu a:hover::after, .primary-menu .current-menu-item a::after { opacity: 1 !important; }';
         } elseif ($style === 'instant') {
             echo '.primary-menu a::after { transition: none !important; }';
-        }
-    }
-    
-    // Sticky Header Behavior
-    if (!empty($header_options['sticky_header'])) {
-        echo '.site-header { transition: all 0.3s ease !important; }';
-        
-        // Basic sticky header (no shrink)
-        echo '.site-header.is-sticky { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1000 !important; box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important; }';
-        
-        // Add body padding to prevent content jump
-        $header_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
-        echo 'body.has-sticky-header { padding-top: ' . $header_height . 'px !important; }';
-        
-        if (!empty($header_options['sticky_shrink_header'])) {
-            $normal_height = isset($header_options['header_height']) ? absint($header_options['header_height']) : 80;
-            $sticky_height = isset($header_options['sticky_header_height']) ? absint($header_options['sticky_header_height']) : 60;
-            
-            // Calculate appropriate padding for sticky state (maintain visual balance)
-            $normal_padding_top = isset($header_options['header_padding_top']) ? absint($header_options['header_padding_top']) : 20;
-            $normal_padding_bottom = isset($header_options['header_padding_bottom']) ? absint($header_options['header_padding_bottom']) : 20;
-            
-            // Reduce padding proportionally but keep it reasonable (minimum 8px)
-            $sticky_padding_top = max(8, round($normal_padding_top * 0.6));
-            $sticky_padding_bottom = max(8, round($normal_padding_bottom * 0.6));
-            
-            echo '.site-header.is-sticky.shrink { height: ' . $sticky_height . 'px !important; padding-top: ' . $sticky_padding_top . 'px !important; padding-bottom: ' . $sticky_padding_bottom . 'px !important; }';
-            
-            // Calculate logo max height accounting for logo padding
-            $logo_padding = isset($header_options['logo_padding']) ? absint($header_options['logo_padding']) : 0;
-            $logo_max_height = $sticky_height - ($sticky_padding_top + $sticky_padding_bottom + ($logo_padding * 2));
-            echo '.site-header.is-sticky.shrink .site-logo img { max-height: ' . max(20, $logo_max_height) . 'px !important; transition: max-height 0.3s ease !important; }';
-            
-            // Update body padding for shrunk header
-            echo 'body.has-sticky-header.is-sticky.shrink { padding-top: ' . $sticky_height . 'px !important; }';
         }
     }
     
@@ -360,54 +326,16 @@ function ross_theme_dynamic_css() {
 
     // ===== ENTERPRISE HEADER APPEARANCE STYLES =====
     
-    // Background Styles
-    $bg_type = isset($header_options['header_bg_type']) ? $header_options['header_bg_type'] : 'solid';
-    
-    if ($bg_type === 'solid' && !empty($header_options['header_bg_color'])) {
-        echo '.site-header { background-color: ' . esc_attr($header_options['header_bg_color']) . ' !important; }';
-    } elseif ($bg_type === 'gradient') {
-        $start = isset($header_options['header_bg_gradient_start']) ? $header_options['header_bg_gradient_start'] : '#ffffff';
-        $end = isset($header_options['header_bg_gradient_end']) ? $header_options['header_bg_gradient_end'] : '#f8f9fa';
-        $direction = isset($header_options['header_bg_gradient_angle']) ? $header_options['header_bg_gradient_angle'] : 'to right';
-        echo '.site-header { background: linear-gradient(' . esc_attr($direction) . ', ' . esc_attr($start) . ', ' . esc_attr($end) . ') !important; }';
-    } elseif ($bg_type === 'image' && !empty($header_options['header_bg_image'])) {
-        $image = esc_url($header_options['header_bg_image']);
-        $position = isset($header_options['header_bg_image_position']) ? $header_options['header_bg_image_position'] : 'center center';
-        $size = isset($header_options['header_bg_image_size']) ? $header_options['header_bg_image_size'] : 'cover';
-        $repeat = isset($header_options['header_bg_image_repeat']) ? $header_options['header_bg_image_repeat'] : 'no-repeat';
-        echo '.site-header { background-image: url("' . $image . '") !important; background-position: ' . esc_attr($position) . ' !important; background-size: ' . esc_attr($size) . ' !important; background-repeat: ' . esc_attr($repeat) . ' !important; }';
-    } elseif ($bg_type === 'pattern' && !empty($header_options['header_bg_pattern']) && $header_options['header_bg_pattern'] !== 'none') {
-        $pattern = $header_options['header_bg_pattern'];
-        $color = isset($header_options['header_bg_pattern_color']) ? $header_options['header_bg_pattern_color'] : '#e5e7eb';
-        // Generate CSS patterns
-        if ($pattern === 'dots') {
-            echo '.site-header { background-image: radial-gradient(circle, ' . esc_attr($color) . ' 1px, transparent 1px) !important; background-size: 20px 20px !important; }';
-        } elseif ($pattern === 'lines') {
-            echo '.site-header { background-image: linear-gradient(90deg, ' . esc_attr($color) . ' 1px, transparent 1px) !important; background-size: 20px 20px !important; }';
-        } elseif ($pattern === 'grid') {
-            echo '.site-header { background-image: linear-gradient(' . esc_attr($color) . ' 1px, transparent 1px), linear-gradient(90deg, ' . esc_attr($color) . ' 1px, transparent 1px) !important; background-size: 20px 20px !important; }';
-        } elseif ($pattern === 'diagonal') {
-            echo '.site-header { background-image: repeating-linear-gradient(45deg, ' . esc_attr($color) . ', ' . esc_attr($color) . ' 1px, transparent 1px, transparent 10px) !important; }';
-        }
+    // Background Styles (Solid Color Only) - Only when glass effect is not enabled
+    if (!empty($header_options['header_bg_color']) && empty($header_options['header_glass_effect'])) {
+        echo ':root { --header-bg-color: ' . esc_attr($header_options['header_bg_color']) . '; }';
     }
     
-    // Background Overlay
-    if (isset($header_options['header_bg_overlay']) && $header_options['header_bg_overlay'] && !empty($header_options['header_bg_overlay_color'])) {
-        $overlay_color = $header_options['header_bg_overlay_color'];
-        $overlay_opacity = isset($header_options['header_bg_overlay_opacity']) ? floatval($header_options['header_bg_overlay_opacity']) : 0.5;
-        
-        // If the color already has alpha, use it as-is, otherwise apply the opacity setting
-        if (strpos($overlay_color, 'rgba') === 0) {
-            // Already has alpha, use as-is
-            $final_overlay = $overlay_color;
-        } else {
-            // Convert hex to rgba with opacity
-            $rgb = ross_theme_hex_to_rgb($overlay_color);
-            $final_overlay = 'rgba(' . $rgb . ', ' . $overlay_opacity . ')';
-        }
-        
-        echo '.site-header::before { content: "" !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background: ' . esc_attr($final_overlay) . ' !important; z-index: 1 !important; pointer-events: none !important; }';
-        echo '.site-header > * { position: relative !important; z-index: 2 !important; }';
+    // Header Layout Styles
+    if (isset($header_options['header_width']) && $header_options['header_width'] === 'full' && isset($header_options['header_center']) && $header_options['header_center']) {
+        echo '.ross-header-centered .ross-header-inner { display: flex !important; align-items: center !important; justify-content: center !important; }';
+        echo '.ross-header-centered .ross-site-branding { flex: 0 0 auto !important; }';
+        echo '.ross-header-centered .ross-nav-primary { flex: 1 !important; display: flex !important; justify-content: center !important; }';
     }
     
     // Typography Styles
@@ -485,7 +413,7 @@ function ross_theme_dynamic_css() {
         }
     }
     
-    // Spacing Styles
+    // Spacing Styles - Apply to normal header state
     $padding_styles = array();
     if (isset($header_options['header_padding_top'])) {
         $padding_styles[] = 'padding-top: ' . absint($header_options['header_padding_top']) . 'px';
@@ -500,7 +428,8 @@ function ross_theme_dynamic_css() {
         $padding_styles[] = 'padding-right: ' . absint($header_options['header_padding_right']) . 'px';
     }
     if (!empty($padding_styles)) {
-        echo '.site-header { ' . implode(' !important; ', $padding_styles) . ' !important; }';
+        // Apply to normal header (not sticky) with high specificity
+        echo '.site-header:not(.is-sticky) { ' . implode(' !important; ', $padding_styles) . ' !important; }';
     }
     
     $margin_styles = array();
@@ -511,7 +440,16 @@ function ross_theme_dynamic_css() {
         $margin_styles[] = 'margin-bottom: ' . intval($header_options['header_margin_bottom']) . 'px';
     }
     if (!empty($margin_styles)) {
-        echo '.site-header { ' . implode(' !important; ', $margin_styles) . ' !important; }';
+        // Apply to normal header (not sticky) with high specificity
+        echo '.site-header:not(.is-sticky) { ' . implode(' !important; ', $margin_styles) . ' !important; }';
+    }
+    
+    // Header Height - Apply to normal header state
+    if (!empty($header_options['header_height'])) {
+        $header_height = absint($header_options['header_height']);
+        // Apply to normal header (not sticky) to ensure height is respected
+        echo '.site-header:not(.is-sticky) { min-height: ' . $header_height . 'px !important; }';
+        echo '.site-header:not(.is-sticky) .header-inner { min-height: ' . $header_height . 'px !important; }';
     }
     
     // Effects Styles
@@ -526,7 +464,18 @@ function ross_theme_dynamic_css() {
     
     if (isset($header_options['header_glass_effect']) && $header_options['header_glass_effect']) {
         $opacity = isset($header_options['header_glass_opacity']) ? floatval($header_options['header_glass_opacity']) : 0.8;
-        echo '.site-header { background: rgba(255, 255, 255, ' . $opacity . ') !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }';
+        $bg_color = isset($header_options['header_bg_color']) ? $header_options['header_bg_color'] : '#ffffff';
+        
+        // Convert hex to rgba
+        $hex = ltrim($bg_color, '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        
+        echo '.site-header { background: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $opacity . ') !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }';
     }
     
     // Animation Styles

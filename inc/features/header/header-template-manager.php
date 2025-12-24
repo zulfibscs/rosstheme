@@ -61,7 +61,7 @@ function ross_theme_get_header_template($template_id) {
  */
 function ross_theme_get_active_header_template() {
     $options = get_option('ross_theme_header_options', array());
-    return isset($options['header_template']) ? $options['header_template'] : 'creative-agency';
+    return isset($options['header_template']) ? $options['header_template'] : 'modern-complete';
 }
 
 /**

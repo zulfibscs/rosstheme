@@ -23,6 +23,7 @@ if ( file_exists( get_template_directory() . '/inc/template-tags-footer-social.p
 }
 
 // Feature modules
+require_once get_template_directory() . '/inc/features/header/core/components/sticky-header.php';
 require_once get_template_directory() . '/inc/features/header/header-template-manager.php';
 require_once get_template_directory() . '/inc/features/header/header-options.php';
 require_once get_template_directory() . '/inc/features/header/header-functions.php';

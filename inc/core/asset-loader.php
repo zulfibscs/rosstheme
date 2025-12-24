@@ -69,28 +69,23 @@ function ross_theme_enqueue_assets() {
 		wp_enqueue_style('ross-theme-templates-global', get_template_directory_uri() . '/assets/css/frontend/templates-global.css', array('ross-theme-style'), filemtime($templates_global_css));
 	}
 
-	// Template-specific CSS (conditional loading based on active template)
-	if (is_page_template()) {
-		$template_name = get_page_template_slug();
-		
-		// Map template files to their CSS files
-		$template_css_map = array(
-			'template-home-business.php' => 'template-business.css',
-			'template-home-creative.php' => 'template-creative.css',
-			'template-home-ecommerce.php' => 'template-ecommerce.css',
-			'template-home-minimal.php' => 'template-minimal.css',
-			'template-home-startup.php' => 'template-startup.css',
-			'template-home-restaurant.php' => 'template-restaurant.css',
-		);
-		
-		if (isset($template_css_map[$template_name])) {
-			$template_css_file = $template_css_map[$template_name];
-			$template_css_path = get_template_directory() . '/assets/css/frontend/' . $template_css_file;
-			
-			if (file_exists($template_css_path)) {
-				$handle = 'ross-theme-' . str_replace('.css', '', $template_css_file);
-				wp_enqueue_style($handle, get_template_directory_uri() . '/assets/css/frontend/' . $template_css_file, array('ross-theme-templates-global'), filemtime($template_css_path));
-			}
+	// Header template-specific CSS (conditional loading based on active header template)
+	$header_options = get_option('ross_theme_header_options', array());
+	$header_template = $header_options['header_template'] ?? '';
+
+	// Map header template IDs to their CSS files
+	$header_template_css_map = array(
+		'modern-complete' => 'header-modern-complete.css',
+		'classic-static' => 'header-classic-static.css',
+	);
+
+	if (isset($header_template_css_map[$header_template])) {
+		$header_css_file = $header_template_css_map[$header_template];
+		$header_css_path = get_template_directory() . '/assets/css/frontend/' . $header_css_file;
+
+		if (file_exists($header_css_path)) {
+			$handle = 'ross-theme-header-' . str_replace('.css', '', str_replace('header-', '', $header_css_file));
+			wp_enqueue_style($handle, get_template_directory_uri() . '/assets/css/frontend/' . $header_css_file, array('ross-theme-frontend-header'), filemtime($header_css_path));
 		}
 	}
 
@@ -116,6 +111,17 @@ function ross_theme_enqueue_assets() {
 	$search_js = get_template_directory() . '/assets/js/frontend/search.js';
 	if (file_exists($search_js)) {
 		wp_enqueue_script('ross-theme-search', get_template_directory_uri() . '/assets/js/frontend/search.js', array(), filemtime($search_js), true);
+	}
+
+	// Header template-specific JS (conditional loading based on active header template)
+	if (!empty($header_template) && isset($header_template_css_map[$header_template])) {
+		$header_js_file = str_replace('.css', '.js', $header_template_css_map[$header_template]);
+		$header_js_path = get_template_directory() . '/assets/js/frontend/' . $header_js_file;
+
+		if (file_exists($header_js_path)) {
+			$handle = 'ross-theme-header-' . str_replace('.js', '', str_replace('header-', '', $header_js_file));
+			wp_enqueue_script($handle, get_template_directory_uri() . '/assets/js/frontend/' . $header_js_file, array('jquery'), filemtime($header_js_path), true);
+		}
 	}
 
 	// Templates interactions JS (for homepage templates)

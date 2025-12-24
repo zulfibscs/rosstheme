@@ -23,7 +23,8 @@ $social_enable = isset($header_options['enable_social']) ? $header_options['enab
 // Color and style options
 $bg_color = isset($header_options['topbar_bg_color']) ? $header_options['topbar_bg_color'] : '#001946';
 $text_color = isset($header_options['topbar_text_color']) ? $header_options['topbar_text_color'] : '#ffffff';
-$icon_color = isset($header_options['topbar_icon_color']) ? $header_options['topbar_icon_color'] : $text_color;
+$phone_color = isset($header_options['topbar_icon_color']) ? $header_options['topbar_icon_color'] : '#ffffff';
+$icon_color = isset($header_options['social_icon_color']) ? $header_options['social_icon_color'] : '#ffffff';
 $gradient_enable = isset($header_options['topbar_gradient_enable']) ? $header_options['topbar_gradient_enable'] : false;
 $gradient_color1 = isset($header_options['topbar_gradient_color1']) ? $header_options['topbar_gradient_color1'] : '#001946';
 $gradient_color2 = isset($header_options['topbar_gradient_color2']) ? $header_options['topbar_gradient_color2'] : '#003d7a';
@@ -95,7 +96,7 @@ if ($border_width > 0) {
                     
                     foreach ($social_urls as $platform => $url) {
                         if (!empty($url)) {
-                            echo '<a class="social-link" data-social="' . esc_attr($platform) . '" href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr(ucfirst($platform)) . '" style="color: ' . esc_attr($icon_color) . ';">';
+                            echo '<a class="social-link" data-social="' . esc_attr($platform) . '" href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr(ucfirst($platform)) . '">';
                             echo '<i class="' . esc_attr($social_icons[$platform]) . '"></i>';
                             echo '</a>';
                         }
@@ -105,7 +106,7 @@ if ($border_width > 0) {
                     if (!empty($custom_icons) && is_array($custom_icons)) {
                         foreach ($custom_icons as $icon) {
                             if (isset($icon['enabled']) && $icon['enabled'] && !empty($icon['url']) && !empty($icon['icon'])) {
-                                echo '<a class="social-link social-custom" href="' . esc_url($icon['url']) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr($icon['name'] ?? 'Custom') . '" style="color: ' . esc_attr($icon_color) . ';">';
+                                echo '<a class="social-link social-custom" href="' . esc_url($icon['url']) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr($icon['name'] ?? 'Custom') . '">';
                                 if (!empty($icon['icon_url'])) {
                                     echo '<img src="' . esc_url($icon['icon_url']) . '" alt="' . esc_attr($icon['name'] ?? '') . '" style="width: 16px; height: 16px; filter: brightness(0) invert(1);">';
                                 } else {
@@ -170,6 +171,7 @@ if ($border_width > 0) {
         gap: 5px;
         transition: opacity 0.3s;
         font-weight: 500;
+        color: <?php echo esc_attr($phone_color); ?> !important;
     }
 
     .topbar-phone:hover {
@@ -203,14 +205,16 @@ if ($border_width > 0) {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--social-icon-bg, rgba(255, 255, 255, 0.1));
         text-decoration: none;
         transition: all 0.3s ease;
         font-size: 14px;
+        color: <?php echo esc_attr($icon_color); ?> !important;
+        border: var(--social-icon-border, none);
     }
 
     .social-link:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--social-icon-bg-hover, rgba(255, 255, 255, 0.2));
         transform: scale(1.1);
     }
 

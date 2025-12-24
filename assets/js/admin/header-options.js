@@ -90,11 +90,36 @@ jQuery(document).ready(function($) {
         }
     }
     
+    // Conditional logic for header centering based on width
+    function toggleHeaderCenterField() {
+        var headerWidth = $('select[name="ross_theme_header_options[header_width]"]').val();
+        var centerRow = $('input[name="ross_theme_header_options[header_center]"]').closest('tr');
+        var centerInput = $('input[name="ross_theme_header_options[header_center]"]');
+        var centerLabel = centerRow.find('label[for="header_center"]');
+        var centerDesc = centerRow.find('.description');
+        
+        if (headerWidth === 'full') {
+            // Enable center option
+            centerInput.prop('disabled', false);
+            centerLabel.css('color', '');
+            centerDesc.css('color', '');
+            centerRow.show();
+        } else {
+            // Disable center option
+            centerInput.prop('disabled', true).prop('checked', false);
+            centerLabel.css('color', '#999');
+            centerDesc.css('color', '#666');
+            centerRow.show(); // Keep row visible but disabled
+        }
+    }
+    
     // Initialize conditional fields
     toggleTopBarFields();
     toggleCTAFields();
+    toggleHeaderCenterField();
     
     // Bind events
     $('input[name="ross_theme_header_options[enable_topbar]"]').on('change', toggleTopBarFields);
     $('input[name="ross_theme_header_options[enable_cta_button]"]').on('change', toggleCTAFields);
+    $('select[name="ross_theme_header_options[header_width]"]').on('change', toggleHeaderCenterField);
 });
