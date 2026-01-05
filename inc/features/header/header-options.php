@@ -83,14 +83,6 @@ class RossHeaderOptions {
 
         // ===== BASIC LAYOUT =====
         add_settings_field(
-            'header_style',
-            'Header Style (Legacy)',
-            array($this, 'header_style_callback'),
-            'ross-theme-header-layout',
-            'ross_header_layout_section'
-        );
-
-        add_settings_field(
             'header_width',
             'Header Container Width',
             array($this, 'header_width_callback'),
@@ -1190,7 +1182,7 @@ class RossHeaderOptions {
     // Section Callbacks
     public function layout_section_callback() {
         echo '<p><strong>Container Width:</strong> Choose whether header spans full browser width or is constrained to page container.</p>';
-        echo '<p><strong>Content Alignment:</strong> Center-align logo and navigation within the header (only available with Full Browser Width).</p>';
+        echo '<p><strong>Content Alignment:</strong> Center-align logo and navigation within the header (available with Full Browser Width).</p>';
         echo '<p><strong>Sticky Header:</strong> Configure sticky behavior, animations, and effects.</p>';
     }
     
@@ -1348,16 +1340,7 @@ class RossHeaderOptions {
     }
 
     public function header_style_callback() {
-        $value = isset($this->options['header_style']) ? $this->options['header_style'] : 'default';
-        ?>
-        <select name="ross_theme_header_options[header_style]" id="header_style">
-            <option value="default" <?php selected($value, 'default'); ?>>Default (Logo Left, Menu Center)</option>
-            <option value="centered" <?php selected($value, 'centered'); ?>>Centered (Logo Center, Menu Below)</option>
-            <option value="transparent" <?php selected($value, 'transparent'); ?>>Transparent (For Hero Sections)</option>
-            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal (Clean & Simple)</option>
-        </select>
-        <p class="description">Choose a header layout style. For advanced features, use the Template System above.</p>
-        <?php
+        // legacy UI removed: header style is managed by template system now.
     }
     
     public function header_width_callback() {
