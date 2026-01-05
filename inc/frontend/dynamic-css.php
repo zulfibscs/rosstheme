@@ -449,7 +449,7 @@ function ross_theme_dynamic_css() {
         $header_height = absint($header_options['header_height']);
         // Apply to normal header (not sticky) to ensure height is respected
         echo '.site-header:not(.is-sticky) { min-height: ' . $header_height . 'px !important; }';
-        echo '.site-header:not(.is-sticky) .header-inner { min-height: ' . $header_height . 'px !important; }';
+        echo '.site-header:not(.is-sticky) .header-inner, .site-header:not(.is-sticky) .ross-header-inner { min-height: ' . $header_height . 'px !important; }';
     }
     
     // Effects Styles
@@ -476,6 +476,30 @@ function ross_theme_dynamic_css() {
         $b = hexdec(substr($hex, 4, 2));
         
         echo '.site-header { background: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $opacity . ') !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }';
+    }
+
+    // Ensure sticky header has an explicit background (avoid transparent sticky headers)
+    if (!empty($header_options['sticky_header'])) {
+        // If glass effect is enabled, use semi-transparent RGBA; otherwise use solid header color
+        if (!empty($header_options['header_glass_effect'])) {
+            $bg_color = isset($header_options['header_bg_color']) ? $header_options['header_bg_color'] : '#ffffff';
+            $opacity = isset($header_options['header_glass_opacity']) ? floatval($header_options['header_glass_opacity']) : 0.85;
+            $hex = ltrim($bg_color, '#');
+            if (strlen($hex) === 3) { $r = hexdec(str_repeat(substr($hex,0,1),2)); $g = hexdec(str_repeat(substr($hex,1,1),2)); $b = hexdec(str_repeat(substr($hex,2,1),2)); } else { $r = hexdec(substr($hex,0,2)); $g = hexdec(substr($hex,2,2)); $b = hexdec(substr($hex,4,2)); }
+            echo '.site-header.is-sticky { background: rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ') !important; backdrop-filter: blur(6px) !important; -webkit-backdrop-filter: blur(6px) !important; }';
+            // override transparent header variant when sticky
+            echo '.header-transparent.site-header.is-sticky { background: rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ') !important; }';
+        } else {
+            $bg_color = isset($header_options['header_bg_color']) ? $header_options['header_bg_color'] : '';
+            if (!empty($bg_color)) {
+                echo '.site-header.is-sticky { background: ' . esc_attr($bg_color) . ' !important; }';
+                echo '.header-transparent.site-header.is-sticky { background: ' . esc_attr($bg_color) . ' !important; }';
+            } else {
+                // Fallback to CSS variable
+                echo '.site-header.is-sticky { background: var(--header-bg-color, #ffffff) !important; }';
+                echo '.header-transparent.site-header.is-sticky { background: var(--header-bg-color, #ffffff) !important; }';
+            }
+        }
     }
     
     // Animation Styles
@@ -517,7 +541,7 @@ function ross_theme_dynamic_css() {
     if (!empty($header_options['header_mobile_height'])) {
         echo '@media (max-width: ' . $mobile_breakpoint . 'px) {';
         echo '.site-header { height: ' . absint($header_options['header_mobile_height']) . 'px !important; }';
-        echo '.site-header .header-inner { height: ' . absint($header_options['header_mobile_height']) . 'px !important; }';
+        echo '.site-header .header-inner, .site-header .ross-header-inner { height: ' . absint($header_options['header_mobile_height']) . 'px !important; }';
         echo '}';
     }
     
