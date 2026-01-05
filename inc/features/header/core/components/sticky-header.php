@@ -60,7 +60,6 @@ class Ross_Sticky_Header {
             'animation_duration' => absint($options['sticky_animation_duration'] ?? 300),
             'easing' => $options['sticky_easing'] ?? 'ease-out',
             'hide_on_mobile' => !empty($options['sticky_hide_mobile']),
-            'logo_height' => isset($options['logo_height']) ? absint($options['logo_height']) : 0,
         ));
     }
 
@@ -97,14 +96,14 @@ class Ross_Sticky_Header {
         // Get background options
         $bg_color = $options['header_bg_color'] ?? '#ffffff';
 
-        // Base header styles (normal state) - avoid fixed heights, rely on padding and content
+        // Base header styles (normal state)
         $css[] = '.site-header {';
-        $css[] = '  padding-top: ' . max(10, $header_padding_top) . 'px !important;';
-        $css[] = '  padding-bottom: ' . max(10, $header_padding_bottom) . 'px !important;';
+        $css[] = '  height: ' . $header_height . 'px !important;';
+        $css[] = '  padding-top: ' . $header_padding_top . 'px !important;';
+        $css[] = '  padding-bottom: ' . $header_padding_bottom . 'px !important;';
         $css[] = '  margin-top: ' . $header_margin_top . 'px !important;';
         $css[] = '  margin-bottom: ' . $header_margin_bottom . 'px !important;';
-        $css[] = '  transition: padding ' . (absint($options['sticky_animation_duration'] ?? 300) / 1000) . 's ' . esc_attr($options['sticky_easing'] ?? 'ease-out') . ' !important;';
-        $css[] = '  display: block !important;';
+        $css[] = '  transition: all ' . (absint($options['sticky_animation_duration'] ?? 300) / 1000) . 's ' . esc_attr($options['sticky_easing'] ?? 'ease-out') . ' !important;';
         $css[] = '}';
 
         // Handle header width
@@ -189,22 +188,17 @@ class Ross_Sticky_Header {
             $shrink_padding_bottom = max(10, round($header_padding_bottom * 0.7));
 
             $css[] = '.site-header.is-sticky.shrink, header.site-header.is-sticky.shrink {';
+            $css[] = '  height: ' . $shrink_height . 'px !important;';
             $css[] = '  padding-top: ' . $shrink_padding_top . 'px !important;';
             $css[] = '  padding-bottom: ' . $shrink_padding_bottom . 'px !important;';
             $css[] = '}';
 
-            // Logo safety and transition rules
-            $css[] = '.site-logo { display: flex !important; align-items: center !important; }';
-            $css[] = '.site-logo .logo-text { white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }';
-
-            $css[] = '.site-logo img {';
-            $css[] = '  max-width: 100% !important;';
-            $css[] = '  height: auto !important;';
-            $css[] = '  display: block !important;';
-            $css[] = '  transition: max-height ' . (absint($options['sticky_animation_duration'] ?? 300) / 1000) . 's ' . esc_attr($options['sticky_easing'] ?? 'ease-out') . ' !important;';
+            // Logo scaling
+            $logo_scale = $shrink_height / $normal_height;
+            $css[] = '.site-header.is-sticky.shrink .site-logo img {';
+            $css[] = '  transform: scale(' . max(0.7, $logo_scale) . ') !important;';
+            $css[] = '  transition: transform ' . (absint($options['sticky_animation_duration'] ?? 300) / 1000) . 's ' . esc_attr($options['sticky_easing'] ?? 'ease-out') . ' !important;';
             $css[] = '}';
-
-            // If designer did not set a fixed logo_height, we'll let JS scale it based on available height
 
             // Menu font size reduction
             $css[] = '.site-header.is-sticky.shrink .primary-menu a {';
@@ -258,7 +252,19 @@ class Ross_Sticky_Header {
 
         $css[] = '}';
 
-        // Body padding will be computed at runtime in JS based on actual header offsetHeight
+        // Body padding to prevent content jump
+        $header_height = absint($options['header_height'] ?? 80);
+        $css[] = 'body.has-sticky-header {';
+        $css[] = '  padding-top: ' . $header_height . 'px !important;';
+        $css[] = '  transition: padding-top ' . (absint($options['sticky_animation_duration'] ?? 300) / 1000) . 's ' . esc_attr($options['sticky_easing'] ?? 'ease-out') . ' !important;';
+        $css[] = '}';
+
+        if (!empty($options['sticky_shrink_header'])) {
+            $shrink_height = absint($options['sticky_header_height'] ?? 70);
+            $css[] = 'body.has-sticky-header.is-sticky.shrink {';
+            $css[] = '  padding-top: ' . $shrink_height . 'px !important;';
+            $css[] = '}';
+        }
 
         return implode("\n", $css);
     }

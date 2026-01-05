@@ -25,7 +25,7 @@ $inline_style = ross_theme_get_header_inline_style();
                 $mobile_logo_width = isset($options['mobile_logo_width']) ? absint($options['mobile_logo_width']) : 120;
                 ?>
                 <?php if ($has_logo): ?>
-                    <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_title); ?>" class="desktop-logo" style="max-width: <?php echo esc_attr($options['logo_width']); ?>px; <?php if (!empty($options['logo_height'])): ?>max-height: <?php echo esc_attr($options['logo_height']); ?>px;<?php endif; ?> height: auto; display:block;">
+                    <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_title); ?>" class="desktop-logo" style="max-width: <?php echo esc_attr($options['logo_width']); ?>px; height: auto; display:block;">
                     <?php if (!empty($mobile_logo)): ?>
                         <img src="<?php echo esc_url($mobile_logo); ?>" alt="<?php echo esc_attr($site_title); ?>" class="mobile-logo" style="max-width: <?php echo esc_attr($mobile_logo_width); ?>px; height: auto; display:none;">
                     <?php endif; ?>

@@ -21,7 +21,7 @@ $inline_style = ross_theme_get_header_inline_style();
             <div class="header-logo">
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="site-logo" style="display:flex;align-items:center;gap:0.6rem;">
                     <?php if ($options['logo_upload'] || file_exists(get_template_directory() . '/assets/img/logo.png')): ?>
-                        <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_title); ?>" style="max-width: <?php echo esc_attr($options['logo_width']); ?>px; <?php if (!empty($options['logo_height'])): ?>max-height: <?php echo esc_attr($options['logo_height']); ?>px;<?php endif; ?> height: auto; display:block;">
+                        <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($site_title); ?>" style="max-width: <?php echo esc_attr($options['logo_width']); ?>px; height: auto; display:block;">
                     <?php endif; ?>
 
                     <?php if ( ! empty( $options['show_site_title'] ) ) : ?>

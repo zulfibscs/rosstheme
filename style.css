@@ -29,8 +29,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height:auto;
-    /* padding: 1.2rem 0; */
+    padding: 1.2rem 0;
+    min-height: 80px;
 }
 
 .header-default .header-logo {
@@ -99,6 +99,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 0;
+    min-height: 80px;
 }
 
 /* Minimal Header */
@@ -107,14 +108,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
+    min-height: 70px;
 }
 
 /* Logo Styles */
 .site-logo img {
-    max-height: 45px;
+    height: 45px;
     width: auto;
-    height: auto;
-    transition: max-height 0.3s ease, transform 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .site-logo:hover img {
