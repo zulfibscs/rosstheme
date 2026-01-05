@@ -39,8 +39,8 @@ $menu_alignment = $header_options['menu_alignment'] ?? 'left';
 $menu_font_size = $header_options['menu_font_size'] ?? '16';
 
 // Padding from options
-$padding_top = $header_options['header_padding_top'] ?? '20';
-$padding_bottom = $header_options['header_padding_bottom'] ?? '20';
+$padding_top = $header_options['header_padding_top'] ?? '0';
+$padding_bottom = $header_options['header_padding_bottom'] ?? '0';
 
 // Sticky class
 $sticky_class = $sticky_enabled ? 'ross-sticky-header' : '';
@@ -62,7 +62,7 @@ $width_class = $header_width === 'full' ? 'ross-header-full-width' : 'ross-heade
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="ross-site-logo" rel="home">
                         <img src="<?php echo esc_url($logo_url); ?>" 
                              alt="<?php bloginfo('name'); ?>" 
-                             style="max-width: <?php echo esc_attr($logo_width); ?>px; height: auto;">
+                             style="max-width: <?php echo esc_attr($logo_width); ?>px; <?php if (!empty($header_options['logo_height'])): ?>max-height: <?php echo esc_attr($header_options['logo_height']); ?>px;<?php endif; ?> height: auto;">
                     </a>
                 <?php endif; ?>
                 
