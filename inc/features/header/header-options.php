@@ -2990,7 +2990,7 @@ class RossHeaderOptions {
         // Advanced Sticky Options
         $sanitized['sticky_behavior'] = isset($input['sticky_behavior']) ? sanitize_text_field($input['sticky_behavior']) : 'scroll_up';
         $sanitized['sticky_scroll_threshold'] = isset($input['sticky_scroll_threshold']) ? absint($input['sticky_scroll_threshold']) : 100;
-        $sanitized['sticky_shrink_header'] = isset($input['sticky_shrink_header']) ? 1 : 1;
+        $sanitized['sticky_shrink_header'] = isset($input['sticky_shrink_header']) ? 1 : 0;
         $sanitized['sticky_header_height'] = isset($input['sticky_header_height']) ? absint($input['sticky_header_height']) : 60;
         $sanitized['sticky_animation_duration'] = isset($input['sticky_animation_duration']) ? floatval($input['sticky_animation_duration']) : 0.3;
         $sanitized['sticky_easing'] = isset($input['sticky_easing']) ? sanitize_text_field($input['sticky_easing']) : 'ease-out';
@@ -3244,7 +3244,7 @@ class RossHeaderOptions {
         $sanitized['header_opacity'] = isset($input['header_opacity']) ? floatval($input['header_opacity']) : 1;
         $sanitized['header_blur'] = isset($input['header_blur']) ? 1 : 0;
         $sanitized['header_blur_amount'] = isset($input['header_blur_amount']) ? absint($input['header_blur_amount']) : 10;
-        $sanitized['header_glass_effect'] = isset($input['header_glass_effect']) ? 1 : 1;
+        $sanitized['header_glass_effect'] = isset($input['header_glass_effect']) ? 1 : 0;
         $sanitized['header_glass_opacity'] = isset($input['header_glass_opacity']) ? floatval($input['header_glass_opacity']) : 0.8;
         $allowed_animations = array('none', 'fade-in', 'slide-down', 'scale-in');
         $sanitized['header_animation'] = isset($input['header_animation']) && in_array($input['header_animation'], $allowed_animations) ? sanitize_text_field($input['header_animation']) : 'none';
