@@ -14,13 +14,26 @@ $config = wp_parse_args($config, $defaults);
 
 // Helper functions
 function ross_responsive_modern_get_logo() {
+    $opts = function_exists('ross_theme_get_header_options') ? ross_theme_get_header_options() : get_option('ross_theme_header_options', array());
+    $logo_height = !empty($opts['logo_height']) ? intval($opts['logo_height']) : 0;
+    $show_site_title = isset($opts['show_site_title']) ? (bool) $opts['show_site_title'] : true;
+
     if (has_custom_logo()) {
         $logo_id = get_theme_mod('custom_logo');
         $logo_url = wp_get_attachment_image_url($logo_id, 'full');
         $logo_alt = get_post_meta($logo_id, '_wp_attachment_image_alt', true) ?: get_bloginfo('name');
-        return '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr($logo_alt) . '" class="logo-img">';
+        $style = '';
+        if ($logo_height > 0) {
+            $style = ' style="max-height: ' . $logo_height . 'px; width: auto; height: auto;"';
+        }
+        return '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr($logo_alt) . '" class="logo-img"' . $style . '>';
     }
-    return '<span class="logo-text">' . get_bloginfo('name') . '</span>';
+
+    if ($show_site_title) {
+        return '<span class="logo-text">' . get_bloginfo('name') . '</span>';
+    }
+
+    return '<span class="logo-text sr-only">' . get_bloginfo('name') . '</span>';
 }
 
 function ross_responsive_modern_get_menu($location = 'primary') {
@@ -142,61 +155,19 @@ class Ross_Responsive_Modern_Mobile_Walker extends Walker_Nav_Menu {
         $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
     }
 
-    function end_el(&$output, $depth = 0, $args = null) {
+    function end_el(&$output, $item, $depth = 0, $args = null) {
         $output .= "</li>\n";
     }
 }
 ?>
 
 <!-- Responsive Header -->
-<header class="responsive-header header-contained" id="mainHeader">
-    <!-- Top Bar -->
-    <div class="top-bar show" id="topBar">
-        <div class="container">
-            <div class="top-bar-inner">
-                <div class="topbar-left">
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <a href="tel:+11234567890">+1 (123) 456-7890</a>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <a href="mailto:info@example.com">info@example.com</a>
-                    </div>
-                </div>
-                <div class="topbar-right">
-                    <div class="social-links">
-                        <a href="#" class="social-link" aria-label="Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Twitter">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Instagram">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="social-link" aria-label="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Announcement Bar -->
-    <div class="announcement-bar show" id="announcementBar">
-        <div class="container">
-            <div class="announcement-content">
-                🎉 Special Offer: Get 20% off on all services this month! Limited time offer.
-            </div>
-        </div>
-    </div>
+<header class="<?php echo esc_attr(ross_theme_header_classes()); ?>" id="mainHeader">
 
     <!-- Main Header -->
     <div class="header-main">
         <div class="container">
-            <div class="header-inner">
+            <div class="header-inner" style="<?php echo esc_attr(ross_theme_get_header_inline_style()); ?>">
                 <!-- Logo -->
                 <div class="header-logo">
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-link">
@@ -242,10 +213,12 @@ class Ross_Responsive_Modern_Mobile_Walker extends Walker_Nav_Menu {
                     </a>
 
                     <!-- Mobile Menu Toggle -->
-                    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu" aria-expanded="false">
-                        <span class="toggle-bar"></span>
-                        <span class="toggle-bar"></span>
-                        <span class="toggle-bar"></span>
+                    <button class="menu-toggle" aria-expanded="false" aria-controls="primary-menu" aria-label="Toggle navigation menu">
+                        <span class="hamburger">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </span>
                     </button>
                 </div>
             </div>
@@ -253,6 +226,7 @@ class Ross_Responsive_Modern_Mobile_Walker extends Walker_Nav_Menu {
     </div>
 
     <!-- Mobile Navigation -->
+    
     <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
     <div class="mobile-nav-drawer" id="mobileNavDrawer">
         <div class="mobile-nav-header">
