@@ -428,6 +428,20 @@ function ross_theme_dynamic_css() {
         $padding_styles[] = 'padding-right: ' . absint($header_options['header_padding_right']) . 'px';
     }
     if (!empty($padding_styles)) {
+        // Enforce minimum 10px vertical padding so logo never touches edges
+        foreach ($padding_styles as &$p) {
+            if (strpos($p, 'padding-top') !== false) {
+                preg_match('/(\d+)px/', $p, $m);
+                $val = isset($m[1]) ? max(10, intval($m[1])) : 10;
+                $p = 'padding-top: ' . $val . 'px';
+            }
+            if (strpos($p, 'padding-bottom') !== false) {
+                preg_match('/(\d+)px/', $p, $m);
+                $val = isset($m[1]) ? max(10, intval($m[1])) : 10;
+                $p = 'padding-bottom: ' . $val . 'px';
+            }
+        }
+
         // Apply to normal header (not sticky) with high specificity
         echo '.site-header:not(.is-sticky) { ' . implode(' !important; ', $padding_styles) . ' !important; }';
     }
@@ -444,12 +458,16 @@ function ross_theme_dynamic_css() {
         echo '.site-header:not(.is-sticky) { ' . implode(' !important; ', $margin_styles) . ' !important; }';
     }
     
-    // Header Height - Apply to normal header state
-    if (!empty($header_options['header_height'])) {
-        $header_height = absint($header_options['header_height']);
-        // Apply to normal header (not sticky) to ensure height is respected
-        echo '.site-header:not(.is-sticky) { min-height: ' . $header_height . 'px !important; }';
-        echo '.site-header:not(.is-sticky) .header-inner, .site-header:not(.is-sticky) .ross-header-inner { min-height: ' . $header_height . 'px !important; }';
+    // Header should size based on padding and content; ensure header-inner aligns items
+    echo '.site-header .header-inner { display: flex !important; align-items: center !important; }';
+    echo '.site-logo { display: flex !important; align-items: center !important; gap: 0.6rem !important; }';
+    
+    // Sticky header height is dynamic; JS will compute body padding to prevent jumps.
+    // However, allow designers to adjust sticky padding via options if provided
+    if (isset($header_options['sticky_padding_top']) || isset($header_options['sticky_padding_bottom'])) {
+        $spt = isset($header_options['sticky_padding_top']) ? max(10, absint($header_options['sticky_padding_top'])) : 10;
+        $spb = isset($header_options['sticky_padding_bottom']) ? max(10, absint($header_options['sticky_padding_bottom'])) : 10;
+        echo '.site-header.is-sticky { padding-top: ' . $spt . 'px !important; padding-bottom: ' . $spb . 'px !important; }';
     }
     
     // Effects Styles
@@ -476,30 +494,6 @@ function ross_theme_dynamic_css() {
         $b = hexdec(substr($hex, 4, 2));
         
         echo '.site-header { background: rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $opacity . ') !important; backdrop-filter: blur(10px) !important; -webkit-backdrop-filter: blur(10px) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }';
-    }
-
-    // Ensure sticky header has an explicit background (avoid transparent sticky headers)
-    if (!empty($header_options['sticky_header'])) {
-        // If glass effect is enabled, use semi-transparent RGBA; otherwise use solid header color
-        if (!empty($header_options['header_glass_effect'])) {
-            $bg_color = isset($header_options['header_bg_color']) ? $header_options['header_bg_color'] : '#ffffff';
-            $opacity = isset($header_options['header_glass_opacity']) ? floatval($header_options['header_glass_opacity']) : 0.85;
-            $hex = ltrim($bg_color, '#');
-            if (strlen($hex) === 3) { $r = hexdec(str_repeat(substr($hex,0,1),2)); $g = hexdec(str_repeat(substr($hex,1,1),2)); $b = hexdec(str_repeat(substr($hex,2,1),2)); } else { $r = hexdec(substr($hex,0,2)); $g = hexdec(substr($hex,2,2)); $b = hexdec(substr($hex,4,2)); }
-            echo '.site-header.is-sticky { background: rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ') !important; backdrop-filter: blur(6px) !important; -webkit-backdrop-filter: blur(6px) !important; }';
-            // override transparent header variant when sticky
-            echo '.header-transparent.site-header.is-sticky { background: rgba(' . $r . ',' . $g . ',' . $b . ',' . $opacity . ') !important; }';
-        } else {
-            $bg_color = isset($header_options['header_bg_color']) ? $header_options['header_bg_color'] : '';
-            if (!empty($bg_color)) {
-                echo '.site-header.is-sticky { background: ' . esc_attr($bg_color) . ' !important; }';
-                echo '.header-transparent.site-header.is-sticky { background: ' . esc_attr($bg_color) . ' !important; }';
-            } else {
-                // Fallback to CSS variable
-                echo '.site-header.is-sticky { background: var(--header-bg-color, #ffffff) !important; }';
-                echo '.header-transparent.site-header.is-sticky { background: var(--header-bg-color, #ffffff) !important; }';
-            }
-        }
     }
     
     // Animation Styles
@@ -536,12 +530,20 @@ function ross_theme_dynamic_css() {
         echo '.site-header { padding: ' . esc_attr($header_options['header_mobile_padding']) . ' !important; }';
         echo '}';
     }
+
+    // Logo size control: ensure max-height is applied when configured so logo never overflows
+    if (!empty($header_options['logo_height'])) {
+        $lh = absint($header_options['logo_height']);
+        echo '.site-logo img, .site-logo .desktop-logo, .site-logo .mobile-logo { max-height: ' . $lh . 'px !important; height: auto !important; }';
+    }
     
-    // Mobile-specific height
+    // Mobile-specific height (prefer padding-based sizing)
     if (!empty($header_options['header_mobile_height'])) {
+        $mh = absint($header_options['header_mobile_height']);
+        $mp = max(10, intval(round($mh / 2)));
         echo '@media (max-width: ' . $mobile_breakpoint . 'px) {';
-        echo '.site-header { height: ' . absint($header_options['header_mobile_height']) . 'px !important; }';
-        echo '.site-header .header-inner, .site-header .ross-header-inner { height: ' . absint($header_options['header_mobile_height']) . 'px !important; }';
+        echo '.site-header { padding-top: ' . $mp . 'px !important; padding-bottom: ' . $mp . 'px !important; }';
+        echo '.site-header .header-inner { height: auto !important; }';
         echo '}';
     }
     

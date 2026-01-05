@@ -36,6 +36,7 @@ function ross_theme_get_header_options() {
         'header_height' => '80',
         'logo_upload' => '',
         'logo_width' => '200',
+        'logo_height' => '',
         'show_site_title' => 1,
         'enable_topbar' => 0,
         'topbar_left_content' => '',
@@ -161,8 +162,8 @@ function ross_theme_display_header() {
         }
     }
     
-    // Fallback to legacy header_style option
-    $layout = isset($options['header_style']) ? $options['header_style'] : 'default';
+    // Fallback to legacy header_style option (treat empty as default)
+    $layout = !empty($options['header_style']) ? $options['header_style'] : 'default';
     
     // Debug output
     if (current_user_can('manage_options')) {
@@ -181,8 +182,9 @@ function ross_theme_header_classes() {
     $options = ross_theme_get_header_options();
     $classes = array('site-header');
     
-    // Header style
-    $classes[] = 'header-' . $options['header_style'];
+    // Header style (ensure non-empty)
+    $header_style = !empty($options['header_style']) ? $options['header_style'] : 'default';
+    $classes[] = 'header-' . $header_style;
     
     // Sticky header
     if ($options['sticky_header']) {
@@ -229,9 +231,9 @@ function ross_theme_get_header_inline_style() {
     
     // Sanitize each value to ensure it's numeric
     $height = intval($options['header_height'] ?? 80);
-    $pt = intval($options['header_padding_top'] ?? 20);
+    $pt = max(10, intval($options['header_padding_top'] ?? 20));
     $pr = intval($options['header_padding_right'] ?? 0);
-    $pb = intval($options['header_padding_bottom'] ?? 20);
+    $pb = max(10, intval($options['header_padding_bottom'] ?? 20));
     $pl = intval($options['header_padding_left'] ?? 0);
     $mt = intval($options['header_margin_top'] ?? 0);
     $mr = intval($options['header_margin_right'] ?? 0);
@@ -242,9 +244,8 @@ function ross_theme_get_header_inline_style() {
     $text_color = isset($options['header_text_color']) ? sanitize_hex_color($options['header_text_color']) : '#333333';
     
     return sprintf(
-        'color: %s; min-height: %dpx; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
+        'color: %s; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
         esc_attr($text_color),
-        $height,
         $pt, $pr, $pb, $pl,
         $mt, $mr, $mb, $ml
     );

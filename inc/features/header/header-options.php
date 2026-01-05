@@ -82,6 +82,7 @@ class RossHeaderOptions {
         );
 
         // ===== BASIC LAYOUT =====
+
         add_settings_field(
             'header_width',
             'Header Container Width',
@@ -201,6 +202,14 @@ class RossHeaderOptions {
             'logo_width',
             'Logo Max Width (px)',
             array($this, 'logo_width_callback'),
+            'ross-theme-header-logo',
+            'ross_header_logo_section'
+        );
+
+        add_settings_field(
+            'logo_height',
+            'Logo Max Height (px)',
+            array($this, 'logo_height_callback'),
             'ross-theme-header-logo',
             'ross_header_logo_section'
         );
@@ -1181,9 +1190,7 @@ class RossHeaderOptions {
 
     // Section Callbacks
     public function layout_section_callback() {
-        echo '<p><strong>Container Width:</strong> Choose whether header spans full browser width or is constrained to page container.</p>';
-        echo '<p><strong>Content Alignment:</strong> Center-align logo and navigation within the header (available with Full Browser Width).</p>';
-        echo '<p><strong>Sticky Header:</strong> Configure sticky behavior, animations, and effects.</p>';
+        // Removed verbose layout help text — keeping section header concise
     }
     
     public function logo_section_callback() {
@@ -1340,7 +1347,16 @@ class RossHeaderOptions {
     }
 
     public function header_style_callback() {
-        // legacy UI removed: header style is managed by template system now.
+        $value = isset($this->options['header_style']) ? $this->options['header_style'] : 'default';
+        ?>
+        <select name="ross_theme_header_options[header_style]" id="header_style">
+            <option value="default" <?php selected($value, 'default'); ?>>Default (Logo Left, Menu Center)</option>
+            <option value="centered" <?php selected($value, 'centered'); ?>>Centered (Logo Center, Menu Below)</option>
+            <option value="transparent" <?php selected($value, 'transparent'); ?>>Transparent (For Hero Sections)</option>
+            <option value="minimal" <?php selected($value, 'minimal'); ?>>Minimal (Clean & Simple)</option>
+        </select>
+        <p class="description">Choose a header layout style. For advanced features, use the Template System above.</p>
+        <?php
     }
     
     public function header_width_callback() {
@@ -1377,7 +1393,7 @@ class RossHeaderOptions {
     }
 
     public function sticky_header_callback() {
-        $value = isset($this->options['sticky_header']) ? $this->options['sticky_header'] : 0;
+        $value = isset($this->options['sticky_header']) ? $this->options['sticky_header'] : 1;
         ?>
         <input type="checkbox" name="ross_theme_header_options[sticky_header]" value="1" <?php checked(1, $value); ?> />
         <label for="sticky_header">Enable sticky header on scroll</label>
@@ -1392,7 +1408,7 @@ class RossHeaderOptions {
     }
     
     public function sticky_behavior_callback() {
-        $value = isset($this->options['sticky_behavior']) ? $this->options['sticky_behavior'] : 'always';
+        $value = isset($this->options['sticky_behavior']) ? $this->options['sticky_behavior'] : 'scroll_up';
         ?>
         <select name="ross_theme_header_options[sticky_behavior]">
             <option value="always" <?php selected($value, 'always'); ?>>Always Sticky</option>
@@ -1412,7 +1428,7 @@ class RossHeaderOptions {
     }
     
     public function sticky_shrink_header_callback() {
-        $value = isset($this->options['sticky_shrink_header']) ? $this->options['sticky_shrink_header'] : 0;
+        $value = isset($this->options['sticky_shrink_header']) ? $this->options['sticky_shrink_header'] : 1;
         ?>
         <input type="checkbox" name="ross_theme_header_options[sticky_shrink_header]" value="1" <?php checked(1, $value); ?> />
         <label>Reduce header height when sticky</label>
@@ -1420,10 +1436,10 @@ class RossHeaderOptions {
     }
     
     public function sticky_header_height_callback() {
-        $value = isset($this->options['sticky_header_height']) ? $this->options['sticky_header_height'] : '70';
+        $value = isset($this->options['sticky_header_height']) ? $this->options['sticky_header_height'] : '60';
         ?>
         <input type="number" name="ross_theme_header_options[sticky_header_height]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
-        <p class="description">Header height when sticky and shrunk (default: 70px for better appearance)</p>
+        <p class="description">Header height when sticky and shrunk (default: 60px for better appearance)</p>
         <?php
     }
 
@@ -1485,6 +1501,14 @@ class RossHeaderOptions {
         $value = isset($this->options['logo_width']) ? $this->options['logo_width'] : '200';
         ?>
         <input type="number" name="ross_theme_header_options[logo_width]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
+        <?php
+    }
+
+    public function logo_height_callback() {
+        $value = isset($this->options['logo_height']) ? $this->options['logo_height'] : '';
+        ?>
+        <input type="number" name="ross_theme_header_options[logo_height]" value="<?php echo esc_attr($value); ?>" class="small-text" /> px
+        <p class="description">Optional. Set a max height for the logo image; leave empty to preserve aspect ratio.</p>
         <?php
     }
     
@@ -2733,7 +2757,7 @@ class RossHeaderOptions {
     
     // Spacing Section Callbacks
     public function header_padding_top_callback() {
-        $value = isset($this->options['header_padding_top']) ? $this->options['header_padding_top'] : '15';
+        $value = isset($this->options['header_padding_top']) ? $this->options['header_padding_top'] : '0';
         ?>
         <input type="number" name="ross_theme_header_options[header_padding_top]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
         <p class="description">Top padding</p>
@@ -2741,7 +2765,7 @@ class RossHeaderOptions {
     }
     
     public function header_padding_bottom_callback() {
-        $value = isset($this->options['header_padding_bottom']) ? $this->options['header_padding_bottom'] : '15';
+        $value = isset($this->options['header_padding_bottom']) ? $this->options['header_padding_bottom'] : '0';
         ?>
         <input type="number" name="ross_theme_header_options[header_padding_bottom]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="100" /> px
         <p class="description">Bottom padding</p>
@@ -2790,7 +2814,7 @@ class RossHeaderOptions {
     }
     
     public function header_glass_effect_callback() {
-        $value = isset($this->options['header_glass_effect']) ? $this->options['header_glass_effect'] : 0;
+        $value = isset($this->options['header_glass_effect']) ? $this->options['header_glass_effect'] : 1;
         ?>
         <input type="checkbox" name="ross_theme_header_options[header_glass_effect]" value="1" <?php checked(1, $value); ?> />
         <label>Enable glass morphism effect</label>
@@ -2957,24 +2981,24 @@ class RossHeaderOptions {
         $sanitized = array();
         
         // Layout
-        $sanitized['header_style'] = sanitize_text_field($input['header_style']);
+        $sanitized['header_style'] = (!empty($input['header_style'])) ? sanitize_text_field($input['header_style']) : 'default';
         $sanitized['header_width'] = sanitize_text_field($input['header_width']);
         $sanitized['header_center'] = isset($input['header_center']) ? 1 : 0;
         $sanitized['sticky_header'] = isset($input['sticky_header']) ? 1 : 0;
         $sanitized['header_height'] = absint($input['header_height']);
         
         // Advanced Sticky Options
-        $sanitized['sticky_behavior'] = isset($input['sticky_behavior']) ? sanitize_text_field($input['sticky_behavior']) : 'always';
+        $sanitized['sticky_behavior'] = isset($input['sticky_behavior']) ? sanitize_text_field($input['sticky_behavior']) : 'scroll_up';
         $sanitized['sticky_scroll_threshold'] = isset($input['sticky_scroll_threshold']) ? absint($input['sticky_scroll_threshold']) : 100;
-        $sanitized['sticky_shrink_header'] = isset($input['sticky_shrink_header']) ? 1 : 0;
+        $sanitized['sticky_shrink_header'] = isset($input['sticky_shrink_header']) ? 1 : 1;
         $sanitized['sticky_header_height'] = isset($input['sticky_header_height']) ? absint($input['sticky_header_height']) : 60;
         $sanitized['sticky_animation_duration'] = isset($input['sticky_animation_duration']) ? floatval($input['sticky_animation_duration']) : 0.3;
         $sanitized['sticky_easing'] = isset($input['sticky_easing']) ? sanitize_text_field($input['sticky_easing']) : 'ease-out';
         $sanitized['sticky_hide_mobile'] = isset($input['sticky_hide_mobile']) ? 1 : 0;
     // Padding
-    $sanitized['header_padding_top'] = isset($input['header_padding_top']) ? absint($input['header_padding_top']) : 20;
+    $sanitized['header_padding_top'] = isset($input['header_padding_top']) ? absint($input['header_padding_top']) : 0;
     $sanitized['header_padding_right'] = isset($input['header_padding_right']) ? absint($input['header_padding_right']) : 0;
-    $sanitized['header_padding_bottom'] = isset($input['header_padding_bottom']) ? absint($input['header_padding_bottom']) : 20;
+    $sanitized['header_padding_bottom'] = isset($input['header_padding_bottom']) ? absint($input['header_padding_bottom']) : 0;
     $sanitized['header_padding_left'] = isset($input['header_padding_left']) ? absint($input['header_padding_left']) : 0;
     // Margin
     $sanitized['header_margin_top'] = isset($input['header_margin_top']) ? absint($input['header_margin_top']) : 0;
@@ -2987,6 +3011,7 @@ class RossHeaderOptions {
         $sanitized['logo_dark'] = esc_url_raw($input['logo_dark']);
         $sanitized['mobile_logo'] = isset($input['mobile_logo']) ? esc_url_raw($input['mobile_logo']) : '';
         $sanitized['logo_width'] = absint($input['logo_width']);
+        $sanitized['logo_height'] = isset($input['logo_height']) ? absint($input['logo_height']) : 0;
         $sanitized['logo_padding'] = isset($input['logo_padding']) ? absint($input['logo_padding']) : 0;
         $sanitized['mobile_logo_width'] = isset($input['mobile_logo_width']) ? absint($input['mobile_logo_width']) : 120;
         $sanitized['show_site_title'] = isset($input['show_site_title']) ? 1 : 0;
@@ -3219,7 +3244,7 @@ class RossHeaderOptions {
         $sanitized['header_opacity'] = isset($input['header_opacity']) ? floatval($input['header_opacity']) : 1;
         $sanitized['header_blur'] = isset($input['header_blur']) ? 1 : 0;
         $sanitized['header_blur_amount'] = isset($input['header_blur_amount']) ? absint($input['header_blur_amount']) : 10;
-        $sanitized['header_glass_effect'] = isset($input['header_glass_effect']) ? 1 : 0;
+        $sanitized['header_glass_effect'] = isset($input['header_glass_effect']) ? 1 : 1;
         $sanitized['header_glass_opacity'] = isset($input['header_glass_opacity']) ? floatval($input['header_glass_opacity']) : 0.8;
         $allowed_animations = array('none', 'fade-in', 'slide-down', 'scale-in');
         $sanitized['header_animation'] = isset($input['header_animation']) && in_array($input['header_animation'], $allowed_animations) ? sanitize_text_field($input['header_animation']) : 'none';

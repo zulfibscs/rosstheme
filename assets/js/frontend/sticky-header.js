@@ -51,6 +51,8 @@
 
             // Initial check
             handleScroll();
+            // Ensure logo sizing matches initial header
+            adjustLogoSizing();
 
             console.log('Ross Sticky Header: Initialized successfully');
 
@@ -166,6 +168,10 @@
             // Trigger custom event
             triggerEvent('sticky:activated', { scrollTop: scrollTop });
 
+            // Compute and set body padding to prevent content jump
+            setBodyPadding();
+            adjustLogoSizing();
+
         } else if (!shouldBeSticky && state.isSticky) {
             // No longer sticky
             elements.header.classList.remove('is-sticky', 'shrink');
@@ -186,6 +192,9 @@
 
             // Trigger custom event
             triggerEvent('sticky:deactivated', { scrollTop: scrollTop });
+
+            // Remove runtime body padding
+            clearBodyPadding();
         }
     }
 
@@ -228,12 +237,8 @@
             newStyle = newStyle.replace(/margin-left:\s*[^;]+;?/gi, '');
             newStyle = newStyle.replace(/margin-right:\s*[^;]+;?/gi, '');
 
-            // Apply sticky-specific styles
-            if (isShrunk) {
-                newStyle += ' height: ' + config.shrink_height + 'px !important;';
-            } else {
-                newStyle += ' height: ' + config.normal_height + 'px !important;';
-            }
+            // Apply sticky-specific styles (no fixed heights — header height is dynamic)
+            // Remove height when not shrunk (scrolling up)
         }
 
         // Clean up extra semicolons
@@ -262,6 +267,10 @@
 
             triggerEvent('sticky:shrunk', { scrollTop: scrollTop });
 
+            // Recompute body padding to match new header size
+            setBodyPadding();
+            adjustLogoSizing();
+
         } else if (!shouldShrink && state.isShrunk) {
             elements.header.classList.remove('shrink');
             elements.body.classList.remove('is-sticky');
@@ -271,7 +280,39 @@
             updateHeaderInlineStyles(true, false);
 
             triggerEvent('sticky:expanded', { scrollTop: scrollTop });
+
+            // Recompute body padding to match restored header size
+            setBodyPadding();
+            adjustLogoSizing();
         }
+    }
+
+    function setBodyPadding() {
+        if (!elements.header || !elements.body) return;
+        // Use offsetHeight to include padding and border
+        var h = Math.ceil(elements.header.offsetHeight);
+        elements.body.style.paddingTop = h + 'px';
+    }
+
+    function adjustLogoSizing() {
+        if (!elements.header) return;
+        // If designer supplied a fixed logo_height, respect it
+        if (config.logo_height && parseInt(config.logo_height, 10) > 0) return;
+
+        // Compute available height for logo inside header (reserve 10px top/bottom)
+        var headerH = elements.header.offsetHeight || elements.header.clientHeight;
+        var available = Math.max(24, Math.floor(headerH - 20));
+
+        // Apply to all logo images
+        var imgs = elements.header.querySelectorAll('.site-logo img, .site-logo .desktop-logo, .site-logo .mobile-logo');
+        imgs.forEach(function(img) {
+            img.style.maxHeight = available + 'px';
+        });
+    }
+
+    function clearBodyPadding() {
+        if (!elements.body) return;
+        elements.body.style.paddingTop = '';
     }
 
     /**
@@ -314,6 +355,8 @@
 
                 // Force scroll check after resize
                 handleScroll();
+                // Re-evaluate logo sizing after resize
+                adjustLogoSizing();
             } catch (error) {
                 console.error('Ross Sticky Header: Resize handling error', error);
             }
