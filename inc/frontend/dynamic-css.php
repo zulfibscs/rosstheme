@@ -529,6 +529,98 @@ function ross_theme_dynamic_css() {
     
     // ===== END ENTERPRISE HEADER APPEARANCE STYLES =====
 
+    // ===== TOP BAR STYLES =====
+    // Top Bar Background and Colors
+    if (!empty($header_options['topbar_bg_color'])) {
+        echo '.site-topbar { background-color: ' . esc_attr($header_options['topbar_bg_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['topbar_text_color'])) {
+        echo '.site-topbar, .site-topbar a, .site-topbar .phone-link { color: ' . esc_attr($header_options['topbar_text_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['topbar_border_color']) && !empty($header_options['topbar_border_width'])) {
+        echo '.site-topbar { border-bottom: ' . absint($header_options['topbar_border_width']) . 'px solid ' . esc_attr($header_options['topbar_border_color']) . ' !important; }';
+    }
+
+    // Top Bar Phone Icon Color
+    if (!empty($header_options['topbar_icon_color'])) {
+        echo '.site-topbar .phone-link i, .site-topbar .phone-link svg { color: ' . esc_attr($header_options['topbar_icon_color']) . ' !important; }';
+    }
+
+    // Social Icons Styling
+    if (!empty($header_options['social_icon_color'])) {
+        echo '.site-topbar .ross-social-icons .social-icon { color: ' . esc_attr($header_options['social_icon_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['social_icon_bg_color'])) {
+        echo '.site-topbar .ross-social-icons .social-icon { background-color: ' . esc_attr($header_options['social_icon_bg_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['social_icon_bg_hover_color'])) {
+        echo '.site-topbar .ross-social-icons .social-icon:hover { background-color: ' . esc_attr($header_options['social_icon_bg_hover_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['social_icon_border_color'])) {
+        $border_width = !empty($header_options['social_icon_border_size']) ? absint($header_options['social_icon_border_size']) : 1;
+        echo '.site-topbar .ross-social-icons .social-icon { border: ' . $border_width . 'px solid ' . esc_attr($header_options['social_icon_border_color']) . ' !important; }';
+    }
+
+    if (!empty($header_options['social_icon_hover_color'])) {
+        echo '.site-topbar .ross-social-icons .social-icon:hover { color: ' . esc_attr($header_options['social_icon_hover_color']) . ' !important; }';
+    }
+
+    // Social Icon Size
+    if (!empty($header_options['social_icon_size'])) {
+        $size_class = $header_options['social_icon_size'];
+        if ($size_class === 'small') {
+            echo '.site-topbar .ross-social-icons .social-icon { width: 28px !important; height: 28px !important; font-size: 12px !important; }';
+        } elseif ($size_class === 'medium') {
+            echo '.site-topbar .ross-social-icons .social-icon { width: 36px !important; height: 36px !important; font-size: 14px !important; }';
+        } elseif ($size_class === 'large') {
+            echo '.site-topbar .ross-social-icons .social-icon { width: 44px !important; height: 44px !important; font-size: 16px !important; }';
+        }
+    }
+
+    // Social Icon Shape
+    if (!empty($header_options['social_icon_shape'])) {
+        $shape = $header_options['social_icon_shape'];
+        if ($shape === 'circle') {
+            echo '.site-topbar .ross-social-icons .social-icon { border-radius: 50% !important; }';
+        } elseif ($shape === 'square') {
+            echo '.site-topbar .ross-social-icons .social-icon { border-radius: 0 !important; }';
+        } elseif ($shape === 'rounded') {
+            echo '.site-topbar .ross-social-icons .social-icon { border-radius: 6px !important; }';
+        } elseif ($shape === 'plain') {
+            echo '.site-topbar .ross-social-icons .social-icon { background: transparent !important; border: none !important; }';
+        }
+    }
+
+    // Custom Social Icon Width
+    if (!empty($header_options['social_icon_width'])) {
+        $width = absint($header_options['social_icon_width']);
+        echo '.site-topbar .ross-social-icons .social-icon { width: ' . $width . 'px !important; height: ' . $width . 'px !important; }';
+    }
+
+    // Social Icon Effects
+    if (!empty($header_options['social_icon_effect'])) {
+        $effect = $header_options['social_icon_effect'];
+        if ($effect === 'bounce') {
+            echo '.site-topbar .ross-social-icons .social-icon:hover { animation: rossBounce 0.6s ease !important; }';
+            echo '@keyframes rossBounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-4px); } 60% { transform: translateY(-2px); } }';
+        } elseif ($effect === 'pulse') {
+            echo '.site-topbar .ross-social-icons .social-icon:hover { animation: rossPulse 0.6s ease !important; }';
+            echo '@keyframes rossPulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }';
+        } elseif ($effect === 'rotate') {
+            echo '.site-topbar .ross-social-icons .social-icon:hover { animation: rossRotate 0.6s ease !important; }';
+            echo '@keyframes rossRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+        } elseif ($effect === 'scale') {
+            echo '.site-topbar .ross-social-icons .social-icon:hover { transform: scale(1.1) !important; transition: transform 0.3s ease !important; }';
+        }
+    }
+
+    // ===== END TOP BAR STYLES =====
+
     // Footer template colors
     $footer_options = get_option('ross_theme_footer_options', array());
     $template = isset($footer_options['footer_template']) ? $footer_options['footer_template'] : 'business-professional';

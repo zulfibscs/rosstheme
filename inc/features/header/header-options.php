@@ -46,6 +46,7 @@ class RossHeaderOptions {
             // Finally our uploader script and header admin helpers
             wp_enqueue_script('ross-uploader-standalone', get_template_directory_uri() . '/assets/js/admin/uploader-standalone.js', array(), '1.0.0', false);
             wp_enqueue_script('ross-header-admin', get_template_directory_uri() . '/assets/js/admin/header-options.js', array('jquery', 'wp-color-picker'), '1.0.0', true);
+            wp_enqueue_script('ross-topbar-admin', get_template_directory_uri() . '/assets/js/admin/topbar-admin-improved.js', array('jquery', 'wp-color-picker'), '1.0.0', true);
         }
     }
     
@@ -2008,7 +2009,37 @@ class RossHeaderOptions {
         </script>
         <?php
     }
-    
+
+    public function social_icon_hover_color_callback() {
+        $value = isset($this->options['social_icon_hover_color']) ? $this->options['social_icon_hover_color'] : '#E5C902';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <p class="description">Choose the hover color of social icons.</p>
+        <?php
+    }
+
+    public function social_icon_bg_hover_color_callback() {
+        $value = isset($this->options['social_icon_bg_hover_color']) ? $this->options['social_icon_bg_hover_color'] : '';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_bg_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="" />
+        <p class="description">Hover background color for social icons (leave blank to use default hover effect).</p>
+        <?php
+    }
+
+    public function social_instagram_callback() {
+        $value = isset($this->options['social_instagram']) ? $this->options['social_instagram'] : '';
+        ?>
+        <input type="url" name="ross_theme_header_options[social_instagram]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="https://instagram.com/yourprofile" />
+        <?php
+    }
+
+    public function social_youtube_callback() {
+        $value = isset($this->options['social_youtube']) ? $this->options['social_youtube'] : '';
+        ?>
+        <input type="url" name="ross_theme_header_options[social_youtube]" value="<?php echo esc_attr($value); ?>" class="regular-text" placeholder="https://youtube.com/channel/yourchannel" />
+        <?php
+    }
+
     // Field Callbacks - Navigation Section
     public function menu_alignment_callback() {
         $value = isset($this->options['menu_alignment']) ? $this->options['menu_alignment'] : 'left';

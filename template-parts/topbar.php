@@ -1,268 +1,142 @@
 <?php
 /**
  * Top Bar Template
- * Displays the top bar with improved admin settings
+ * Displays the top bar with social icons, phone number, and custom content
  */
 
-if (!defined('ABSPATH')) exit;
+// Get header options
+$options = get_option('ross_theme_header_options', array());
+$enable_topbar = isset($options['enable_topbar']) ? $options['enable_topbar'] : 0;
 
-// Get header options from the improved admin interface
-$header_options = get_option('ross_theme_header_options', array());
+if (!$enable_topbar) return;
 
-$enable = isset($header_options['enable_topbar']) ? $header_options['enable_topbar'] : false;
-if (!$enable) {
-    return;
-}
+// Helper function to get option with default
+$get = function($key, $default = '') use ($options) {
+    return isset($options[$key]) ? $options[$key] : $default;
+};
 
-$show_left = isset($header_options['enable_topbar_left']) ? $header_options['enable_topbar_left'] : true;
-$left_content = isset($header_options['topbar_left_content']) ? $header_options['topbar_left_content'] : '';
-$phone = isset($header_options['phone_number']) ? $header_options['phone_number'] : '';
-$announcement_enabled = false; // announcements handled centrally
-$social_enable = isset($header_options['enable_social']) ? $header_options['enable_social'] : false;
+// Top bar settings
+$bg_color = $get('topbar_bg_color', '#001946');
+$text_color = $get('topbar_text_color', '#ffffff');
+$border_color = $get('topbar_border_color', '#E5C902');
+$border_width = $get('topbar_border_width', 0);
 
-// Color and style options
-$bg_color = isset($header_options['topbar_bg_color']) ? $header_options['topbar_bg_color'] : '#001946';
-$text_color = isset($header_options['topbar_text_color']) ? $header_options['topbar_text_color'] : '#ffffff';
-$phone_color = isset($header_options['topbar_icon_color']) ? $header_options['topbar_icon_color'] : '#ffffff';
-$icon_color = isset($header_options['social_icon_color']) ? $header_options['social_icon_color'] : '#ffffff';
-$gradient_enable = isset($header_options['topbar_gradient_enable']) ? $header_options['topbar_gradient_enable'] : false;
-$gradient_color1 = isset($header_options['topbar_gradient_color1']) ? $header_options['topbar_gradient_color1'] : '#001946';
-$gradient_color2 = isset($header_options['topbar_gradient_color2']) ? $header_options['topbar_gradient_color2'] : '#003d7a';
-$shadow_enable = isset($header_options['topbar_shadow_enable']) ? $header_options['topbar_shadow_enable'] : false;
-$border_width = isset($header_options['topbar_border_width']) ? $header_options['topbar_border_width'] : 0;
-$border_color = isset($header_options['topbar_border_color']) ? $header_options['topbar_border_color'] : '#E5C902';
+// Social icons settings
+$enable_social = $get('enable_social', 0);
+$social_icon_size = $get('social_icon_size', 'medium');
+$social_icon_shape = $get('social_icon_shape', 'circle');
+$social_icon_color = $get('social_icon_color', '#ffffff');
+$social_icon_bg_color = $get('social_icon_bg_color', 'transparent');
+$social_icon_bg_hover_color = $get('social_icon_bg_hover_color', '');
+$social_icon_border_color = $get('social_icon_border_color', 'transparent');
+$social_icon_border_size = $get('social_icon_border_size', '0');
+$social_icon_hover_color = $get('social_icon_hover_color', '#E5C902');
+$social_icon_effect = $get('social_icon_effect', 'none');
+$social_icon_width = $get('social_icon_width', '32');
 
-// Social media URLs
-$social_urls = array(
-    'facebook' => isset($header_options['social_facebook']) ? $header_options['social_facebook'] : '',
-    'twitter' => isset($header_options['social_twitter']) ? $header_options['social_twitter'] : '',
-    'linkedin' => isset($header_options['social_linkedin']) ? $header_options['social_linkedin'] : '',
-    'instagram' => isset($header_options['social_instagram']) ? $header_options['social_instagram'] : '',
-    'youtube' => isset($header_options['social_youtube']) ? $header_options['social_youtube'] : '',
-);
+// Left content settings
+$enable_left = $get('enable_topbar_left', 1);
+$left_content = $get('topbar_left_content', '');
+$phone_number = $get('phone_number', '');
 
-// Custom social icons
-$custom_icons = isset($header_options['social_custom_icons']) ? $header_options['social_custom_icons'] : array();
+// Custom icon links
+$custom_icons = $get('topbar_custom_icon_links', array());
+if (!is_array($custom_icons)) $custom_icons = array();
 
-// Build inline style
-$style = '';
-if ($gradient_enable) {
-    $style .= 'background: linear-gradient(90deg, ' . esc_attr($gradient_color1) . ', ' . esc_attr($gradient_color2) . ');';
-} else {
-    $style .= 'background-color: ' . esc_attr($bg_color) . ';';
-}
-$style .= ' color: ' . esc_attr($text_color) . ';';
-if ($shadow_enable) {
-    $style .= ' box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);';
-}
-if ($border_width > 0) {
-    $style .= ' border-bottom: ' . absint($border_width) . 'px solid ' . esc_attr($border_color) . ';';
-}
+// Build CSS classes
+$topbar_classes = array('site-topbar');
+$social_classes = array('topbar-social-links');
+
+if ($social_icon_size) $social_classes[] = 'social-link--' . $social_icon_size;
+if ($social_icon_shape) $social_classes[] = 'social-link--' . $social_icon_shape;
+if ($social_icon_effect && $social_icon_effect !== 'none') $social_classes[] = 'social-link--' . $social_icon_effect;
+
+// Inline styles
+$topbar_styles = array();
+if ($bg_color) $topbar_styles[] = "background-color: {$bg_color}";
+if ($text_color) $topbar_styles[] = "color: {$text_color}";
+if ($border_width > 0 && $border_color) $topbar_styles[] = "border-bottom: {$border_width}px solid {$border_color}";
+
+$social_styles = array();
+if ($social_icon_color) $social_styles[] = "--social-icon-color: {$social_icon_color}";
+if ($social_icon_bg_color) $social_styles[] = "--social-bg-color: {$social_icon_bg_color}";
+if ($social_icon_bg_hover_color) $social_styles[] = "--social-bg-hover-color: {$social_icon_bg_hover_color}";
+if ($social_icon_border_color) $social_styles[] = "--social-border-color: {$social_icon_border_color}";
+if ($social_icon_border_size) $social_styles[] = "--social-border-size: {$social_icon_border_size}px";
+if ($social_icon_hover_color) $social_styles[] = "--social-hover-color: {$social_icon_hover_color}";
+if ($social_icon_width) $social_styles[] = "--social-icon-width: {$social_icon_width}px";
 ?>
 
-<div class="site-topbar" style="<?php echo $style; ?>">
-    <!-- Announcement is rendered centrally via ross_theme_render_announcement_strip() -->
-    <div class="container topbar-inner">
+<div class="<?php echo esc_attr(implode(' ', $topbar_classes)); ?>" style="<?php echo esc_attr(implode('; ', $topbar_styles)); ?>">
+    <div class="topbar-inner">
         <!-- Left Section -->
-        <div class="topbar-left" <?php echo !$show_left ? 'style="display: none;"' : ''; ?>>
-            <?php if ($phone): ?>
-                <a class="topbar-phone" href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $phone)); ?>" style="color: inherit; text-decoration: none;">
-                    📞 <?php echo esc_html($phone); ?>
-                </a>
-            <?php endif; ?>
-            <?php if (!empty($left_content)): ?>
-                <span class="topbar-custom-content"><?php echo wp_kses_post($left_content); ?></span>
-            <?php endif; ?>
-        </div>
+        <?php if ($enable_left): ?>
+            <div class="topbar-left">
+                <?php if ($left_content): ?>
+                    <div class="topbar-left-content">
+                        <?php echo wp_kses_post($left_content); ?>
+                    </div>
+                <?php endif; ?>
 
-        <!-- Center (reserved for nav/branding). Announcement is shown above as a single-line strip. -->
-        <div class="topbar-center">
-            <!-- reserved for center content -->
-        </div>
+                <?php if ($phone_number): ?>
+                    <div class="topbar-phone">
+                        <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $phone_number)); ?>" class="topbar-phone-link" style="color: <?php echo esc_attr($text_color); ?>;">
+                            <i class="fas fa-phone" style="margin-right: 8px;"></i>
+                            <?php echo esc_html($phone_number); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-        <!-- Right Section: Social Icons -->
-        <div class="topbar-right">
-            <?php if ($social_enable): ?>
-                <div class="topbar-social">
+        <!-- Right Section - Social Icons -->
+        <?php if ($enable_social || !empty($custom_icons)): ?>
+            <div class="topbar-right">
+                <div class="<?php echo esc_attr(implode(' ', $social_classes)); ?>" style="<?php echo esc_attr(implode('; ', $social_styles)); ?>">
                     <?php
-                    // Default social icons with Font Awesome classes
-                    $social_icons = array(
-                        'facebook' => 'fab fa-facebook-f',
-                        'twitter' => 'fab fa-twitter',
-                        'linkedin' => 'fab fa-linkedin-in',
-                        'instagram' => 'fab fa-instagram',
-                        'youtube' => 'fab fa-youtube'
+                    // Standard social platforms
+                    $platforms = array(
+                        'facebook' => array('icon' => 'fab fa-facebook-f', 'url' => $get('social_facebook')),
+                        'twitter' => array('icon' => 'fab fa-twitter', 'url' => $get('social_twitter')),
+                        'linkedin' => array('icon' => 'fab fa-linkedin-in', 'url' => $get('social_linkedin')),
+                        'instagram' => array('icon' => 'fab fa-instagram', 'url' => $get('social_instagram')),
+                        'youtube' => array('icon' => 'fab fa-youtube', 'url' => $get('social_youtube'))
                     );
-                    
-                    foreach ($social_urls as $platform => $url) {
-                        if (!empty($url)) {
-                            echo '<a class="social-link" data-social="' . esc_attr($platform) . '" href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr(ucfirst($platform)) . '">';
-                            echo '<i class="' . esc_attr($social_icons[$platform]) . '"></i>';
+
+                    foreach ($platforms as $platform => $data) {
+                        $url = $data['url'];
+                        $icon = $get('social_' . $platform . '_icon', $data['icon']);
+                        $enabled = $get('social_' . $platform . '_enabled', !empty($url));
+
+                        if ($enabled && $url) {
+                            echo '<a href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer" class="social-link social-link--' . esc_attr($platform) . '" title="' . esc_attr(ucfirst($platform)) . '">';
+                            echo '<i class="' . esc_attr($icon) . '"></i>';
                             echo '</a>';
                         }
                     }
-                    
-                    // Custom social icons
-                    if (!empty($custom_icons) && is_array($custom_icons)) {
-                        foreach ($custom_icons as $icon) {
-                            if (isset($icon['enabled']) && $icon['enabled'] && !empty($icon['url']) && !empty($icon['icon'])) {
-                                echo '<a class="social-link social-custom" href="' . esc_url($icon['url']) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr($icon['name'] ?? 'Custom') . '">';
-                                if (!empty($icon['icon_url'])) {
-                                    echo '<img src="' . esc_url($icon['icon_url']) . '" alt="' . esc_attr($icon['name'] ?? '') . '" style="width: 16px; height: 16px; filter: brightness(0) invert(1);">';
-                                } else {
-                                    echo '<i class="' . esc_attr($icon['icon']) . '"></i>';
-                                }
-                                echo '</a>';
+
+                    // Custom icons
+                    foreach ($custom_icons as $icon_data) {
+                        if (!is_array($icon_data) || empty($icon_data['url']) || empty($icon_data['icon'])) continue;
+
+                        $url = $icon_data['url'];
+                        $icon = $icon_data['icon'];
+                        $title = isset($icon_data['title']) ? $icon_data['title'] : '';
+                        $enabled = isset($icon_data['enabled']) ? $icon_data['enabled'] : true;
+
+                        if ($enabled) {
+                            echo '<a href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer" class="social-link social-link--custom" title="' . esc_attr($title) . '">';
+                            if (strpos($icon, '<') === 0) {
+                                echo wp_kses_post($icon);
+                            } else {
+                                echo '<i class="' . esc_attr($icon) . '"></i>';
                             }
+                            echo '</a>';
                         }
                     }
                     ?>
                 </div>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
-
-<style>
-    .site-topbar {
-        width: 100%;
-        padding: 12px 0;
-        transition: all 0.3s ease;
-        font-size: 14px;
-    }
-
-    .topbar-inner {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 20px;
-        align-items: center;
-        padding: 0 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .topbar-left {
-        text-align: left;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .topbar-center {
-        text-align: center;
-        flex-grow: 1;
-        min-width: 0;
-    }
-
-    /* Announcement markup/styles are handled centrally in assets/css/frontend/header.css */
-
-    .topbar-right {
-        text-align: right;
-        display: flex;
-        gap: 15px;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .topbar-phone {
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: opacity 0.3s;
-        font-weight: 500;
-        color: <?php echo esc_attr($phone_color); ?> !important;
-    }
-
-    .topbar-phone:hover {
-        opacity: 0.8;
-    }
-
-    .topbar-custom-content {
-        display: inline-block;
-    }
-
-    .topbar-custom-content a {
-        color: inherit;
-        text-decoration: none;
-        transition: opacity 0.3s;
-    }
-
-    .topbar-custom-content a:hover {
-        opacity: 0.8;
-    }
-
-    .topbar-social {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .social-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: var(--social-icon-bg, rgba(255, 255, 255, 0.1));
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-size: 14px;
-        color: <?php echo esc_attr($icon_color); ?> !important;
-        border: var(--social-icon-border, none);
-    }
-
-    .social-link:hover {
-        background: var(--social-icon-bg-hover, rgba(255, 255, 255, 0.2));
-        transform: scale(1.1);
-    }
-
-    .social-link.social-custom img {
-        width: 18px;
-        height: 18px;
-        object-fit: contain;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .topbar-inner {
-            grid-template-columns: 1fr;
-            gap: 10px;
-            padding: 0 15px;
-        }
-
-        .topbar-left,
-        .topbar-center,
-        .topbar-right {
-            text-align: center;
-            justify-content: center;
-        }
-
-        .topbar-right {
-            justify-content: center;
-        }
-
-        .topbar-left {
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .site-topbar {
-            padding: 8px 0;
-            font-size: 13px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .topbar-social {
-            gap: 8px;
-        }
-
-        .social-link {
-            width: 28px;
-            height: 28px;
-            font-size: 12px;
-        }
-    }
-</style>
