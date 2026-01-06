@@ -533,7 +533,7 @@ function ross_theme_topbar_dynamic_css() {
     $text_color   = isset($options['topbar_text_color']) ? sanitize_hex_color($options['topbar_text_color']) : '#ffffff';
     $phone_color  = isset($options['topbar_icon_color']) ? sanitize_hex_color($options['topbar_icon_color']) : '#ffffff';
     $icon_color   = isset($options['social_icon_color']) ? sanitize_hex_color($options['social_icon_color']) : '#ffffff';
-    $icon_hover   = isset($options['topbar_icon_hover_color']) ? sanitize_hex_color($options['topbar_icon_hover_color']) : '#E5C902';
+    $icon_hover   = isset($options['social_icon_hover_color']) ? sanitize_hex_color($options['social_icon_hover_color']) : '#E5C902';
     $icon_bg      = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
     $icon_border  = isset($options['social_icon_border_color']) ? $options['social_icon_border_color'] : 'transparent';
     $icon_border_size = isset($options['social_icon_border_size']) ? intval($options['social_icon_border_size']) : 0;

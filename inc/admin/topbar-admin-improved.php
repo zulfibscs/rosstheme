@@ -204,8 +204,8 @@ function ross_theme_render_topbar_admin_improved() {
                             <h4>🎨 Advanced Styling</h4>
                             
                             <div class="ross-field-group">
-                                <label class="ross-field-label">Icon Color</label>
-                                <input type="text" name="ross_theme_header_options[social_icon_color]" value="<?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>" class="ross-color-input" data-default-color="#ffffff" />
+                                <label class="ross-field-label">Hover Color</label>
+                                <input type="text" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>" class="ross-color-input" data-default-color="#E5C902" />
                             </div>
                             
                             <div class="ross-field-group">
@@ -252,18 +252,18 @@ function ross_theme_render_topbar_admin_improved() {
                         
                         <div class="ross-color-item">
                             <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-icon" style="background-color: <?php echo esc_attr($get('topbar_icon_color', '#E5C902')); ?>;"></span>
-                                <span class="ross-color-name">Social Icon Color</span>
+                                <span class="ross-color-swatch" id="ross-swatch-icon" style="background-color: <?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>;"></span>
+                                <span class="ross-color-name">Icon Color</span>
                             </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_icon_color]" value="<?php echo esc_attr($get('topbar_icon_color', '#E5C902')); ?>" data-default-color="#E5C902" />
+                            <input type="text" class="ross-color-input" name="ross_theme_header_options[social_icon_color]" value="<?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>" data-default-color="#ffffff" />
                         </div>
                         
                         <div class="ross-color-item">
                             <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-icon-hover" style="background-color: <?php echo esc_attr($get('topbar_icon_hover_color', '#ffffff')); ?>;"></span>
-                                <span class="ross-color-name">Icon Hover Color</span>
+                                <span class="ross-color-swatch" id="ross-swatch-icon-hover" style="background-color: <?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>;"></span>
+                                <span class="ross-color-name">Hover Color</span>
                             </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_icon_hover_color]" value="<?php echo esc_attr($get('topbar_icon_hover_color', '#ffffff')); ?>" data-default-color="#ffffff" />
+                            <input type="text" class="ross-color-input" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>" data-default-color="#E5C902" />
                         </div>
                         
                         <div class="ross-color-item">
@@ -290,19 +290,6 @@ function ross_theme_render_topbar_admin_improved() {
                             <span class="ross-switch"></span>
                             <span class="ross-label-text">Enable Drop Shadow</span>
                         </label>
-                    </div>
-                </div>
-                
-                <!-- Live Preview -->
-                <div class="ross-admin-section">
-                    <h3>👁️ Live Preview</h3>
-                    <div id="ross-topbar-preview">
-                        <div id="ross-topbar-preview-bar">
-                                    <div id="ross-preview-left">Left Content</div>
-                                    <div id="ross-preview-center">Announcement text appears here</div>
-                                    <div id="ross-preview-right" class="ross-preview-social"></div>
-                                </div>
-                        <div class="ross-preview-note">Preview updates live as you change settings</div>
                     </div>
                 </div>
             </div>

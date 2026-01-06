@@ -418,6 +418,14 @@ class RossHeaderOptions {
         );
 
         add_settings_field(
+            'social_icon_hover_color',
+            'Social Icon Hover Color',
+            array($this, 'social_icon_hover_color_callback'),
+            'ross-theme-header-topbar',
+            'ross_header_topbar_section'
+        );
+
+        add_settings_field(
             'social_icon_bg_color',
             'Social Icon Background',
             array($this, 'social_icon_bg_color_callback'),
@@ -1797,6 +1805,14 @@ class RossHeaderOptions {
         <?php
     }
 
+    public function social_icon_hover_color_callback() {
+        $value = isset($this->options['social_icon_hover_color']) ? $this->options['social_icon_hover_color'] : '#E5C902';
+        ?>
+        <input type="text" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#E5C902" />
+        <p class="description">Choose the hover color of social icons.</p>
+        <?php
+    }
+
     public function social_icon_bg_color_callback() {
         $value = isset($this->options['social_icon_bg_color']) ? $this->options['social_icon_bg_color'] : 'transparent';
         ?>
@@ -3134,6 +3150,7 @@ class RossHeaderOptions {
     $sanitized['social_icon_size'] = isset($input['social_icon_size']) ? sanitize_text_field($input['social_icon_size']) : 'medium';
     $sanitized['social_icon_shape'] = isset($input['social_icon_shape']) ? sanitize_text_field($input['social_icon_shape']) : 'circle';
     $sanitized['social_icon_color'] = isset($input['social_icon_color']) ? sanitize_hex_color($input['social_icon_color']) : '#ffffff';
+    $sanitized['social_icon_hover_color'] = isset($input['social_icon_hover_color']) ? sanitize_hex_color($input['social_icon_hover_color']) : '#E5C902';
     $sanitized['social_icon_bg_color'] = isset($input['social_icon_bg_color']) ? sanitize_text_field($input['social_icon_bg_color']) : 'transparent';
     $allowed_effects = array('none', 'bounce', 'pulse', 'rotate', 'scale');
     $sanitized['social_icon_effect'] = isset($input['social_icon_effect']) && in_array($input['social_icon_effect'], $allowed_effects) ? sanitize_text_field($input['social_icon_effect']) : 'none';
