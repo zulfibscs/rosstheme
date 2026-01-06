@@ -27,11 +27,11 @@ function ross_theme_dynamic_css() {
     }
     
     if (!empty($header_options['header_text_color'])) {
-        echo '.site-header, .site-header a { color: ' . esc_attr($header_options['header_text_color']) . ' !important; }';
+           echo '.site-header, .site-header a, .site-header button, .site-header .search-toggle, .ross-search-toggle, .header-actions button, .ross-header-actions button { color: ' . esc_attr($header_options['header_text_color']) . ' !important; }';
     }
     
     if (!empty($header_options['header_link_hover_color'])) {
-        echo '.site-header a:hover { color: ' . esc_attr($header_options['header_link_hover_color']) . ' !important; }';
+           echo '.site-header a:hover, .site-header button:hover, .site-header .search-toggle:hover, .ross-search-toggle:hover, .header-actions button:hover, .ross-header-actions button:hover { color: ' . esc_attr($header_options['header_link_hover_color']) . ' !important; }';
     }
     
     if (!empty($header_options['active_item_color'])) {
@@ -156,7 +156,7 @@ function ross_theme_dynamic_css() {
         $size = absint($header_options['menu_font_size']);
         echo ':root { --menu-font-size: ' . $size . 'px; --menu-font-size-mobile: ' . $size . 'px; }';
     }
-    
+
     // Menu Hover Effects
     if (!empty($header_options['menu_hover_effect'])) {
         $effect = $header_options['menu_hover_effect'];

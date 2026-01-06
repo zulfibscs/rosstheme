@@ -1068,6 +1068,120 @@ class RossHeaderOptions {
             'ross_header_appearance_section'
         );
 
+        // Border position/style and per-edge widths
+        add_settings_field(
+            'header_border_position',
+            'Border Position',
+            array($this, 'header_border_position_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_style',
+            'Border Style',
+            array($this, 'header_border_style_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_top',
+            'Enable Top Border',
+            array($this, 'header_border_top_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_top_width',
+            'Top Border Width',
+            array($this, 'header_border_top_width_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_bottom',
+            'Enable Bottom Border',
+            array($this, 'header_border_bottom_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_bottom_width',
+            'Bottom Border Width',
+            array($this, 'header_border_bottom_width_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_border_radius',
+            'Border Radius',
+            array($this, 'header_border_radius_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        // Detailed shadow controls
+        add_settings_field(
+            'header_shadow_type',
+            'Shadow Type',
+            array($this, 'header_shadow_type_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_opacity',
+            'Shadow Opacity',
+            array($this, 'header_shadow_opacity_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_inset',
+            'Inset Shadow',
+            array($this, 'header_shadow_inset_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_x',
+            'Shadow X Offset',
+            array($this, 'header_shadow_x_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_y',
+            'Shadow Y Offset',
+            array($this, 'header_shadow_y_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_blur',
+            'Shadow Blur',
+            array($this, 'header_shadow_blur_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
+        add_settings_field(
+            'header_shadow_spread',
+            'Shadow Spread',
+            array($this, 'header_shadow_spread_callback'),
+            'ross-theme-header-appearance',
+            'ross_header_appearance_section'
+        );
+
         // ===== SPACING =====
         add_settings_field(
             'header_height',
@@ -2970,6 +3084,23 @@ class RossHeaderOptions {
         <p class="description">Shadow type</p>
         <?php
     }
+
+    public function header_shadow_opacity_callback() {
+        $value = isset($this->options['header_shadow_opacity']) ? $this->options['header_shadow_opacity'] : '0.15';
+        ?>
+        <input type="number" name="ross_theme_header_options[header_shadow_opacity]" value="<?php echo esc_attr($value); ?>" class="small-text" min="0" max="1" step="0.05" />
+        <p class="description">Shadow opacity (0 - 1)</p>
+        <?php
+    }
+
+    public function header_shadow_inset_callback() {
+        $value = isset($this->options['header_shadow_inset']) ? $this->options['header_shadow_inset'] : 0;
+        ?>
+        <input type="checkbox" name="ross_theme_header_options[header_shadow_inset]" value="1" <?php checked(1, $value); ?> />
+        <label>Use inset shadow</label>
+        <p class="description">Toggle to use an inset (inner) shadow effect</p>
+        <?php
+    }
     
     // ===== END ENTERPRISE APPEARANCE CALLBACKS =====
     
@@ -3200,8 +3331,9 @@ class RossHeaderOptions {
         
         // Typography Settings
         $sanitized['header_text_color'] = isset($input['header_text_color']) ? sanitize_hex_color($input['header_text_color']) : '#333333';
-        $sanitized['header_link_color'] = isset($input['header_link_color']) ? sanitize_hex_color($input['header_link_color']) : '#007cba';
-        $sanitized['header_link_hover_color'] = isset($input['header_link_hover_color']) ? sanitize_hex_color($input['header_link_hover_color']) : '#005a87';
+        // Leave link color empty by default so it inherits `header_text_color` unless explicitly set by the user
+        $sanitized['header_link_color'] = isset($input['header_link_color']) && $input['header_link_color'] !== '' ? sanitize_hex_color($input['header_link_color']) : '';
+        $sanitized['header_link_hover_color'] = isset($input['header_link_hover_color']) && $input['header_link_hover_color'] !== '' ? sanitize_hex_color($input['header_link_hover_color']) : '';
         $sanitized['header_font_size'] = isset($input['header_font_size']) ? absint($input['header_font_size']) : 16;
         $sanitized['header_line_height'] = isset($input['header_line_height']) ? floatval($input['header_line_height']) : 1.5;
         $sanitized['header_letter_spacing'] = isset($input['header_letter_spacing']) ? floatval($input['header_letter_spacing']) : 0;
@@ -3227,6 +3359,8 @@ class RossHeaderOptions {
         $allowed_shadow_types = array('drop', 'inner', 'glow');
         $sanitized['header_shadow_type'] = isset($input['header_shadow_type']) && in_array($input['header_shadow_type'], $allowed_shadow_types) ? sanitize_text_field($input['header_shadow_type']) : 'drop';
         $sanitized['header_shadow_color'] = isset($input['header_shadow_color']) ? sanitize_text_field($input['header_shadow_color']) : 'rgba(0,0,0,0.1)';
+        $sanitized['header_shadow_opacity'] = isset($input['header_shadow_opacity']) ? floatval($input['header_shadow_opacity']) : 0.15;
+        $sanitized['header_shadow_inset'] = isset($input['header_shadow_inset']) ? 1 : 0;
         $sanitized['header_shadow_x'] = isset($input['header_shadow_x']) ? intval($input['header_shadow_x']) : 0;
         $sanitized['header_shadow_y'] = isset($input['header_shadow_y']) ? intval($input['header_shadow_y']) : 2;
         $sanitized['header_shadow_blur'] = isset($input['header_shadow_blur']) ? absint($input['header_shadow_blur']) : 4;
