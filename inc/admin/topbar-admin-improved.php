@@ -200,35 +200,6 @@ function ross_theme_render_topbar_admin_improved() {
                             </div>
                         </div>
                         
-                        <div class="ross-admin-subsection">
-                            <h4>🎨 Advanced Styling</h4>
-                            
-                            <div class="ross-field-group">
-                                <label class="ross-field-label">Hover Color</label>
-                                <input type="text" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>" class="ross-color-input" data-default-color="#E5C902" />
-                            </div>
-                            
-                            <div class="ross-field-group">
-                                <label class="ross-field-label">Background Color</label>
-                                <input type="text" name="ross_theme_header_options[social_icon_bg_color]" value="<?php echo esc_attr($get('social_icon_bg_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
-                            </div>
-                            
-                            <div class="ross-field-group">
-                                <label class="ross-field-label">Border Color</label>
-                                <input type="text" name="ross_theme_header_options[social_icon_border_color]" value="<?php echo esc_attr($get('social_icon_border_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
-                            </div>
-                            
-                            <div class="ross-field-group">
-                                <label class="ross-field-label">Border Size</label>
-                                <select name="ross_theme_header_options[social_icon_border_size]" class="ross-select">
-                                    <option value="0" <?php selected($get('social_icon_border_size', '0'), '0'); ?>>No Border</option>
-                                    <option value="1" <?php selected($get('social_icon_border_size', '0'), '1'); ?>>1px</option>
-                                    <option value="2" <?php selected($get('social_icon_border_size', '0'), '2'); ?>>2px</option>
-                                    <option value="3" <?php selected($get('social_icon_border_size', '0'), '3'); ?>>3px</option>
-                                </select>
-                            </div>
-                        </div>
-                        
                         <div class="ross-admin-notice" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 6px; padding: 12px; margin-top: 16px;">
                             <p style="margin: 0; color: #0c4a6e;"><strong>💡 Important:</strong> After adding or modifying custom icons, click the "Save Header Settings" button at the bottom of the page. Your changes will not be saved until you click Save.</p>
                         </div>
@@ -236,65 +207,70 @@ function ross_theme_render_topbar_admin_improved() {
                 </div>
             </div>
             
-            <!-- Right Column: Colors & Style (announcement moved to its own tab) -->
+            <!-- Right Column: Advanced Styling -->
             <div class="ross-topbar-right">
                 <div class="ross-admin-section">
-                    <h3>🎨 Colors</h3>
+                    <h3>🎨 Advanced Styling</h3>
                     
-                    <div class="ross-colors-grid">
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-text" style="background-color: <?php echo esc_attr($get('topbar_text_color', '#ffffff')); ?>;"></span>
-                                <span class="ross-color-name">Text Color</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_text_color]" value="<?php echo esc_attr($get('topbar_text_color', '#ffffff')); ?>" data-default-color="#ffffff" />
+                    <!-- Topbar Colors -->
+                    <div class="ross-admin-subsection">
+                        <h4>🎨 Topbar Colors</h4>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Text Color</label>
+                            <input type="text" name="ross_theme_header_options[topbar_text_color]" value="<?php echo esc_attr($get('topbar_text_color', '#ffffff')); ?>" class="ross-color-input" data-default-color="#ffffff" />
                         </div>
                         
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-icon" style="background-color: <?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>;"></span>
-                                <span class="ross-color-name">Icon Color</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[social_icon_color]" value="<?php echo esc_attr($get('social_icon_color', '#ffffff')); ?>" data-default-color="#ffffff" />
-                        </div>
-                        
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-icon-hover" style="background-color: <?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>;"></span>
-                                <span class="ross-color-name">Hover Color</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[social_icon_hover_color]" value="<?php echo esc_attr($get('social_icon_hover_color', '#E5C902')); ?>" data-default-color="#E5C902" />
-                        </div>
-                        
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-border" style="background-color: <?php echo esc_attr($get('topbar_border_color', '#E5C902')); ?>;"></span>
-                                <span class="ross-color-name">Border Bottom Color</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_border_color]" value="<?php echo esc_attr($get('topbar_border_color', '#E5C902')); ?>" data-default-color="#E5C902" />
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Border Bottom Color</label>
+                            <input type="text" name="ross_theme_header_options[topbar_border_color]" value="<?php echo esc_attr($get('topbar_border_color', '#E5C902')); ?>" class="ross-color-input" data-default-color="#E5C902" />
                         </div>
                     </div>
-                </div>
-                
-                <div class="ross-admin-section">
-                    <h3>⚡ Style Options</h3>
                     
-                    <div class="ross-field-group">
-                        <label class="ross-field-label">Border Bottom Width (px)</label>
-                        <input type="number" min="0" max="5" name="ross_theme_header_options[topbar_border_width]" value="<?php echo esc_attr($get('topbar_border_width', 0)); ?>" class="ross-input ross-input-small" /> px
+                    <!-- Topbar Styling -->
+                    <div class="ross-admin-subsection">
+                        <h4>⚡ Topbar Styling</h4>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Border Bottom Width (px)</label>
+                            <input type="number" min="0" max="5" name="ross_theme_header_options[topbar_border_width]" value="<?php echo esc_attr($get('topbar_border_width', 0)); ?>" class="ross-input ross-input-small" /> px
+                        </div>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-switch-label">
+                                <input type="checkbox" name="ross_theme_header_options[topbar_shadow_enable]" value="1" <?php checked(1, $get('topbar_shadow_enable', 0)); ?> />
+                                <span class="ross-switch"></span>
+                                <span class="ross-label-text">Enable Drop Shadow</span>
+                            </label>
+                        </div>
                     </div>
                     
-                    <div class="ross-field-group">
-                        <label class="ross-switch-label">
-                            <input type="checkbox" name="ross_theme_header_options[topbar_shadow_enable]" value="1" <?php checked(1, $get('topbar_shadow_enable', 0)); ?> />
-                            <span class="ross-switch"></span>
-                            <span class="ross-label-text">Enable Drop Shadow</span>
-                        </label>
+                    <!-- Social Icon Colors -->
+                    <div class="ross-admin-subsection">
+                        <h4>🔗 Social Icon Colors</h4>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Background Color</label>
+                            <input type="text" name="ross_theme_header_options[social_icon_bg_color]" value="<?php echo esc_attr($get('social_icon_bg_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
+                        </div>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Border Color</label>
+                            <input type="text" name="ross_theme_header_options[social_icon_border_color]" value="<?php echo esc_attr($get('social_icon_border_color', 'transparent')); ?>" class="ross-color-input" data-default-color="transparent" />
+                        </div>
+                        
+                        <div class="ross-field-group">
+                            <label class="ross-field-label">Border Size</label>
+                            <select name="ross_theme_header_options[social_icon_border_size]" class="ross-select">
+                                <option value="0" <?php selected($get('social_icon_border_size', '0'), '0'); ?>>No Border</option>
+                                <option value="1" <?php selected($get('social_icon_border_size', '0'), '1'); ?>>1px</option>
+                                <option value="2" <?php selected($get('social_icon_border_size', '0'), '2'); ?>>2px</option>
+                                <option value="3" <?php selected($get('social_icon_border_size', '0'), '3'); ?>>3px</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
     
     <script>
     (function(){
