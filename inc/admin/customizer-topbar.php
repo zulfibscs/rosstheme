@@ -244,18 +244,6 @@ function ross_theme_customize_register($wp_customize) {
     // PANEL: Design Options (Right Column)
     // ============================================
 
-    // Background Color
-    $wp_customize->add_setting('ross_theme_header_options[topbar_bg_color]', array(
-        'default'           => '#001946',
-        'type'              => 'option',
-        'sanitize_callback' => 'sanitize_hex_color',
-    ));
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'ross_theme_header_options[topbar_bg_color]', array(
-        'label'       => __('🎨 Background Color', 'ross-theme'),
-        'section'     => 'ross_topbar_section',
-        'priority'    => 90,
-    )));
-
     // Text Color
     $wp_customize->add_setting('ross_theme_header_options[topbar_text_color]', array(
         'default'           => '#ffffff',

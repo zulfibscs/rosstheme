@@ -264,14 +264,6 @@ class RossHeaderOptions {
         );
         
         add_settings_field(
-            'topbar_bg_color',
-            'Background Color',
-            array($this, 'topbar_bg_color_callback'),
-            'ross-theme-header-topbar',
-            'ross_header_topbar_section'
-        );
-        
-        add_settings_field(
             'topbar_text_color',
             'Text Color',
             array($this, 'topbar_text_color_callback'),
@@ -470,30 +462,6 @@ class RossHeaderOptions {
             'topbar_shadow_enable',
             'Enable Drop Shadow',
             array($this, 'topbar_shadow_enable_callback'),
-            'ross-theme-header-topbar',
-            'ross_header_topbar_section'
-        );
-
-        add_settings_field(
-            'topbar_gradient_enable',
-            'Enable Gradient Background',
-            array($this, 'topbar_gradient_enable_callback'),
-            'ross-theme-header-topbar',
-            'ross_header_topbar_section'
-        );
-
-        add_settings_field(
-            'topbar_gradient_color1',
-            'Gradient Color 1',
-            array($this, 'topbar_gradient_color1_callback'),
-            'ross-theme-header-topbar',
-            'ross_header_topbar_section'
-        );
-
-        add_settings_field(
-            'topbar_gradient_color2',
-            'Gradient Color 2',
-            array($this, 'topbar_gradient_color2_callback'),
             'ross-theme-header-topbar',
             'ross_header_topbar_section'
         );
@@ -1665,13 +1633,6 @@ class RossHeaderOptions {
         echo '<p class="description">Use the editor for rich content: small text, icons, links or HTML. Keep it concise for the top bar.</p>';
     }
     
-    public function topbar_bg_color_callback() {
-        $value = isset($this->options['topbar_bg_color']) ? $this->options['topbar_bg_color'] : '#001946';
-        ?>
-        <input type="text" name="ross_theme_header_options[topbar_bg_color]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#001946" />
-        <?php
-    }
-    
     public function topbar_text_color_callback() {
         $value = isset($this->options['topbar_text_color']) ? $this->options['topbar_text_color'] : '#ffffff';
         ?>
@@ -1947,21 +1908,19 @@ class RossHeaderOptions {
                 
                 // Auto-fill colors based on palette selection
                 var palettes = {
-                    'professional': { topbar_bg: '#1A1A1A', topbar_text: '#FFFFFF', header_bg: '#FFFFFF', header_text: '#333333' },
-                    'dark': { topbar_bg: '#0A0E27', topbar_text: '#E0E0E0', header_bg: '#1A1A2E', header_text: '#E0E0E0' },
-                    'light': { topbar_bg: '#F5F5F5', topbar_text: '#333333', header_bg: '#FFFFFF', header_text: '#333333' },
-                    'colorful': { topbar_bg: '#E5C902', topbar_text: '#333333', header_bg: '#FFFFFF', header_text: '#333333' },
-                    'ocean': { topbar_bg: '#1E3A5F', topbar_text: '#FFFFFF', header_bg: '#F0F4F8', header_text: '#1E3A5F' }
+                    'professional': { topbar_text: '#FFFFFF', header_bg: '#FFFFFF', header_text: '#333333' },
+                    'dark': { topbar_text: '#E0E0E0', header_bg: '#1A1A2E', header_text: '#E0E0E0' },
+                    'light': { topbar_text: '#333333', header_bg: '#FFFFFF', header_text: '#333333' },
+                    'colorful': { topbar_text: '#333333', header_bg: '#FFFFFF', header_text: '#333333' },
+                    'ocean': { topbar_text: '#FFFFFF', header_bg: '#F0F4F8', header_text: '#1E3A5F' }
                 };
                 
                 if (palettes[palette]) {
                     // Try to find and update color picker fields
-                    var topbarBgInput = document.querySelector('input[name="ross_theme_header_options[topbar_bg_color]"]');
                     var topbarTextInput = document.querySelector('input[name="ross_theme_header_options[topbar_text_color]"]');
                     var headerBgInput = document.querySelector('input[name="ross_theme_header_options[header_bg_color]"]');
                     var headerTextInput = document.querySelector('input[name="ross_theme_header_options[header_text_color]"]');
                     
-                    if (topbarBgInput) topbarBgInput.value = palettes[palette].topbar_bg;
                     if (topbarTextInput) topbarTextInput.value = palettes[palette].topbar_text;
                     if (headerBgInput) headerBgInput.value = palettes[palette].header_bg;
                     if (headerTextInput) headerTextInput.value = palettes[palette].header_text;
@@ -2024,30 +1983,6 @@ class RossHeaderOptions {
         ?>
         <input type="checkbox" name="ross_theme_header_options[topbar_shadow_enable]" value="1" <?php checked(1, $value); ?> />
         <label for="topbar_shadow_enable">Add drop shadow to top bar</label>
-        <?php
-    }
-
-    public function topbar_gradient_enable_callback() {
-        $value = isset($this->options['topbar_gradient_enable']) ? $this->options['topbar_gradient_enable'] : 0;
-        ?>
-        <input type="checkbox" name="ross_theme_header_options[topbar_gradient_enable]" value="1" <?php checked(1, $value); ?> />
-        <label for="topbar_gradient_enable">Use gradient instead of solid background</label>
-        <?php
-    }
-
-    public function topbar_gradient_color1_callback() {
-        $value = isset($this->options['topbar_gradient_color1']) ? $this->options['topbar_gradient_color1'] : '#001946';
-        ?>
-        <input type="text" name="ross_theme_header_options[topbar_gradient_color1]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#001946" />
-        <p class="description">First gradient color (start)</p>
-        <?php
-    }
-
-    public function topbar_gradient_color2_callback() {
-        $value = isset($this->options['topbar_gradient_color2']) ? $this->options['topbar_gradient_color2'] : '#003d7a';
-        ?>
-        <input type="text" name="ross_theme_header_options[topbar_gradient_color2]" value="<?php echo esc_attr($value); ?>" class="color-picker" data-default-color="#003d7a" />
-        <p class="description">Second gradient color (end)</p>
         <?php
     }
 
@@ -3150,7 +3085,6 @@ class RossHeaderOptions {
         // Top Bar
         $sanitized['enable_topbar'] = isset($input['enable_topbar']) ? 1 : 0;
         $sanitized['topbar_left_content'] = wp_kses_post($input['topbar_left_content']);
-        $sanitized['topbar_bg_color'] = sanitize_hex_color($input['topbar_bg_color']);
         $sanitized['topbar_text_color'] = sanitize_hex_color($input['topbar_text_color']);
         $sanitized['topbar_icon_color'] = isset($input['topbar_icon_color']) ? sanitize_hex_color($input['topbar_icon_color']) : $sanitized['topbar_text_color'];
     // Top Bar - new
@@ -3212,9 +3146,6 @@ class RossHeaderOptions {
         
         // Top Bar - Style Enhancements
         $sanitized['topbar_shadow_enable'] = isset($input['topbar_shadow_enable']) ? 1 : 0;
-        $sanitized['topbar_gradient_enable'] = isset($input['topbar_gradient_enable']) ? 1 : 0;
-        $sanitized['topbar_gradient_color1'] = isset($input['topbar_gradient_color1']) ? sanitize_hex_color($input['topbar_gradient_color1']) : '#001946';
-        $sanitized['topbar_gradient_color2'] = isset($input['topbar_gradient_color2']) ? sanitize_hex_color($input['topbar_gradient_color2']) : '#003d7a';
         $sanitized['topbar_border_color'] = isset($input['topbar_border_color']) ? sanitize_hex_color($input['topbar_border_color']) : '#E5C902';
         $sanitized['topbar_border_width'] = isset($input['topbar_border_width']) ? absint($input['topbar_border_width']) : 0;
         $sanitized['topbar_icon_hover_color'] = isset($input['topbar_icon_hover_color']) ? sanitize_hex_color($input['topbar_icon_hover_color']) : $sanitized['social_icon_color'];

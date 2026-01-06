@@ -40,7 +40,6 @@ function ross_theme_get_header_options() {
         'show_site_title' => 1,
         'enable_topbar' => 0,
         'topbar_left_content' => '',
-        'topbar_bg_color' => '#001946',
         'topbar_text_color' => '#ffffff',
         'topbar_icon_color' => '#ffffff',
         // new topbar defaults
@@ -267,7 +266,6 @@ function ross_theme_render_topbar() {
         return; // Advanced topbar is active, skip main topbar
     }
 
-    $bg = isset($options['topbar_bg_color']) ? esc_attr($options['topbar_bg_color']) : '#001946';
     $color = isset($options['topbar_text_color']) ? esc_attr($options['topbar_text_color']) : '#ffffff';
 
     // Left content (can contain simple HTML from admin)
@@ -542,10 +540,6 @@ function ross_theme_topbar_dynamic_css() {
     $icon_width   = isset($options['social_icon_width']) ? intval($options['social_icon_width']) : 32;
     $icon_shape   = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
     $icon_effect  = isset($options['social_icon_effect']) ? $options['social_icon_effect'] : 'none';
-    $bg_color     = isset($options['topbar_bg_color']) ? sanitize_hex_color($options['topbar_bg_color']) : '#001946';
-    $use_gradient = !empty($options['topbar_gradient_enable']);
-    $grad1        = isset($options['topbar_gradient_color1']) ? sanitize_hex_color($options['topbar_gradient_color1']) : '#001946';
-    $grad2        = isset($options['topbar_gradient_color2']) ? sanitize_hex_color($options['topbar_gradient_color2']) : '#003d7a';
     $shadow_enable = !empty($options['topbar_shadow_enable']);
     $border_width  = isset($options['topbar_border_width']) ? absint($options['topbar_border_width']) : 0;
     $border_color  = isset($options['topbar_border_color']) ? sanitize_hex_color($options['topbar_border_color']) : '#E5C902';
@@ -557,11 +551,6 @@ function ross_theme_topbar_dynamic_css() {
     echo '<style id="ross-topbar-dynamic-css">';
 
     echo '.site-topbar {';
-    if ($use_gradient) {
-        echo 'background: linear-gradient(90deg, ' . $grad1 . ', ' . $grad2 . ');';
-    } else {
-        echo 'background-color: ' . $bg_color . ';';
-    }
     echo 'color: ' . $text_color . ';';
     echo 'font-size: ' . $font_size . 'px;';
     echo 'text-align: ' . $alignment . ';';

@@ -244,14 +244,6 @@ function ross_theme_render_topbar_admin_improved() {
                     <div class="ross-colors-grid">
                         <div class="ross-color-item">
                             <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-bg" style="background-color: <?php echo esc_attr($get('topbar_bg_color', '#001946')); ?>;"></span>
-                                <span class="ross-color-name">Top Bar Background</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_bg_color]" value="<?php echo esc_attr($get('topbar_bg_color', '#001946')); ?>" data-default-color="#001946" />
-                        </div>
-                        
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
                                 <span class="ross-color-swatch" id="ross-swatch-text" style="background-color: <?php echo esc_attr($get('topbar_text_color', '#ffffff')); ?>;"></span>
                                 <span class="ross-color-name">Text Color</span>
                             </label>
@@ -281,35 +273,11 @@ function ross_theme_render_topbar_admin_improved() {
                             </label>
                             <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_border_color]" value="<?php echo esc_attr($get('topbar_border_color', '#E5C902')); ?>" data-default-color="#E5C902" />
                         </div>
-                        
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-grad1" style="background-color: <?php echo esc_attr($get('topbar_gradient_color1', '#001946')); ?>;"></span>
-                                <span class="ross-color-name">Gradient Color 1</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_gradient_color1]" value="<?php echo esc_attr($get('topbar_gradient_color1', '#001946')); ?>" data-default-color="#001946" />
-                        </div>
-                        
-                        <div class="ross-color-item">
-                            <label class="ross-color-label">
-                                <span class="ross-color-swatch" id="ross-swatch-grad2" style="background-color: <?php echo esc_attr($get('topbar_gradient_color2', '#003d7a')); ?>;"></span>
-                                <span class="ross-color-name">Gradient Color 2</span>
-                            </label>
-                            <input type="text" class="ross-color-input" name="ross_theme_header_options[topbar_gradient_color2]" value="<?php echo esc_attr($get('topbar_gradient_color2', '#003d7a')); ?>" data-default-color="#003d7a" />
-                        </div>
                     </div>
                 </div>
                 
                 <div class="ross-admin-section">
                     <h3>⚡ Style Options</h3>
-                    
-                    <div class="ross-field-group">
-                        <label class="ross-switch-label">
-                            <input type="checkbox" name="ross_theme_header_options[topbar_gradient_enable]" value="1" <?php checked(1, $get('topbar_gradient_enable', 0)); ?> />
-                            <span class="ross-switch"></span>
-                            <span class="ross-label-text">Enable Gradient Background</span>
-                        </label>
-                    </div>
                     
                     <div class="ross-field-group">
                         <label class="ross-field-label">Border Bottom Width (px)</label>

@@ -226,7 +226,6 @@ class RossThemeResetUtility {
             'show_site_title' => 1,
             'enable_topbar' => 0,
             'topbar_left_content' => '',
-            'topbar_bg_color' => '#001946',
             'topbar_text_color' => '#ffffff',
             'menu_alignment' => 'left',
             'menu_font_size' => '16',
