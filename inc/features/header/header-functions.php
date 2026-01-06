@@ -36,10 +36,10 @@ function ross_theme_get_header_options() {
         'header_height' => '80',
         'logo_upload' => '',
         'logo_width' => '200',
-        'logo_height' => '',
         'show_site_title' => 1,
         'enable_topbar' => 0,
         'topbar_left_content' => '',
+        'topbar_bg_color' => '#001946',
         'topbar_text_color' => '#ffffff',
         'topbar_icon_color' => '#ffffff',
         // new topbar defaults
@@ -161,8 +161,8 @@ function ross_theme_display_header() {
         }
     }
     
-    // Fallback to legacy header_style option (treat empty as default)
-    $layout = !empty($options['header_style']) ? $options['header_style'] : 'default';
+    // Fallback to legacy header_style option
+    $layout = isset($options['header_style']) ? $options['header_style'] : 'default';
     
     // Debug output
     if (current_user_can('manage_options')) {
@@ -181,9 +181,8 @@ function ross_theme_header_classes() {
     $options = ross_theme_get_header_options();
     $classes = array('site-header');
     
-    // Header style (ensure non-empty)
-    $header_style = !empty($options['header_style']) ? $options['header_style'] : 'default';
-    $classes[] = 'header-' . $header_style;
+    // Header style
+    $classes[] = 'header-' . $options['header_style'];
     
     // Sticky header
     if ($options['sticky_header']) {
@@ -230,9 +229,9 @@ function ross_theme_get_header_inline_style() {
     
     // Sanitize each value to ensure it's numeric
     $height = intval($options['header_height'] ?? 80);
-    $pt = max(10, intval($options['header_padding_top'] ?? 20));
+    $pt = intval($options['header_padding_top'] ?? 20);
     $pr = intval($options['header_padding_right'] ?? 0);
-    $pb = max(10, intval($options['header_padding_bottom'] ?? 20));
+    $pb = intval($options['header_padding_bottom'] ?? 20);
     $pl = intval($options['header_padding_left'] ?? 0);
     $mt = intval($options['header_margin_top'] ?? 0);
     $mr = intval($options['header_margin_right'] ?? 0);
@@ -243,8 +242,9 @@ function ross_theme_get_header_inline_style() {
     $text_color = isset($options['header_text_color']) ? sanitize_hex_color($options['header_text_color']) : '#333333';
     
     return sprintf(
-        'color: %s; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
+        'color: %s; min-height: %dpx; padding: %dpx %dpx %dpx %dpx; margin: %dpx %dpx %dpx %dpx;',
         esc_attr($text_color),
+        $height,
         $pt, $pr, $pb, $pl,
         $mt, $mr, $mb, $ml
     );
@@ -266,6 +266,7 @@ function ross_theme_render_topbar() {
         return; // Advanced topbar is active, skip main topbar
     }
 
+    $bg = isset($options['topbar_bg_color']) ? esc_attr($options['topbar_bg_color']) : '#001946';
     $color = isset($options['topbar_text_color']) ? esc_attr($options['topbar_text_color']) : '#ffffff';
 
     // Left content (can contain simple HTML from admin)
@@ -533,13 +534,17 @@ function ross_theme_topbar_dynamic_css() {
     $text_color   = isset($options['topbar_text_color']) ? sanitize_hex_color($options['topbar_text_color']) : '#ffffff';
     $phone_color  = isset($options['topbar_icon_color']) ? sanitize_hex_color($options['topbar_icon_color']) : '#ffffff';
     $icon_color   = isset($options['social_icon_color']) ? sanitize_hex_color($options['social_icon_color']) : '#ffffff';
-    $icon_hover   = isset($options['social_icon_hover_color']) ? sanitize_hex_color($options['social_icon_hover_color']) : '#E5C902';
+    $icon_hover   = isset($options['topbar_icon_hover_color']) ? sanitize_hex_color($options['topbar_icon_hover_color']) : '#E5C902';
     $icon_bg      = isset($options['social_icon_bg_color']) ? $options['social_icon_bg_color'] : 'transparent';
     $icon_border  = isset($options['social_icon_border_color']) ? $options['social_icon_border_color'] : 'transparent';
     $icon_border_size = isset($options['social_icon_border_size']) ? intval($options['social_icon_border_size']) : 0;
     $icon_width   = isset($options['social_icon_width']) ? intval($options['social_icon_width']) : 32;
     $icon_shape   = isset($options['social_icon_shape']) ? $options['social_icon_shape'] : 'circle';
     $icon_effect  = isset($options['social_icon_effect']) ? $options['social_icon_effect'] : 'none';
+    $bg_color     = isset($options['topbar_bg_color']) ? sanitize_hex_color($options['topbar_bg_color']) : '#001946';
+    $use_gradient = !empty($options['topbar_gradient_enable']);
+    $grad1        = isset($options['topbar_gradient_color1']) ? sanitize_hex_color($options['topbar_gradient_color1']) : '#001946';
+    $grad2        = isset($options['topbar_gradient_color2']) ? sanitize_hex_color($options['topbar_gradient_color2']) : '#003d7a';
     $shadow_enable = !empty($options['topbar_shadow_enable']);
     $border_width  = isset($options['topbar_border_width']) ? absint($options['topbar_border_width']) : 0;
     $border_color  = isset($options['topbar_border_color']) ? sanitize_hex_color($options['topbar_border_color']) : '#E5C902';
@@ -551,6 +556,11 @@ function ross_theme_topbar_dynamic_css() {
     echo '<style id="ross-topbar-dynamic-css">';
 
     echo '.site-topbar {';
+    if ($use_gradient) {
+        echo 'background: linear-gradient(90deg, ' . $grad1 . ', ' . $grad2 . ');';
+    } else {
+        echo 'background-color: ' . $bg_color . ';';
+    }
     echo 'color: ' . $text_color . ';';
     echo 'font-size: ' . $font_size . 'px;';
     echo 'text-align: ' . $alignment . ';';

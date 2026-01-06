@@ -46,6 +46,11 @@ $custom_icons = isset($header_options['social_custom_icons']) ? $header_options[
 
 // Build inline style
 $style = '';
+if ($gradient_enable) {
+    $style .= 'background: linear-gradient(90deg, ' . esc_attr($gradient_color1) . ', ' . esc_attr($gradient_color2) . ');';
+} else {
+    $style .= 'background-color: ' . esc_attr($bg_color) . ';';
+}
 $style .= ' color: ' . esc_attr($text_color) . ';';
 if ($shadow_enable) {
     $style .= ' box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);';
