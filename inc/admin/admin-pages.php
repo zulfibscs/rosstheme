@@ -220,10 +220,6 @@ function ross_theme_header_page() {
                 <style>
                     <?php include_once dirname(__FILE__) . '/../../assets/css/admin/topbar-admin-improved.css'; ?>
                 </style>
-                
-                <script>
-                    <?php include_once dirname(__FILE__) . '/../../assets/js/admin/topbar-admin-improved.js'; ?>
-                </script>
             </div>
             
             <!-- Announcement Tab -->
